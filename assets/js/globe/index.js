@@ -25,7 +25,10 @@ async function initHomeGlobe() {
   });
 
   const ok = await scene.init();
-  if (!ok) return null;
+  if (!ok) {
+    window.LANCUN_globeInitState = 'failed';
+    return null;
+  }
 
   const scrollBinding = bindGlobeScroll({
     section,
@@ -65,9 +68,17 @@ function bootHomeGlobe() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function bootGlobeModule() {
   if (window.gsap && window.ScrollTrigger) {
     window.gsap.registerPlugin(window.ScrollTrigger);
   }
   bootHomeGlobe();
-});
+}
+
+// Dynamic import() in index.html does not block DOMContentLoaded; on slow networks
+// this module may evaluate after the event has already fired.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootGlobeModule);
+} else {
+  bootGlobeModule();
+}
