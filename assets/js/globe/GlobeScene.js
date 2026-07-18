@@ -10,11 +10,9 @@ const SECTION_CLEAR = 0xe0f2fe;
 /** Earth at world origin; screen placement via setViewOffset into right golden zone. */
 const EARTH_OFFSET = new THREE.Vector3(0, 0, 0);
 const CAMERA_FOV = 34;
-/** Sphere mesh radius (+ atmosphere margin) for framing math. */
-const EARTH_FRAME_RADIUS = 1.08;
-/** Constitution v1.7 bounds-fit fallback cap (not primary). */
-const EARTH_FIT_FRACTION = 0.74;
-/** Constitution v1.7: ratio constant — earth diameter = copy panel height * this. */
+/** Sphere mesh radius (+ atmosphere / marker margin) for framing math. Constitution v1.8. */
+const EARTH_FRAME_RADIUS = 1.12;
+/** Constitution v1.7/v1.8: ratio constant — earth diameter = copy panel height * this. */
 const EARTH_COPY_HEIGHT_RATIO = 1.12;
 /** Minimum sensible copy panel height when layout not yet measured (px). */
 const COPY_PANEL_MIN_HEIGHT = 40;
@@ -24,9 +22,11 @@ const FRAMING_MARGIN = 0.02;
 const COPY_PANEL_GAP = 16;
 /** Slop when testing copy/stage side-by-side layout (px). */
 const SIDE_BY_SIDE_SLOP = 12;
-/** Diameter shrink factor per bounds-fit iteration. */
-const FRAMING_SHRINK = 0.92;
-const FRAMING_MAX_ITER = 12;
+/** Binary-search iterations for max diameter at fixed center. */
+const FRAMING_BINARY_ITER = 20;
+/** Forced-shrink factor when containment still fails. */
+const FRAMING_FORCE_SHRINK = 0.92;
+const FRAMING_MIN_DIAMETER = 40;
 /** Full-viewport right golden zone: [0.38, 1.0] → center = 0.38 + 0.62/2. */
 const RIGHT_ZONE_LEFT = 0.38;
 const RIGHT_ZONE_WIDTH = 0.62;
@@ -168,6 +168,8 @@ export class GlobeScene {
       this._bindObservers();
       this._syncInitialVisibility();
       this.resize();
+      requestAnimationFrame(() => this._scheduleResize());
+      setTimeout(() => this._scheduleResize(), 200);
       this.applyMotion();
 
       if (this.visible && !motionReduced()) this.start();
@@ -314,6 +316,56 @@ export class GlobeScene {
   }
 
   /**
+   * Constitution v1.8: visible safe rect in canvas-local px (viewport ∩ host − header).
+   */
+  _getVisibleFramingRect(canvasW, canvasH) {
+    const marginX = canvasW * FRAMING_MARGIN;
+    const marginY = canvasH * FRAMING_MARGIN;
+    const fallback = {
+      left: marginX,
+      right: canvasW - marginX,
+      top: marginY,
+      bottom: canvasH - marginY,
+    };
+
+    const host = this.canvasWrap || this.section;
+    const hostRect = host?.getBoundingClientRect();
+    if (!hostRect || canvasW < 1 || canvasH < 1) return fallback;
+
+    const vv = typeof window !== 'undefined' ? window.visualViewport : null;
+    const visLeft = vv?.offsetLeft ?? 0;
+    const visTop = vv?.offsetTop ?? 0;
+    const visRight = visLeft + (vv?.width ?? window.innerWidth);
+    const visBottom = visTop + (vv?.height ?? window.innerHeight);
+
+    const intersectLeft = Math.max(hostRect.left, visLeft);
+    const intersectTop = Math.max(hostRect.top, visTop);
+    const intersectRight = Math.min(hostRect.right, visRight);
+    const intersectBottom = Math.min(hostRect.bottom, visBottom);
+
+    let headerH = 76;
+    if (this.section && typeof getComputedStyle !== 'undefined') {
+      const smt = getComputedStyle(this.section).scrollMarginTop;
+      const parsed = parseFloat(smt);
+      if (!Number.isNaN(parsed) && parsed > 0) headerH = parsed;
+    }
+    const safeTop = Math.max(intersectTop, hostRect.top + headerH);
+
+    let left = intersectLeft - hostRect.left + marginX;
+    let right = intersectRight - hostRect.left - marginX;
+    let top = safeTop - hostRect.top + marginY;
+    let bottom = intersectBottom - hostRect.top - marginY;
+
+    left = THREE.MathUtils.clamp(left, marginX, canvasW - marginX);
+    right = THREE.MathUtils.clamp(right, marginX, canvasW - marginX);
+    top = THREE.MathUtils.clamp(top, marginY, canvasH - marginY);
+    bottom = THREE.MathUtils.clamp(bottom, marginY, canvasH - marginY);
+
+    if (right <= left || bottom <= top) return fallback;
+    return { left, right, top, bottom };
+  }
+
+  /**
    * Constitution v1.7: measure copy island anchor in canvas-local coordinates.
    */
   _measureCopyAnchor(canvasW, canvasH) {
@@ -387,8 +439,8 @@ export class GlobeScene {
 
     const R = EARTH_FRAME_RADIUS;
     const samples = [toScreen(0, 0, 0)];
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2;
+    for (let i = 0; i < 16; i++) {
+      const a = (i / 16) * Math.PI * 2;
       samples.push(toScreen(Math.cos(a) * R, Math.sin(a) * R, 0));
     }
     samples.push(toScreen(0, R, 0), toScreen(0, -R, 0));
@@ -408,75 +460,181 @@ export class GlobeScene {
     };
   }
 
-  _boundsContainmentOk(bounds, canvasW, canvasH, anchor, marginX, marginY) {
+  _boundsContainmentOk(bounds, safeRect, anchor) {
     const contained =
-      bounds.left >= marginX &&
-      bounds.right <= canvasW - marginX &&
-      bounds.top >= marginY &&
-      bounds.bottom <= canvasH - marginY;
+      bounds.left >= safeRect.left &&
+      bounds.right <= safeRect.right &&
+      bounds.top >= safeRect.top &&
+      bounds.bottom <= safeRect.bottom;
     const clearCopy = !anchor.isSideBySide || bounds.left >= anchor.copyRight + COPY_PANEL_GAP;
     return contained && clearCopy;
   }
 
+  _applyFramingCandidate(canvasW, canvasH, diameterPx, centerX, centerY) {
+    const z = this._zFromDiameter(canvasH, diameterPx);
+    this.camera.position.set(0, 0, z);
+    this.camera.lookAt(EARTH_OFFSET);
+    const offsets = this._applyViewOffsetForCenter(canvasW, canvasH, centerX, centerY);
+    const bounds = this._projectEarthBounds(canvasW, canvasH);
+    return { z, diameterPx, bounds, offsets };
+  }
+
+  _testFramingFit(canvasW, canvasH, diameterPx, centerX, centerY, safeRect, anchor) {
+    const candidate = this._applyFramingCandidate(canvasW, canvasH, diameterPx, centerX, centerY);
+    return {
+      ...candidate,
+      ok: this._boundsContainmentOk(candidate.bounds, safeRect, anchor),
+    };
+  }
+
   /**
-   * Constitution v1.7: unified framing solver — ratio 1.12 + Y lock + bounds-fit loop.
+   * Constitution v1.8: Containment First — binary max diameter, X nudge, forced shrink.
    */
   _resolveEarthFraming(canvasW, canvasH) {
     if (!this.camera || canvasW < 1 || canvasH < 1) return null;
 
     const anchor = this._measureCopyAnchor(canvasW, canvasH);
-    const marginX = canvasW * FRAMING_MARGIN;
-    const marginY = canvasH * FRAMING_MARGIN;
-    const targetCenterX = anchor.isSideBySide ? canvasW * EARTH_VIEW_CENTER_X : canvasW * 0.5;
+    const safeRect = this._getVisibleFramingRect(canvasW, canvasH);
     const targetCenterY = anchor.isSideBySide ? anchor.copyCenterY : canvasH * 0.5;
+    const preferredCenterX = anchor.isSideBySide ? canvasW * EARTH_VIEW_CENTER_X : canvasW * 0.5;
     const artTarget = anchor.copyHeight * EARTH_COPY_HEIGHT_RATIO;
-    const zoneCap = Math.min(canvasW * RIGHT_ZONE_WIDTH, canvasH) * EARTH_FIT_FRACTION;
+    const maxArtD = Math.max(80, artTarget);
 
-    let targetD = Math.min(artTarget, zoneCap);
-    let resolved = null;
+    let solverMode = 'binary';
+    let bestD = 80;
+    let bestX = preferredCenterX;
 
-    for (let i = 0; i < FRAMING_MAX_ITER; i++) {
-      const diameterPx = Math.max(80, targetD);
-      const z = this._zFromDiameter(canvasH, diameterPx);
-      this.camera.position.set(0, 0, z);
-      this.camera.lookAt(EARTH_OFFSET);
-      const offsets = this._applyViewOffsetForCenter(canvasW, canvasH, targetCenterX, targetCenterY);
-      const bounds = this._projectEarthBounds(canvasW, canvasH);
-
-      if (this._boundsContainmentOk(bounds, canvasW, canvasH, anchor, marginX, marginY)) {
-        resolved = {
-          z,
-          diameterPx,
-          artTarget,
-          bounds,
-          offsets,
-          anchor,
-          targetCenterX,
-          targetCenterY,
-        };
-        break;
-      }
-      targetD *= FRAMING_SHRINK;
-    }
-
-    if (!resolved) {
-      const diameterPx = Math.max(80, targetD);
-      const z = this._zFromDiameter(canvasH, diameterPx);
-      this.camera.position.set(0, 0, z);
-      this.camera.lookAt(EARTH_OFFSET);
-      const offsets = this._applyViewOffsetForCenter(canvasW, canvasH, targetCenterX, targetCenterY);
-      const bounds = this._projectEarthBounds(canvasW, canvasH);
-      resolved = {
-        z,
-        diameterPx,
-        artTarget,
-        bounds,
-        offsets,
-        anchor,
-        targetCenterX,
+    let lo = 80;
+    let hi = maxArtD;
+    for (let i = 0; i < FRAMING_BINARY_ITER; i++) {
+      const mid = (lo + hi) / 2;
+      const { ok } = this._testFramingFit(
+        canvasW,
+        canvasH,
+        mid,
+        preferredCenterX,
         targetCenterY,
-      };
+        safeRect,
+        anchor,
+      );
+      if (ok) {
+        bestD = mid;
+        lo = mid;
+      } else {
+        hi = mid;
+      }
     }
+
+    let fit = this._testFramingFit(
+      canvasW,
+      canvasH,
+      bestD,
+      preferredCenterX,
+      targetCenterY,
+      safeRect,
+      anchor,
+    );
+
+    if (!fit.ok) {
+      solverMode = 'xNudge';
+      const minX = anchor.isSideBySide
+        ? anchor.copyRight + COPY_PANEL_GAP + bestD / 2
+        : safeRect.left + bestD / 2;
+      for (let x = preferredCenterX; x >= minX; x -= canvasW * 0.01) {
+        const trial = this._testFramingFit(
+          canvasW,
+          canvasH,
+          bestD,
+          x,
+          targetCenterY,
+          safeRect,
+          anchor,
+        );
+        if (trial.ok) {
+          bestX = x;
+          fit = trial;
+          break;
+        }
+      }
+    } else {
+      bestX = preferredCenterX;
+    }
+
+    if (!fit.ok) {
+      solverMode = 'forcedShrink';
+      let d = bestD;
+      while (d > FRAMING_MIN_DIAMETER) {
+        const trial = this._testFramingFit(
+          canvasW,
+          canvasH,
+          d,
+          bestX,
+          targetCenterY,
+          safeRect,
+          anchor,
+        );
+        if (trial.ok) {
+          bestD = d;
+          fit = trial;
+          break;
+        }
+        d *= FRAMING_FORCE_SHRINK;
+      }
+    }
+
+    if (!fit.ok) {
+      solverMode = 'safeRectCenter';
+      const rightZoneLeft = canvasW * RIGHT_ZONE_LEFT;
+      bestX =
+        Math.max(rightZoneLeft, safeRect.left) +
+        (safeRect.right - Math.max(rightZoneLeft, safeRect.left)) / 2;
+      let d = bestD;
+      while (d > FRAMING_MIN_DIAMETER) {
+        const trial = this._testFramingFit(
+          canvasW,
+          canvasH,
+          d,
+          bestX,
+          targetCenterY,
+          safeRect,
+          anchor,
+        );
+        if (trial.ok) {
+          bestD = d;
+          fit = trial;
+          break;
+        }
+        d *= FRAMING_FORCE_SHRINK;
+      }
+    }
+
+    if (!fit.ok) {
+      bestD = FRAMING_MIN_DIAMETER;
+      bestX = (safeRect.left + safeRect.right) / 2;
+      fit = this._testFramingFit(
+        canvasW,
+        canvasH,
+        bestD,
+        bestX,
+        targetCenterY,
+        safeRect,
+        anchor,
+      );
+      solverMode = 'safeRectCenter';
+    }
+
+    const resolved = {
+      z: fit.z,
+      diameterPx: bestD,
+      artTarget,
+      bounds: fit.bounds,
+      offsets: fit.offsets,
+      anchor,
+      targetCenterX: bestX,
+      targetCenterY,
+      safeRect,
+      solverMode,
+    };
 
     this.camera.userData.homeZ = resolved.z;
     this.camera.userData.copyPanelHeight = anchor.copyHeight;
@@ -488,16 +646,16 @@ export class GlobeScene {
     this.camera.userData.copyPanelCenterY = anchor.copyCenterY;
     this.camera.userData.copyPanelCenterFracY = anchor.copyCenterY / canvasH;
     this.camera.userData.targetFracY = resolved.targetCenterY / canvasH;
+    this.camera.userData.targetCenterXFrac = resolved.targetCenterX / canvasW;
     this.camera.userData.viewOffsetY = resolved.offsets.yOffset;
     this.camera.userData.isSideBySide = anchor.isSideBySide;
     this.camera.userData.framingBounds = resolved.bounds;
+    this.camera.userData.visibleSafeRect = resolved.safeRect;
+    this.camera.userData.solverMode = resolved.solverMode;
     this.camera.userData.containmentOk = this._boundsContainmentOk(
       resolved.bounds,
-      canvasW,
-      canvasH,
+      safeRect,
       anchor,
-      marginX,
-      marginY,
     );
 
     return resolved;
@@ -522,13 +680,19 @@ export class GlobeScene {
         ? fracY - copyPanelCenterFracY
         : null;
 
+    const safeRect = this.camera.userData.visibleSafeRect ?? this._getVisibleFramingRect(canvasW, canvasH);
+    const clipRight = bounds.right - safeRect.right;
+    const clipBottom = bounds.bottom - safeRect.bottom;
+    const clipLeft = safeRect.left - bounds.left;
+    const clipTop = safeRect.top - bounds.top;
+
     if (typeof window !== 'undefined') {
       if (!window.__globeDebug) window.__globeDebug = {};
       window.__globeDebug.earthScreenX = bounds.centerX;
       window.__globeDebug.earthScreenY = bounds.centerY;
       window.__globeDebug.earthScreenFracX = fracX;
       window.__globeDebug.earthScreenFracY = fracY;
-      window.__globeDebug.targetFracX = EARTH_VIEW_CENTER_X;
+      window.__globeDebug.targetFracX = this.camera.userData.targetCenterXFrac ?? EARTH_VIEW_CENTER_X;
       window.__globeDebug.targetFracY = targetFracY;
       window.__globeDebug.copyPanelCenterFracY = copyPanelCenterFracY;
       window.__globeDebug.copyPanelCenterY = this.camera.userData.copyPanelCenterY;
@@ -539,6 +703,12 @@ export class GlobeScene {
       window.__globeDebug.boundsBottom = bounds.bottom;
       window.__globeDebug.boundsLeft = bounds.left;
       window.__globeDebug.boundsRight = bounds.right;
+      window.__globeDebug.visibleSafeRect = safeRect;
+      window.__globeDebug.clipRight = clipRight;
+      window.__globeDebug.clipBottom = clipBottom;
+      window.__globeDebug.clipLeft = clipLeft;
+      window.__globeDebug.clipTop = clipTop;
+      window.__globeDebug.solverMode = this.camera.userData.solverMode;
       window.__globeDebug.yAlignDelta = yAlignDelta;
       window.__globeDebug.ratioActual = diameterToCopyRatio;
       window.__globeDebug.camPos = this.camera.position.toArray();
@@ -557,11 +727,11 @@ export class GlobeScene {
     const { w, h } = this._getSize();
     if (w < 1 || h < 1) return;
 
+    this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
     this._resolveEarthFraming(w, h);
     const dpr = Math.min(window.devicePixelRatio, MAX_DPR);
     this.renderer.setPixelRatio(dpr);
-    this.renderer.setSize(w, h, false);
     this.markers?.setSize(w, h);
     this.bubbles?.setSize(w * dpr, h * dpr);
     this.bubbles?.relayout(this.camera);
@@ -693,7 +863,7 @@ export class GlobeScene {
   }
 
   setScrollApply(_fn) {
-    /* Constitution v1.7: scroll dolly abolished — framing locked via _resolveEarthFraming. */
+    /* Constitution v1.8: scroll dolly abolished — framing locked via _resolveEarthFraming. */
   }
 
   applyMotion() {
@@ -732,8 +902,14 @@ export class GlobeScene {
       });
     };
     this._onResize = () => this._scheduleResize();
+    this._onLoad = () => this._scheduleResize();
     window.addEventListener('resize', this._onResize);
+    window.addEventListener('load', this._onLoad);
     window.visualViewport?.addEventListener('resize', this._onResize);
+
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(() => this._scheduleResize()).catch(() => {});
+    }
 
     if (typeof ResizeObserver !== 'undefined') {
       this.resizeObserver = new ResizeObserver(() => this._scheduleResize());
@@ -756,8 +932,12 @@ export class GlobeScene {
         (entries) => {
           entries.forEach((entry) => {
             this.visible = entry.isIntersecting;
-            if (this.visible && !motionReduced()) this.start();
-            else this.stop();
+            if (this.visible) {
+              this._scheduleResize();
+              if (!motionReduced()) this.start();
+            } else {
+              this.stop();
+            }
           });
         },
         { root: null, threshold: 0.08 },
@@ -771,6 +951,7 @@ export class GlobeScene {
   dispose() {
     this.stop();
     window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('load', this._onLoad);
     window.visualViewport?.removeEventListener('resize', this._onResize);
     this.resizeObserver?.disconnect();
     this.intersectionObserver?.disconnect();
