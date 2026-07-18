@@ -159,9 +159,14 @@ function setupDisplayPrefs() {
 
 function renderProfile() {
   const account = getAccount(); const loggedIn = isLoggedIn(); const actions = getActions(); const points = getPoints();
-  const checked = getStored(storageKeys.checked, []);
   const name = loggedIn ? account.displayName : '未登录守护者';
   const avatar = loggedIn ? name.slice(0, 1) : '澜';
+  const username = loggedIn ? account.username : null;
+  let monthCheckins = 0;
+  if (username && window.LANCUN_actionCheckins) {
+    window.LANCUN_actionCheckins.migrateLegacyCheckins?.();
+    monthCheckins = window.LANCUN_actionCheckins.countMonthCheckins(username);
+  }
 
   document.querySelectorAll('[data-profile-name]').forEach((node) => { node.textContent = name; });
   document.querySelectorAll('[data-profile-role]').forEach((node) => { node.textContent = loggedIn ? account.role : '请先登录'; });
@@ -170,7 +175,7 @@ function renderProfile() {
   document.querySelectorAll('[data-avatar]').forEach((node) => { node.textContent = avatar; });
   document.querySelectorAll('[data-stat="actions"]').forEach((node) => { node.textContent = actions.length; });
   document.querySelectorAll('[data-stat="points"]').forEach((node) => { node.textContent = points; });
-  document.querySelectorAll('[data-stat="checkins"]').forEach((node) => { node.textContent = checked.length; });
+  document.querySelectorAll('[data-stat="checkins"]').forEach((node) => { node.textContent = monthCheckins; });
 
   const trigger = document.querySelector('[data-user-menu-trigger]');
   const triggerAvatar = document.querySelector('[data-user-menu-avatar]');
@@ -251,7 +256,6 @@ function showDashboardView(viewId) {
 function renderProfileDashboard() {
   const account = getAccount();
   const actions = getActions();
-  const checked = getStored(storageKeys.checked, []);
 
   const tableBody = document.querySelector('[data-actions-table-body]');
   if (tableBody) {
@@ -269,7 +273,7 @@ function renderProfileDashboard() {
   if (email) email.textContent = account?.email || '未填写';
   if (created && account?.createdAt) created.textContent = formatActionDate(account.createdAt);
 
-  renderCalendar('[data-checkin-calendar]', '[data-profile-calendar]');
+  renderCalendar('[data-profile-calendar]');
 }
 
 function setupProfileDashboard() {
@@ -386,67 +390,18 @@ function setupDashboard() {
   }));
 }
 
-function setupSpecies() {
-  const list = document.querySelector('[data-species-list]'); if (!list) return;
-  const render = (filter) => { const items = window.LANCUN_DATA.species.filter((item) => filter === 'all' || item.group === filter); list.innerHTML = items.map((item) => `<article class="card species-card"><div class="species-visual">${item.name}</div><span class="tag">${item.group}</span><h3>${item.name}</h3><p>${item.note}</p><small>${item.level}</small></article>`).join(''); };
-  render('all');
-  document.querySelectorAll('[data-species-filter]').forEach((button) => button.addEventListener('click', () => { document.querySelectorAll('[data-species-filter]').forEach((item) => item.classList.toggle('is-active', item === button)); render(button.dataset.speciesFilter); }));
-  document.querySelector('#species-upload')?.addEventListener('change', (event) => { const result = document.querySelector('[data-recognition-result]'); result.textContent = event.target.files?.[0] ? `已选择“${event.target.files[0].name}”。AI 识别接口尚未配置，图片未上传。` : '尚未选择图片。'; result.className = 'status-message is-warning'; });
-}
 
 function renderCalendar(...selectors) {
-  const list = selectors.length ? selectors : ['[data-checkin-calendar]'];
-  const checked = getStored(storageKeys.checked, []);
-  const today = new Date();
-  const days = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  const list = selectors.length ? selectors : ['[data-profile-calendar]'];
+  if (window.LANCUN_actionCheckins?.renderProfileCalendar) {
+    window.LANCUN_actionCheckins.migrateLegacyCheckins?.();
+    window.LANCUN_actionCheckins.renderProfileCalendar(list);
+    return;
+  }
   list.forEach((selector) => {
     document.querySelectorAll(selector).forEach((calendar) => {
-      calendar.innerHTML = Array.from({ length: days }, (_, index) => {
-        const day = index + 1;
-        return `<span class="${checked.includes(day) ? 'is-checked' : ''}">${day}</span>`;
-      }).join('');
+      calendar.innerHTML = '';
     });
-  });
-}
-
-function setupActions() {
-  renderCalendar();
-  const checkin = document.querySelector('[data-checkin-form]');
-  checkin?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const status = document.querySelector('[data-checkin-result]');
-    if (!isLoggedIn()) { status.textContent = '请先登录，再保存你的行动记录。'; status.className = 'status-message is-warning'; return; }
-    const today = new Date().getDate();
-    const checked = getStored(storageKeys.checked, []);
-    if (checked.includes(today)) { status.textContent = '今天已经完成过打卡了，明天再来。'; status.className = 'status-message is-warning'; return; }
-    checked.push(today);
-    setStored(storageKeys.checked, checked);
-    const actions = getActions();
-    actions.push({ type: new FormData(checkin).get('action'), date: new Date().toISOString() });
-    setStored(storageKeys.actions, actions);
-    setStored(storageKeys.points, getPoints() + 10);
-    status.textContent = '打卡成功，已获得 10 积分。';
-    status.className = 'status-message is-success';
-    renderCalendar();
-    renderProfile();
-  });
-  const volunteer = document.querySelector('[data-volunteer-form]');
-  volunteer?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const status = document.querySelector('[data-volunteer-result]');
-    status.textContent = '报名意向已保存在本次演示中；不会发送到任何真实组织。';
-    status.className = 'status-message is-success';
-    volunteer.reset();
-  });
-  const projects = document.querySelector('[data-project-list]');
-  if (projects) projects.innerHTML = window.LANCUN_DATA.projects.map((project) => `<article class="project-item"><div><h3>${project.name}</h3><p>${project.desc}</p></div><span class="tag">项目介绍</span></article>`).join('');
-  document.querySelector('[data-donation-open]')?.addEventListener('click', () => {
-    const message = document.querySelector('[data-volunteer-result]');
-    if (message) {
-      message.textContent = '支持意向入口已触发：真实捐款服务尚未接入。';
-      message.className = 'status-message is-warning';
-      message.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
   });
 }
 
@@ -464,6 +419,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setupProfileDashboard();
   setupGlobe();
   setupDashboard();
-  setupSpecies();
-  setupActions();
 });
+
+window.renderProfile = renderProfile;

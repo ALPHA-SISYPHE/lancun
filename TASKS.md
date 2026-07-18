@@ -47,6 +47,27 @@
 - [x] A8 文档：`DATA_SOURCES.md`、vendor README；`home-globe.js` 保留为备份
 - [ ] Phase A 浏览器目视验收（桌面 + 移动、WebGL 降级提示）
 
+## 「海洋生物档案」页面宪法（2026-07-18）
+
+> 权威：`docs/SPECIES_PAGE.md` v1.0（计划兼宪法）
+
+- [x] 锁定三节结构：濒危物种检索 → 看板+物种网格 → AI 识别器
+- [x] 锁定 Phase A mock 识别（1.5s）；真实 API 写入附录 G，首轮不实现
+- [x] 锁定 6 快捷标签、4 看板指标、15 种预设物种 schema
+- [x] 同步 `PAGE_STRUCTURE.md`、`AGENTS.md` 文档优先级
+- [x] 用户确认宪法后实现 `pages/species.html` 框架稿（P0–P5，见 SPECIES_PAGE §6）
+- [ ] 生物档案 v1 框架稿目视确认（桌面 + 移动，附录 H 自检已通过脚本 smoke test，待用户确认视觉）
+
+## 「保护行动中心」页面宪法（2026-07-18）
+
+> 权威：`docs/ACTION_PAGE.md` v1.0（计划兼宪法）
+
+- [x] 锁定三节结构：每日打卡 → 志愿者报名 → 捐款与往期成果
+- [x] 锁定前端 mock + localStorage（附录 B/C/D）；禁止真实支付/报名
+- [x] 锁定打卡积分规则（+10 / 7 天 +30 / 30 天 +150）与 ISO 日期 schema
+- [x] 同步 `PAGE_STRUCTURE.md`、`AGENTS.md` 文档优先级
+- [x] 用户确认宪法后实现 `pages/action.html` 框架稿（Phase 0–4，见 ACTION_PAGE §8）
+
 ## 接下来
 
 - [ ] 确认最终网站名称与主题范围。

@@ -72,17 +72,25 @@
 
 当前实现：[`pages/rescue.html`](../pages/rescue.html) 三节框架稿 + [`rescue-dashboard.js`](../assets/js/rescue-dashboard.js) + [`rescue-page.css`](../assets/css/rescue-page.css)。
 
-### 4. 海洋生物档案页
+### 4. 海洋生物档案页（已锁定方向，见 SPECIES_PAGE.md）
 
-目的：把环境问题与具体生物联系起来。
+目的：把环境问题与具体生物联系起来；物种科普 + 保护等级科普 + AI 互动识别（Phase A mock）。
 
-候选功能：物种卡片、分类筛选、详情面板、威胁等级。
+已锁定：单页纵向 **三节** — ① 濒危物种检索（大搜索框 + 6 标签）② 4 卡正面看板 + 物种网格 + 详情弹窗 ③ 海洋动物 AI 识别器（拖放/拍照 + mock 识别）。
+
+细则、数据 schema、响应式与接口契约见 [`docs/SPECIES_PAGE.md`](SPECIES_PAGE.md) 附录 A–G。
+
+当前实现：[`pages/species.html`](../pages/species.html) 仍为旧占位框架，待按宪法改版。
 
 ### 5. 保护行动中心
 
 目的：把理解转化为个人行动，并满足表单要求。
 
-候选功能：保护行动打卡、环保承诺表单、表单验证、行动建议、localStorage 保存、勋章或结果动画。
+**已锁定结构（2026-07-18）**：单页纵向三节 — ① 每日打卡（积分 + 月度日历）② 志愿者报名模拟（项目列表 + 弹窗表单 + 本地记录）③ 模拟捐款 + 往期成果展示。全部为前端 mock + localStorage，无真实支付/报名。
+
+细则、数据 schema、响应式与 Phase 0–4 见 [`docs/ACTION_PAGE.md`](ACTION_PAGE.md) 附录 A–F。
+
+当前实现：[`pages/action.html`](../pages/action.html) 仍为旧占位框架，待按宪法改版。
 
 ## 全站功能
 
