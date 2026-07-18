@@ -10,9 +10,9 @@
 
 ## Post-processing（three.js examples, r170）
 
-- 文件：`EffectComposer.js`、`RenderPass.js`、`ShaderPass.js`、`Pass.js`、`CopyShader.js`
+- 文件：`EffectComposer.js`、`RenderPass.js`、`ShaderPass.js`、`Pass.js`、`CopyShader.js`、`FXAAShader.js`
 - 许可：MIT
-- 用途：Phase B 后处理；Phase A 气泡 RT 管线架构预留
+- 用途：Phase B 后处理（暗角 + 轻 grain + FXAA）；移动/低 tier 在 `composer.js` 中跳过
 - 来源：https://github.com/mrdoob/three.js/tree/r170/examples/jsm/postprocessing
 
 ## GSAP 3.12.5

@@ -89,11 +89,9 @@
 
 ### Phase B · 续做 backlog（+1–2 天）
 
-- [ ] **B1** 真实大陆架 mask（Natural Earth → `assets/media/globe/shelves-mask.png`）
-- [ ] **B2** 气泡 shader 精调（IOR 随距离、jitter、orbit、个别 content 贴图）
-- [ ] **B3** Composer 后处理：vignette + grain + FXAA
+- [x] **B1** 真实大陆架 mask（Natural Earth → `assets/media/globe/shelves-mask.png`）
+- [x] **B2** 气泡 shader 精调（IOR 随距离、jitter、orbit、个别 content 贴图）
 - [x] **B3** Composer 后处理：vignette + grain + FXAA（`composer.js` + `GlobeScene` compositeRT；lite tier 跳过）
-- [ ] **B4** 地球 normal map + PMREM env
 - [x] **B4** 地球 normal map + PMREM env（`earth.js` + `textures.js`；保留 A1 调亮参数）
 
 ### Phase C · 续做 backlog（+1–2 天）

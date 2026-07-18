@@ -237,6 +237,7 @@ export class GlobeScene {
     const reduced = motionReduced();
     const elapsed = this.clock.getElapsedTime();
     this.bubbles?.update(elapsed, reduced);
+    this.shelves?.update(elapsed);
     this.controls?.update();
     this._scrollApply?.();
 

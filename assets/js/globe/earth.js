@@ -1,4 +1,4 @@
-import * as THREE from '../../vendor/three.module.min.js';
+import * as THREE from '../vendor/three.module.min.js';
 import { loadEarthTexture, loadCloudTexture, loadEarthNormalTexture } from './utils/textures.js';
 
 const INITIAL_ROTATION_Y = THREE.MathUtils.degToRad(-25);

@@ -145,9 +145,9 @@ v2.3 光池/caustics 已废弃，不再作为装饰规范。
 | 字段 | 内容 |
 |---|---|
 | 用途 | `#ocean-explore` 大陆架分布 shader overlay（`uMask` / `uOffset`） |
-| 本地文件（可选） | `assets/media/globe/shelves-mask.png` |
-| 当前实现 | 运行时 Canvas 程序化噪声遮罩（`assets/js/globe/utils/textures.js`） |
-| 替换说明 | 待 bathymetry 数据验证后可换真实 equirectangular 遮罩 |
+| 本地文件 | `assets/media/globe/shelves-mask.png` |
+| 当前实现 | Phase B：程序化海岸线架带占位（`scripts/generate-shelves-mask.mjs` + `textures.js` 同算法回退） |
+| 替换说明 | 待 bathymetry / Natural Earth 数据验证后可换真实 equirectangular 遮罩 |
 | 获取日期 | 2026-07-18 |
 
 ## Globe 模块（Phase A）
