@@ -108,6 +108,7 @@
 - [x] **v1.8** Containment First：Visible Safe Rect + 二分/X-nudge/forced-shrink；100% zoom 整球必可见；`constitution-v18-verify.mjs`
 - [x] **v1.9** 单文件重写：删除 `assets/js/globe/**`；新建 `assets/js/ocean-globe.js`（earthGroup.position + camera.z，无 setViewOffset）；`constitution-v19-verify.mjs`
 - [x] **v1.9.1 interim**：删除地球（`ocean-globe.js`）；气泡回滚原版 `globe/bubbles.js`；入口 `ocean-bubbles.js?v=20`；地球待重做
+- [x] **v1.9.2 interim**：临时深底 + 玻璃水滴气泡（上浮 + 弹性形变）；`ocean-bubbles.js?v=21`；视觉 loop 待用户验收后再 push
 
 ### Phase A · 今日 MVP
 

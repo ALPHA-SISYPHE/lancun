@@ -1,1 +1,122 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>海在呼救｜澜存</title><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" /><link rel="stylesheet" href="../assets/css/base.css" /><link rel="stylesheet" href="../assets/css/modules.css" /><script src="../assets/js/mock-data.js" defer></script><script src="../assets/js/user-menu-html.js" defer></script><script src="../assets/js/app.js" defer></script></head><body data-page="rescue"><a class="skip-link" href="#main-content">跳到主要内容</a><header class="site-header site-header--overlay"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button><nav id="primary-navigation" class="primary-navigation" aria-label="主导航"><a href="../index.html">首页</a><a href="ocean.html">我们的海洋</a><a class="is-active" href="rescue.html" aria-current="page">海在呼救</a><a href="species.html">生物档案</a><a href="action.html">行动中心</a></nav><div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div></header><main id="main-content" class="page-stage"><section class="page-intro page-intro--dark"><div><p class="eyebrow">02 / 海在呼救</p><h1>让数据先说话。</h1><p class="lead">这是可替换为实时数据的数据看板基础。当前数字为前端演示数据，正式提交前会替换为有出处的公开数据。</p></div><span class="tag">数据看板框架</span></section><div class="page-island page-shell"><section class="metric-grid"><article class="metric"><strong data-stat="actions">0</strong><span>本机累计行动次数</span></article><article class="metric"><strong>4</strong><span>待展示污染类型</span></article><article class="metric"><strong>3</strong><span>重点海域讲解节点</span></article><article class="metric"><strong data-stat="points">0</strong><span>我的守护积分</span></article></section><section class="section two-column"><article class="card"><p class="eyebrow">污染可视化数据看板</p><h2>污染来源分类</h2><div class="bar-chart" data-pollution-chart></div><p class="source-note">演示数据：仅用于框架布局。后续将写入数据年份、单位、来源链接与统计口径。</p></article><aside class="card"><p class="eyebrow">数据控制</p><h2>切换观察维度</h2><div class="filter-row"><button class="filter-button is-active" type="button" data-dashboard-filter="source">污染来源</button><button class="filter-button" type="button" data-dashboard-filter="solution">解决路径</button></div><p class="status-message" data-dashboard-note>当前展示：污染来源分类的示例比例。</p></aside></section><section class="section"><div class="section-heading"><div><p class="eyebrow">科普与方案</p><h2>问题之后，还要有可执行的解决路径。</h2></div></div><div class="card-grid"><article class="card"><h3>减少一次性塑料</h3><p>从可重复使用的容器、购物袋和水杯开始记录自己的减塑行动。</p></article><article class="card"><h3>保护沿岸生态</h3><p>预留海岸清洁、湿地保护和社区志愿服务的报名入口。</p></article><article class="card"><h3>支持负责任消费</h3><p>通过物种档案和行动页，引导用户理解渔业选择与海洋生态的关系。</p></article></div></section></div></main><footer class="site-footer"><span>澜存</span><span>数据来源与实时接口待接入</span></footer></body></html>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="澜存——海在呼救：污染现状、实时监测与保护行动。" />
+    <title>海在呼救｜澜存</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/modules.css" />
+    <link rel="stylesheet" href="../assets/css/rescue-page.css" />
+    <script src="../assets/js/mock-data.js" defer></script>
+    <script src="../assets/js/user-menu-html.js" defer></script>
+    <script src="../assets/js/app.js" defer></script>
+    <script src="../assets/js/rescue-dashboard.js" defer></script>
+  </head>
+  <body data-page="rescue">
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <header class="site-header site-header--overlay">
+      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button>
+      <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
+        <a href="../index.html">首页</a>
+        <a href="ocean.html">我们的海洋</a>
+        <a class="is-active" href="rescue.html" aria-current="page">海在呼救</a>
+        <a href="species.html">生物档案</a>
+        <a href="action.html">行动中心</a>
+      </nav>
+      <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
+    </header>
+
+    <main id="main-content" class="page-stage">
+      <section class="page-intro page-intro--dark">
+        <div>
+          <p class="eyebrow">02 / 海在呼救</p>
+          <h1>用数据理解压力，用行动回应海洋。</h1>
+          <p class="lead">
+            本节展示权威统计、近实时水质监测与污染源科普。正面观测与碳汇叙事请见「我们的海洋」页。
+          </p>
+        </div>
+        <span class="tag">结构框架稿</span>
+      </section>
+
+      <div class="page-island page-shell">
+        <nav class="rescue-page-nav" aria-label="本页章节">
+          <a href="#rescue-static">污染现状</a>
+          <a href="#rescue-live">实时监测</a>
+          <a href="#rescue-solutions">污染源科普</a>
+        </nav>
+
+        <section id="rescue-static" class="rescue-section section" aria-labelledby="rescue-static-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第一节</p>
+              <h2 id="rescue-static-title">静态污染现状</h2>
+              <p class="lead">权威统计与可视化，说明海洋面临的塑料、酸化、白化与中国近岸水质压力。</p>
+            </div>
+          </div>
+          <div class="rescue-metric-grid" data-rescue-metrics aria-busy="true"></div>
+          <div class="rescue-charts">
+            <div class="rescue-chart-card" data-rescue-pie-chart></div>
+            <div class="rescue-chart-card" data-rescue-bar-chart></div>
+            <div class="rescue-chart-card rescue-chart-card--wide" data-rescue-line-chart></div>
+          </div>
+          <div class="rescue-education card" data-rescue-education></div>
+        </section>
+
+        <section id="rescue-live" class="rescue-section section" aria-labelledby="rescue-live-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第二节</p>
+              <h2 id="rescue-live-title">动态实时监测</h2>
+              <p class="lead">四个监测点：NOAA 水质（溶解氧 / pH / 盐度）与 OpenAQ 沿海 PM2.5；失败时自动降级演示数据。</p>
+            </div>
+          </div>
+          <div class="rescue-live">
+            <div class="rescue-live__map-wrap">
+              <svg class="rescue-live__map" data-rescue-map viewBox="0 0 800 400" role="img" aria-label="监测点分布示意地图">
+                <rect class="rescue-live__ocean" x="0" y="0" width="800" height="400" rx="12" />
+                <g data-rescue-map-pins></g>
+              </svg>
+            </div>
+            <div class="rescue-live__cards" data-rescue-live-cards aria-busy="true"></div>
+          </div>
+        </section>
+      </div>
+
+      <section id="rescue-solutions" class="rescue-solutions rescue-solutions--dark" aria-labelledby="rescue-solutions-title">
+        <div class="rescue-solutions__inner">
+          <div class="section-heading section-heading--on-dark">
+            <div>
+              <p class="eyebrow">第三节</p>
+              <h2 id="rescue-solutions-title">污染源科普与解决方案</h2>
+              <p class="lead">选择左侧分类，查看数据要点与可执行方案。</p>
+            </div>
+          </div>
+          <div class="rescue-solutions__split">
+            <nav class="rescue-pollution-sidebar" data-rescue-sidebar aria-label="污染源分类导航" role="tablist"></nav>
+            <section
+              class="rescue-pollution-panel"
+              data-rescue-panel
+              role="tabpanel"
+              aria-live="polite"
+              tabindex="0"
+            ></section>
+          </div>
+          <div class="rescue-pollution-table-wrap" data-rescue-pollution-table></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>澜存</span>
+      <span>数据来源见各模块链接与 docs/DATA_SOURCES.md</span>
+    </footer>
+  </body>
+</html>

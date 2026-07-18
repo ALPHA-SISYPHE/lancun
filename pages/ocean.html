@@ -1,1 +1,102 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>我们的海洋｜澜存</title><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" /><link rel="stylesheet" href="../assets/css/base.css" /><link rel="stylesheet" href="../assets/css/modules.css" /><script src="../assets/js/mock-data.js" defer></script><script src="../assets/js/user-menu-html.js" defer></script><script src="../assets/js/app.js" defer></script></head><body data-page="ocean"><a class="skip-link" href="#main-content">跳到主要内容</a><header class="site-header site-header--overlay"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button><nav id="primary-navigation" class="primary-navigation" aria-label="主导航"><a href="../index.html">首页</a><a class="is-active" href="ocean.html" aria-current="page">我们的海洋</a><a href="rescue.html">海在呼救</a><a href="species.html">生物档案</a><a href="action.html">行动中心</a></nav><div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div></header><main id="main-content" class="page-stage"><section class="page-intro page-intro--dark"><div><p class="eyebrow">01 / 我们的海洋</p><h1>从一片海域，读懂整片海洋。</h1><p class="lead">拖动地球、点选发光节点，进入重点海域的生态故事。正式数据与地图底图可在下一轮接入。</p></div><span class="tag">互动地图框架</span></section><div class="page-island page-shell"><section class="two-column"><div class="globe-stage"><div class="globe-core" data-globe></div><button class="globe-pin globe-pin--coral" type="button" data-map-pin="coral" aria-label="查看珊瑚三角区"></button><button class="globe-pin globe-pin--current" type="button" data-map-pin="current" aria-label="查看黑潮暖流"></button><button class="globe-pin globe-pin--turtle" type="button" data-map-pin="turtle" aria-label="查看海龟迁徙线"></button><p class="globe-legend">拖动旋转 · 点击节点展开讲解</p></div><aside class="card detail-panel" aria-live="polite"><p class="eyebrow">海域讲解</p><div data-map-detail><h2>选择一个节点</h2><p>这里会显示该海域的生态系统、物种、环境压力与保护行动。</p></div><div class="story-list"><button type="button" data-map-pin="coral">珊瑚三角区</button><button type="button" data-map-pin="current">黑潮暖流</button><button type="button" data-map-pin="turtle">海龟迁徙线</button></div></aside></section><section class="section"><div class="section-heading"><div><p class="eyebrow">海洋的美</p><h2>生命、气候与我们的共同来源。</h2></div></div><div class="card-grid"><article class="card"><span class="tag">海洋的作用</span><h3>调节气候</h3><p>正式版将通过可交互信息卡解释洋流、碳循环和海洋对气候的影响。</p></article><article class="card"><span class="tag">海洋的美</span><h3>生命栖息地</h3><p>连接物种档案，展示珊瑚礁、海草床与开阔海域的生命网络。</p></article><article class="card"><span class="tag">人与大海</span><h3>文化与溯源</h3><p>预留海洋故事、沿海社区和人与大海关系的图文叙事模块。</p></article></div></section></div></main><footer class="site-footer"><span>澜存</span><span>互动地图为前端演示框架</span></footer></body></html>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="澜存——我们的海洋：观测看板、气候调节与五大洋探索。" />
+    <title>我们的海洋｜澜存</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/modules.css" />
+    <link rel="stylesheet" href="../assets/css/ocean-page.css" />
+    <script src="../assets/js/mock-data.js" defer></script>
+    <script src="../assets/js/user-menu-html.js" defer></script>
+    <script src="../assets/js/app.js" defer></script>
+    <script src="../assets/js/ocean-dashboard.js" defer></script>
+  </head>
+  <body data-page="ocean">
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <header class="site-header site-header--overlay">
+      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button>
+      <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
+        <a href="../index.html">首页</a>
+        <a class="is-active" href="ocean.html" aria-current="page">我们的海洋</a>
+        <a href="rescue.html">海在呼救</a>
+        <a href="species.html">生物档案</a>
+        <a href="action.html">行动中心</a>
+      </nav>
+      <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
+    </header>
+
+    <main id="main-content" class="page-stage">
+      <section class="page-intro page-intro--dark">
+        <div>
+          <p class="eyebrow">01 / 我们的海洋</p>
+          <h1>从观测数据，读懂海洋如何守护地球。</h1>
+          <p class="lead">
+            本节展示珊瑚礁与沿海站的公开监测数据，以及海洋在碳汇与气候调节中的作用。污染相关数据请见「海在呼救」页。
+          </p>
+        </div>
+        <span class="tag">结构框架稿</span>
+      </section>
+
+      <div class="page-island page-shell">
+        <nav class="ocean-page-nav" aria-label="本页章节">
+          <a href="#ocean-dashboard">数据看板</a>
+          <a href="#ocean-role">海的作用</a>
+          <a href="#five-oceans">五大洋</a>
+        </nav>
+
+        <section id="ocean-dashboard" class="ocean-section section" aria-labelledby="ocean-dashboard-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第一节</p>
+              <h2 id="ocean-dashboard-title">海洋数据看板</h2>
+              <p class="lead">正面观测与监测能力：Coral Watch 珊瑚礁站 + NOAA 沿海站（The Battery, 8518750）。</p>
+            </div>
+          </div>
+
+          <h3 class="ocean-section__group-title">珊瑚礁监测 · Coral Watch</h3>
+          <div class="ocean-metric-grid" data-coral-dashboard aria-busy="true"></div>
+
+          <h3 class="ocean-section__group-title is-spaced">沿海观测 · NOAA CO-OPS</h3>
+          <div class="ocean-metric-grid" data-noaa-dashboard aria-busy="true"></div>
+        </section>
+
+        <section id="ocean-role" class="ocean-section section" aria-labelledby="ocean-role-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第二节</p>
+              <h2 id="ocean-role-title">海的作用</h2>
+              <p class="lead">海洋在碳汇、热量缓冲与氧气循环中的角色——数据来自 IPCC / NOAA / UNEP 等公开统计。</p>
+            </div>
+          </div>
+          <div class="ocean-role-grid" data-ocean-role-cards></div>
+          <div data-co2-trend-chart></div>
+        </section>
+
+        <section id="five-oceans" class="ocean-section section" aria-labelledby="five-oceans-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第三节</p>
+              <h2 id="five-oceans-title">五大洋</h2>
+              <p class="lead">从太平洋到北冰洋，每一块含面积、深度与代表性生态数据（静态登记，见页脚来源说明）。</p>
+            </div>
+          </div>
+          <div data-five-oceans-list></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <span>澜存</span>
+      <span>第一节可接实时 API；第二、三节为登记静态数据 · 见 docs/DATA_SOURCES.md</span>
+    </footer>
+  </body>
+</html>

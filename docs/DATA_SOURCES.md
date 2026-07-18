@@ -2,8 +2,8 @@
 
 ## 文档状态
 
-- 版本：0.4
-- 状态：待收集与验证（第一节 6 看板已锁定，见 `OCEAN_PAGE.md` 附录 A.1）
+- 版本：0.8
+- 状态：待收集与验证（「我们的海洋」见 `OCEAN_PAGE.md` v1.3 附录 A；「海在呼救」见 `RESCUE_PAGE.md` v1.2 附录 A/B/E）
 
 ## 来源记录原则
 
@@ -35,10 +35,19 @@
 | 海洋之美或生态基础数据 | 首页核心数据 | 待验证 | 待收集 |
 | 第一节看板 1–3：SST / 热应力 / 白化 | `ocean.html` §3.1 卡 1–3 | Coral Watch `…/stations/southeast_florida/current` | 已锁定，见 `OCEAN_PAGE.md` 附录 A.1 |
 | 第一节看板 4–6：潮位 / 水温 / 风压 | `ocean.html` §3.1 卡 4–6 | NOAA datagetter，站 `8518750` | 已锁定，见 `OCEAN_PAGE.md` 附录 A.1 |
+| 第二节：碳汇 / 热量 / 氧气 / 蓝碳 + CO₂ 趋势 | `ocean.html` §3.2 | IPCC / NOAA / UNEP；折线 NOAA GCB 摘要 | 已锁定，见附录 A.2；数据在 `mock-data.js` |
+| 第三节：五大洋面积 / 深度 / 生态亮点 | `ocean.html` §3.3 每洋小看板 | NOAA / FAO / IUCN / NSIDC 等 | 已锁定，见附录 A.3；数据在 `mock-data.js` |
 | 海洋保护区总览 | **非第一节 MVP**；后续扩展 | Protected Planet API（需 Key） | 已登记，暂不接入第一节 |
-| 海洋塑料污染规模 | 污染现状（仅 rescue 页） | 待验证 | 待收集 |
-| 海洋垃圾组成 | 分类图表（仅 rescue 页） | 待验证 | 待收集 |
-| 历年变化趋势 | 折线图 | 待验证 | 待收集 |
+| 海洋塑料污染规模 | `rescue.html` §3.1 卡 1–2 | UNEP《From Pollution to Solution》 | 已锁定，见 `RESCUE_PAGE.md` A.1 |
+| 海洋垃圾塑料占比 / 来源 | `rescue.html` 卡 3 + 饼/柱图 | Ocean Conservancy ICC | 已锁定，见 A.2 |
+| 海水酸化 / 珊瑚白化 | `rescue.html` 卡 4–5 + 科普 | NOAA；IPCC AR6 | 已锁定，见 A.1 |
+| 中国近岸优良水质 | `rescue.html` 卡 6 + 折线（默认） | 生态环境部 2023 海洋公报 | 已锁定；折线 2019–2022 待核对 |
+| 动态监测 A | `rescue.html` §3.2 | NOAA datagetter `8574680`, `product=dissolved_oxygen` | 已锁定，见 `RESCUE_PAGE.md` B.2 v1.1 |
+| 动态监测 B | `rescue.html` §3.2 | NOAA datagetter `9414290`, `product=ph` | 已锁定 |
+| 动态监测 C | `rescue.html` §3.2 | NOAA datagetter `8726520`, `product=salinity` | 已锁定 |
+| 动态监测 D | `rescue.html` §3.2 | OpenAQ API v3，洛杉矶沿海 PM2.5 | 已锁定 |
+| 污染源四类科普 + 4 行表格 | `rescue.html` §3.3 | ICC / 生态环境部 / NOAA / IPCC；文案占位见 `mock-data.js` → `rescuePollutionPanels` | 已锁定 UI（附录 E）；文案占位非永久锁定 |
+| 历年变化趋势 | 折线图（rescue 页） | 中国近岸优良水质 5 年点（2019–2023） | 已锁定，见 RESCUE A.3 |
 | 受影响物种 | 生物档案 | 待验证 | 待收集 |
 | 个人减塑行动 | 行动建议 | 待验证 | 待收集 |
 
@@ -187,10 +196,65 @@ v2.3 光池/caustics 已废弃，不再作为装饰规范。
 
 ## 「我们的海洋」公开接口策略（摘要）
 
-权威细则见 [`OCEAN_PAGE.md`](OCEAN_PAGE.md)。接入实现时须满足：前端 `fetch`、失败降级本地 mock、密钥不入库、污染类数据不进入本页。
+权威细则见 [`OCEAN_PAGE.md`](OCEAN_PAGE.md) v1.3。第一节须满足：前端 `fetch`、失败降级本地 mock、密钥不入库、污染类数据不进入本页。第二、三节使用 `mock-data.js` 静态统计并展示来源链接。
+
+### A.2 静态统计来源（摘要）
+
+| 指标 | 数值量级 | 参考来源 |
+|------|----------|----------|
+| 海洋吸收人为 CO₂ | ~26% | [IPCC AR6](https://www.ipcc.ch/)；NOAA Ocean & Climate |
+| 海洋储存多余热量 | ~90% | NOAA；IPCC 气候报告摘要 |
+| 浮游植物氧气贡献 | ~50%（估算） | NOAA Ocean Facts；页面须标注估算口径 |
+| 蓝碳年固碳 | ~0.8–1 Gt CO₂/年 | UNEP；Blue Carbon Initiative |
+| CO₂ 吸收趋势折线 | 1990–2023 摘要点 | NOAA Global Carbon Budget |
+
+### A.3 五大洋小看板来源（摘要）
+
+| 大洋 | 字段 | 参考来源 |
+|------|------|----------|
+| 太平洋 | 46% / 4280 m / 600+ 珊瑚种 | NOAA；CTI-CFF 珊瑚三角区资料 |
+| 大西洋 | 23% / 3646 m / ~500 头露脊鲸 | NOAA Fisheries；IUCN |
+| 印度洋 | 20% / 3963 m / 20% 红树林 | FAO 红树林评估 |
+| 南大洋 | 20% / 4000 m / 3.79 亿吨磷虾 | CCAMLR；文献常用估算 |
+| 北冰洋 | 4% / 1205 m / 400–500 万 km² 夏季海冰 | NSIDC |
 
 | 接口 | 密钥 | 第一节用途 | 备注 |
 |---|---|---|---|
 | Protected Planet API v4 | 需要 | **非第一节 MVP** | 后续扩展；非商业用途声明 |
 | NOAA CO-OPS Data API | 通常不需要 | 看板 4–6：潮位、水温、风/气压 | 站 `8518750`；官方文档称支持 CORS |
 | Coral Watch API | 不需要 | 看板 1–3：SST、热应力、白化相关 | 站 `southeast_florida`；禁止伪造修复面积为实时字段 |
+
+## 「海在呼救」数据策略（摘要）
+
+权威细则见 [`RESCUE_PAGE.md`](RESCUE_PAGE.md) v1.2。上半区与第三节使用 `mock-data.js` 静态统计；§3.3 文案存于 `rescuePollutionPanels[]`（**占位，非永久锁定**，见附录 E.5 / C.4）；下半区 4 监测点须 `fetch` + `rescueLiveMock` 降级；本页禁止个人 localStorage 统计；§3.2 live 与 `OCEAN_PAGE.md` 附录 A.1 去重（见 RESCUE §4.0）。
+
+### 静态指标来源（附录 A 摘要）
+
+| 指标 | 数值量级 | 参考来源 |
+|------|----------|----------|
+| 年入海洋塑料 | ~800 万吨/年 | [UNEP 海洋塑料评估](https://www.unep.org/resources/report/from-pollution-solution-global-assessment-marine-litter-and-plastic-pollution) |
+| 垃圾中塑料占比 | >85% | [Ocean Conservancy ICC](https://oceanconservancy.org/trash-free-seas/international-coastal-cleanup/) |
+| 一次性塑料来源 | ~60% | ICC 年度报告 |
+| 海水酸化 | ~+30% | [NOAA Ocean Acidification](https://oceanservice.noaa.gov/facts/ocean-acidification.html) |
+| 珊瑚严重白化 | ~50% | [IPCC AR6 WGII](https://www.ipcc.ch/report/ar6/wg2/) |
+| 中国近岸优良水质 | 81.9%（2023） | [生态环境部 2023 海洋公报](https://www.mee.gov.cn/hjzl/sthjzk/hysthjzk/202405/t20240529_1036230.shtml) |
+
+### 动态监测点（附录 B 摘要）
+
+| 点 | 指标 | API |
+|----|------|-----|
+| A 切萨皮克湾 | 溶解氧 DO | NOAA datagetter，站 `8574680`, `product=dissolved_oxygen` |
+| B 旧金山湾 | pH | NOAA datagetter，站 `9414290`, `product=ph` |
+| C 墨西哥湾近岸 | 盐度 | NOAA datagetter，站 `8726520`, `product=salinity` |
+| D 洛杉矶沿海 | PM2.5 | OpenAQ API v3（lat/lon 或 location id） |
+
+### §3.3 污染源科普（附录 C/E 摘要）
+
+| 类 | id | 侧栏标题 | 文案来源 |
+|----|-----|----------|----------|
+| 1 | plastic | 塑料垃圾污染 | `rescuePollutionPanels[]` 占位（E.5） |
+| 2 | nutrient | 营养盐污水污染 | 同上 |
+| 3 | fishery-shipping | 渔业航运污染 | 同上 |
+| 4 | acidification | 气候酸化危害 | 同上 |
+
+表格 4 行 × 4 列；UI 细则见 `RESCUE_PAGE.md` 附录 E。

@@ -18,16 +18,18 @@
 2. `AGENTS.md`
 3. 根目录 **`DESIGN.md`** 与 **`.codexrules`**（大疆风海水蓝最终设计基准；Codex/Cursor 做 UI 前必读）
 4. `docs/PROJECT_BRIEF.md` 和 `docs/ACCEPTANCE.md`
-5. `.cursor/skills/lancun-design/SKILL.md`（外部工具用法：Vercel 摘表、ui-ux-pro-max 三模块）
-6. `docs/DESIGN_SYSTEM.md`、`docs/PAGE_STRUCTURE.md` 等专项文档（**CSS 实现 mirror**）
-7. `TASKS.md`
+5. `docs/OCEAN_PAGE.md`（「我们的海洋」页面宪法）
+6. `docs/RESCUE_PAGE.md`（「海在呼救」页面宪法）
+7. `.cursor/skills/lancun-design/SKILL.md`（外部工具用法：Vercel 摘表、ui-ux-pro-max 三模块）
+8. `docs/DESIGN_SYSTEM.md`、`docs/PAGE_STRUCTURE.md` 等专项文档（**CSS 实现 mirror**）
+9. `TASKS.md`
 
 ## 3. 工作方式
 
 - 先讨论并记录决定，再开始相应阶段的实现。
 - 不得将“待确认”的内容当作最终决定；必须保留标记或向用户确认。
 - 每次确认项目范围、页面、设计、数据或验收标准后，同步更新对应文档和 `TASKS.md`。
-- 开发新页面前读取根目录 **`DESIGN.md`**、`.codexrules`、`PROJECT_BRIEF.md`、`PAGE_STRUCTURE.md`、`docs/DESIGN_SYSTEM.md` 和 `ACCEPTANCE.md`。
+- 开发新页面前读取根目录 **`DESIGN.md`**、`.codexrules`、`PROJECT_BRIEF.md`、`PAGE_STRUCTURE.md`、`docs/DESIGN_SYSTEM.md` 和 `ACCEPTANCE.md`；开发或修改 [`pages/ocean.html`](pages/ocean.html) 时另读 **`docs/OCEAN_PAGE.md`**；开发或修改 [`pages/rescue.html`](pages/rescue.html) 时另读 **`docs/RESCUE_PAGE.md`**。
 - 修改页面视觉或 `assets/css/**` 前必须先读取 **`DESIGN.md`** 与 lancun-design Skill（工具用法）。
 - 修改已有页面时保留用户已有成果，避免无关重写。
 - 一次集中完成一个可验收目标，完成后测试并说明结果。
