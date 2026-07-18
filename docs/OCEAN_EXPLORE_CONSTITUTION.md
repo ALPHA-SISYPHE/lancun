@@ -2,11 +2,11 @@
 
 | 项 | 内容 |
 |---|---|
-| 版本 | **1.8** |
+| 版本 | **1.9** |
 | 地位 | `#ocean-explore` **绑定视觉与布局法**；与本文件冲突时，以本文件为准（用户当场口头例外除外） |
 | 创建 | 2026-07-18 |
-| 修订 | 2026-07-18 — **v1.8**：**Containment First** — 以 `visualViewport ∩ section − header` 为 **Visible Safe Rect**；二分 + X 回退 + 强制 shrink 求解；**禁止** solver 失败仍出画；fit 优先级：不出画 > Y 同心 > 直径 1.12 |
-| 前版 | v1.7 — 统一绑定锚点法 + bounds-fit；废止 dolly / rem MQ / 0.74 主 cap |
+| 修订 | 2026-07-18 — **v1.9**：**单文件重写** — 删除 `assets/js/globe/**`；实现入口仅 [`assets/js/ocean-globe.js`](../assets/js/ocean-globe.js)；构图用 **earthGroup.position + camera.z**（**废止 setViewOffset**）；Containment First 不变 |
+| 前版 | v1.8 — Visible Safe Rect + 二分/X-nudge；仍用旧 GlobeScene + setViewOffset |
 | 参考 | Convex「Where we are working」**仅借构图**（左文右球、浮空球、前后气泡）；色/质跟 `DESIGN.md` v4 |
 | 本地验收 | `http://127.0.0.1:8080/index.html#ocean-explore` |
 | 关联 | `docs/OCEAN_EXPLORE_CONVEX_PLAN.md`（任务书）、根目录 `DESIGN.md`（全站色/质，**本 section 无例外**） |
@@ -34,8 +34,8 @@
 | **Containment（硬性 · v1.8）** | 投影整球 bounds 在 **Visible Safe Rect** 内（`visualViewport ∩ canvas-host − fixed header`，≥2% 边距）；左缘 ≥ copy 右缘 + gap；**100% 浏览器 zoom 下整球必可见** |
 | **Fit 优先级（v1.8）** | ① 不出画（强制）→ ② 双栏 Y 同心 → ③ 直径 copyH×1.12（尽力） |
 | **X 回退（v1.8）** | 69% 放不下时，球心 X 可左移（最小：clear copy 右缘 + gap），Y 不变 |
-| 实现 | `_getVisibleFramingRect` + `_resolveEarthFraming` 二分 / X-nudge / forced-shrink；visualViewport + RO + rAF + 进入视口/字体就绪重算 |
-| 废止 v1.7 | 0.74 主 cap、matchMedia 59rem、ScrollTrigger dolly、solver 失败仍 apply |
+| 实现 | 单文件 `ocean-globe.js`：`_visibleSafeRect` + `_resolveFraming`（二分 / X-nudge / forced-shrink）→ `earthGroup.position` + `camera.z`；visualViewport + RO + rAF |
+| 废止 v1.9 | `assets/js/globe/**` 整栈、`setViewOffset` 构图、ScrollTrigger dolly、solver 失败仍出画 |
 | 决策 | 1.12 / 锚点 A / 双栏 Y / dolly off — 2026-07-18 |
 
 **Earth is NOT background wallpaper; it is a discrete floating interactive 3D object inserted into the page.**
@@ -228,8 +228,9 @@ AFTER — Safety
 | CSS 列比 | `grid-template-columns: minmax(0, 0.382fr) minmax(0, 0.618fr)` |
 | Section 底 | `linear-gradient` 用 `--mist-from` / `--mist-to`（或等价浅海雾） |
 | 左栏 | `.page-island` 或同 token 白岛：`--surface-elevated` + `--shadow-island` + `--ink` |
-| Framing solver | `_getVisibleFramingRect` + `_resolveEarthFraming`：measure anchor → binary maxD → X-nudge → forced-shrink → setViewOffset + z |
-| Debug | `__globeDebug`：`visibleSafeRect`、`clipRight`、`clipBottom`、`solverMode` |
+| Framing solver | `ocean-globe.js`：measure → binary maxD → X-nudge → forced-shrink → **earthGroup.position + camera.z**（无 setViewOffset） |
+| Entry | `assets/js/ocean-globe.js?v=19`（仅此文件；旧 `globe/` 已删） |
+| Debug | `__globeDebug`：`module: ocean-globe@v19`、`visibleSafeRect`、`clip*`、`solverMode`、`earthPos` |
 | 白岛锚 | `[data-ocean-panel]`；双栏 = copy/stage 几何并排 |
 | 事件 | resize + visualViewport.resize + ResizeObserver；rAF debounce |
 | 自转 | `earthGroup.rotation.y` 低速自转 + pointer 拖 yaw；**禁止** OrbitControls.autoRotate |

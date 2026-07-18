@@ -1,0 +1,90 @@
+{
+  "errors": [],
+  "viewports": {
+    "1366": {
+      "globeState": "ready",
+      "module": "ocean-globe@v19",
+      "fracX": 0.69,
+      "fracY": 0.4639423076923077,
+      "copyPanelCenterFracY": 0.4639423076923077,
+      "yAlignDelta": 0,
+      "diameterToCopyRatio": 1.1199997814117921,
+      "containmentOk": true,
+      "isSideBySide": true,
+      "boundsTop": 165.50004303455358,
+      "boundsBottom": 606.4999569654465,
+      "boundsLeft": 722.0400430345535,
+      "boundsRight": 1163.0399569654467,
+      "clipRight": -175.6400430345534,
+      "clipBottom": -138.86004303455354,
+      "clipLeft": -694.7200430345534,
+      "clipTop": -72.86004303455358,
+      "solverMode": "binary",
+      "earthPos": [
+        1.3182986699881842,
+        0.15238098212085044,
+        0
+      ],
+      "hostW": 1366,
+      "hostH": 832,
+      "pass": true
+    },
+    "1440": {
+      "globeState": "ready",
+      "module": "ocean-globe@v19",
+      "fracX": 0.69,
+      "fracY": 0.4288888888888889,
+      "copyPanelCenterFracY": 0.4288888888888889,
+      "yAlignDelta": 0,
+      "diameterToCopyRatio": 1.1199997814117917,
+      "containmentOk": true,
+      "isSideBySide": true,
+      "boundsTop": 165.50004303455347,
+      "boundsBottom": 606.4999569654465,
+      "boundsLeft": 773.1000430345536,
+      "boundsRight": 1214.0999569654464,
+      "clipRight": -197.10004303455366,
+      "clipBottom": -137.50004303455353,
+      "clipLeft": -744.3000430345536,
+      "clipTop": -71.50004303455347,
+      "solverMode": "binary",
+      "earthPos": [
+        1.389714556942156,
+        0.32507942852448113,
+        0
+      ],
+      "hostW": 1440,
+      "hostH": 900,
+      "pass": true
+    },
+    "1920": {
+      "globeState": "ready",
+      "module": "ocean-globe@v19",
+      "fracX": 0.69,
+      "fracY": 0.3574074074074074,
+      "copyPanelCenterFracY": 0.3574074074074074,
+      "yAlignDelta": 0,
+      "diameterToCopyRatio": 1.1199997814117917,
+      "containmentOk": true,
+      "isSideBySide": true,
+      "boundsTop": 165.5000430345535,
+      "boundsBottom": 606.4999569654465,
+      "boundsLeft": 1104.3000430345533,
+      "boundsRight": 1545.2999569654462,
+      "clipRight": -336.3000430345537,
+      "clipBottom": -233.9000430345535,
+      "clipLeft": -1065.9000430345532,
+      "clipTop": -67.9000430345535,
+      "solverMode": "binary",
+      "earthPos": [
+        1.852952742589541,
+        0.7822223748870325,
+        0
+      ],
+      "hostW": 1920,
+      "hostH": 1080,
+      "pass": true
+    }
+  },
+  "allPass": true
+}

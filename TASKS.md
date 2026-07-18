@@ -90,7 +90,7 @@
 
 > 总任务书：`docs/OCEAN_EXPLORE_CONVEX_PLAN.md`  
 > **视觉/布局绑定法：** `docs/OCEAN_EXPLORE_CONSTITUTION.md`（黄金比 38/62、Z 层、地球铅垂轴、液体玻璃气泡前后分层；改前/改后强制截图自检）  
-> 目标：Convex「Where we are working」**构图**启发式 MVP；内容仍为五大洋；**色/质跟 v4（无深底例外）**：浅海雾底 + 白内容岛 + 浮空地球。绑定法：`OCEAN_EXPLORE_CONSTITUTION.md` **v1.8**（Visible Safe Rect + Containment First）。
+> 目标：Convex「Where we are working」**构图**启发式 MVP；内容仍为五大洋；**色/质跟 v4（无深底例外）**：浅海雾底 + 白内容岛 + 浮空地球。绑定法：`OCEAN_EXPLORE_CONSTITUTION.md` **v1.9**（单文件 `ocean-globe.js` + world-position framing）。
 
 ### Constitution 落地（2026-07-18）
 
@@ -106,6 +106,7 @@
 - [x] **v1.6** 桌面垂直对齐：球心 Y = 白岛垂直中心（锚点 A，仅 ≥59rem）；`setViewOffset` Y + debug `earthScreenFracY`
 - [x] **v1.7** 统一绑定锚点法：比例 1.12 实测驱动 + 双栏几何 Y 同心 + bounds-fit 整球 containment；废止 dolly / rem MQ / 0.74 主 cap；`visualViewport` + rAF
 - [x] **v1.8** Containment First：Visible Safe Rect + 二分/X-nudge/forced-shrink；100% zoom 整球必可见；`constitution-v18-verify.mjs`
+- [x] **v1.9** 单文件重写：删除 `assets/js/globe/**`；新建 `assets/js/ocean-globe.js`（earthGroup.position + camera.z，无 setViewOffset）；`constitution-v19-verify.mjs`
 
 ### Phase A · 今日 MVP
 
