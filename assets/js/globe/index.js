@@ -9,6 +9,7 @@ async function initHomeGlobe() {
   const canvasWrap = document.querySelector('[data-globe-canvas-wrap]');
 
   if (!section || !canvas || !canvasWrap || !window.LANCUN_DATA?.fiveOceans) {
+    window.LANCUN_globeInitState = 'failed';
     showGlobeStatus('页面数据未就绪，请刷新后重试。');
     return null;
   }
@@ -46,15 +47,20 @@ async function initHomeGlobe() {
 
 function bootHomeGlobe() {
   if (document.body.dataset.page !== 'home') return;
+  window.LANCUN_globeInitState = 'booting';
   initHomeGlobe()
     .then((api) => {
       window.LANCUN_homeGlobe = api;
+      window.LANCUN_globeInitState = api ? 'ready' : 'failed';
       if (!api) return;
     })
     .catch((err) => {
+      window.LANCUN_globeInitState = 'failed';
       console.error('globe init failed', err);
       showGlobeStatus(
-        '地球 3D 脚本加载失败。请用本地服务器打开：在项目目录运行 python -m http.server 8080，再访问 http://127.0.0.1:8080/index.html',
+        '地球 3D 初始化失败（' +
+          (err?.message || err) +
+          '）。请确认 WebGL 可用，并查看控制台 Network 是否有 404。',
       );
     });
 }

@@ -1,4 +1,4 @@
-import * as THREE from '../../vendor/three.module.min.js';
+import * as THREE from '../vendor/three.module.min.js';
 import { bubbleVert, bubbleFrag } from './shaders/bubble-shaders.js';
 import { latLonToVector3 } from './utils/latlon.js';
 import { createBubbleContentTexture } from './utils/textures.js';
@@ -39,6 +39,8 @@ function bubbleCount() {
 
 /**
  * WebGL instanced bubbles with refraction sampling from earth render target.
+ * Dual-pass contract (GlobeScene): layer 0 → earthRT → setDiffuse(earthRT.texture) → layer 1 bubble pass;
+ * fragment shader samples tDiffuse via gl_FragCoord / uResolution (DPR-sized RT).
  * @param {THREE.Group} earthGroup
  */
 export function createBubbles(earthGroup) {

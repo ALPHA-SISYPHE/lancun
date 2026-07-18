@@ -1,4 +1,4 @@
-import * as THREE from '../../vendor/three.module.min.js';
+import * as THREE from '../vendor/three.module.min.js';
 import { loadShelvesMaskTexture } from './utils/textures.js';
 
 /** Brand-aligned shelf colors (#3B82F6 family). */

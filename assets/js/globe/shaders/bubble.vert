@@ -79,39 +79,39 @@ void main() {
   vUv = uv;
   vContentMix = iContent;
 
-  vec3 local = position * iScale;
   vec3 centerPos = iOffset;
-
-  float rise = uReducedMotion > 0.5
-    ? iPhase * uBounds.y
-    : mod(uTime * uSpeed + iPhase, 1.0) * uBounds.y;
-  centerPos.y = mod(iOffset.y + uTime * uSpeed, uBounds.y) - uBounds.y * 0.5;
+  float yTravel = uReducedMotion > 0.5
+    ? iPhase * uBounds.y - uBounds.y * 0.5
+    : mod(centerPos.y + uTime * uSpeed, uBounds.y) - uBounds.y * 0.5;
+  centerPos.y = yTravel;
 
   float jitter = sin(centerPos.x + centerPos.z * uJitterFrequency + uTime * uJitterSpeed + iPhase * PI * 2.0);
   centerPos.x += jitter * uJitterAmplitude;
-  local += centerPos;
-  local.y += rise - iOffset.y;
+
+  vec3 local = position * iScale + centerPos;
 
   float wobble = snoise(local * uNoiseFrequency + uTime * uNoiseSpeed + iPhase);
   wobble = wobble * 0.5 + 0.5;
   local += normal * wobble * uNoiseAmplitude;
 
-  vec3 earthPoint = uEarthOrigin;
-  vec3 dirToEarth = normalize(earthPoint - centerPos);
-  vec3 p = centerPos - earthPoint * dot(centerPos, dirToEarth) / dot(dirToEarth, dirToEarth);
-  p /= uBubbleOrbitTightness;
-  float d = length(p);
-  vec3 orbitDir = d > 0.0001 ? p / d : vec3(0.0);
-  orbitDir *= uBubbleDisplacementStrength;
-  vec3 displacement = smoothstep(1.0, 0.0, d) * orbitDir;
-  local += displacement;
+  vec3 fromEarth = centerPos - uEarthOrigin;
+  float dist = length(fromEarth);
+  vec3 radial = dist > 0.0001 ? fromEarth / dist : vec3(0.0, 1.0, 0.0);
+  vec3 tangent = normalize(cross(radial, vec3(0.0, 1.0, 0.0)));
+  vec3 bitangent = cross(radial, tangent);
+  vec3 orbitOffset = tangent * sin(uTime * 0.12 + iPhase * 6.28318) * 0.04 / uBubbleOrbitTightness
+    + bitangent * cos(uTime * 0.12 + iPhase * 4.0) * 0.04 / uBubbleOrbitTightness;
+  local += orbitOffset;
+
+  float push = smoothstep(1.32, 1.06, dist);
+  local += radial * push * uBubbleDisplacementStrength * 0.22;
 
   vec4 mvPosition = modelViewMatrix * vec4(local, 1.0);
 
   vNormal = normalize(normalMatrix * normal);
   vViewDir = normalize(-mvPosition.xyz);
   vScreenUv = (projectionMatrix * mvPosition).xy * 0.5 + 0.5;
-  vCenterToCamera = abs(distance(centerPos + displacement, cameraPosition));
+  vCenterToCamera = abs(distance(centerPos, cameraPosition));
 
   float boundsFade = smoothstep(1.0, 3.0, abs(centerPos.y - uBounds.y * 0.5))
     * smoothstep(1.0, 3.0, abs(centerPos.y + uBounds.y * 0.5));

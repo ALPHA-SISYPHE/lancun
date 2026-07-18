@@ -14,18 +14,34 @@
     <script src="assets/js/mock-data.js" defer></script>
     <script src="assets/js/vendor/gsap.min.js" defer></script>
     <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
-    <script type="module" src="assets/js/globe/index.js"></script>
+    <script type="module">
+      import('./assets/js/globe/index.js').catch(function (err) {
+        window.LANCUN_globeModuleError = (err && err.message) || String(err);
+        var status = document.querySelector('[data-globe-status]');
+        if (!status) return;
+        status.hidden = false;
+        status.textContent =
+          '地球 3D 脚本加载失败（' +
+          window.LANCUN_globeModuleError +
+          '）。请打开开发者工具 → Network，检查 assets/js 是否有 404；请用 http://127.0.0.1:8080/index.html 打开，勿用 file://。';
+      });
+    </script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         if (document.body.dataset.page !== 'home') return;
         window.setTimeout(function () {
-          if (window.LANCUN_homeGlobe) return;
+          if (window.LANCUN_homeGlobe || window.LANCUN_globeModuleError) return;
           var status = document.querySelector('[data-globe-status]');
           if (!status || !status.hidden) return;
           status.hidden = false;
-          status.textContent =
-            '地球 3D 未能加载（常见于脚本模块被浏览器拦截）。请双击运行 serve.ps1，或执行 python -m http.server 8080 后打开 http://127.0.0.1:8080/index.html';
-        }, 3000);
+          if (location.protocol === 'file:') {
+            status.textContent =
+              '地球 3D 未能加载：file:// 协议会拦截 ES 模块。请运行 python -m http.server 8080 后打开 http://127.0.0.1:8080/index.html';
+          } else {
+            status.textContent =
+              '地球 3D 初始化超时。请确认浏览器支持 WebGL，打开控制台查看报错后刷新；若 Network 有 404 多为脚本路径错误。';
+          }
+        }, 12000);
       });
     </script>
     <script src="assets/js/user-menu-html.js" defer></script>
