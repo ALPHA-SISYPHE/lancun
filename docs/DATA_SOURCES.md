@@ -134,8 +134,34 @@ v2.3 光池/caustics 已废弃，不再作为装饰规范。
 
 | 库 | 版本 | 许可 | 用途 |
 |---|---|---|---|
-| Three.js | r170 (npm) | MIT | WebGL 球体、光照、CSS2D 标记 |
-| 文件位置 | `assets/js/vendor/` | 见 `assets/js/vendor/README.md` | 仅 `index.html` 探索区 |
+| Three.js | r170 (npm) | MIT | WebGL 球体、光照、CSS2D 标记、RenderTarget 气泡折射 |
+| GSAP | 3.12.5 | Standard (free) | 大陆架 `uOffset` 切换动画（1.2s） |
+| ScrollTrigger | 3.12.5 | Standard (free) | GSAP 插件；Phase A 注册备用，Phase B+ 滚动驱动 |
+| EffectComposer / RenderPass / ShaderPass | three@0.170 examples | MIT | 本地 vendor；Phase B 后处理管线 |
+| 文件位置 | `assets/js/vendor/` | 见 `assets/js/vendor/README.md` | 首页 `#ocean-explore` 模块化 globe |
+
+## 大陆架占位遮罩（Phase A）
+
+| 字段 | 内容 |
+|---|---|
+| 用途 | `#ocean-explore` 大陆架分布 shader overlay（`uMask` / `uOffset`） |
+| 本地文件（可选） | `assets/media/globe/shelves-mask.png` |
+| 当前实现 | 运行时 Canvas 程序化噪声遮罩（`assets/js/globe/utils/textures.js`） |
+| 替换说明 | 待 bathymetry 数据验证后可换真实 equirectangular 遮罩 |
+| 获取日期 | 2026-07-18 |
+
+## Globe 模块（Phase A）
+
+| 模块 | 路径 | 说明 |
+|---|---|---|
+| 入口 | `assets/js/globe/index.js` | 替换 `home-globe.js`；暴露 `window.LANCUN_homeGlobe` |
+| 场景 | `GlobeScene.js` | IntersectionObserver rAF、ResizeObserver、DPR cap、WebGL 降级 |
+| 地球 | `earth.js` | HemisphereLight、ACESFilmic exposure 1.25、emissive、云层/大气 |
+| 大陆架 | `shelves.js` | GSAP `uOffset` 0↔1 |
+| 气泡 | `bubbles.js` + `shaders/` | 双 pass：earth RT + InstancedMesh 折射 |
+| 标记 | `markers.js` | CSS2DRenderer + 五大洋 modal |
+| 后处理 | `composer.js` | Phase B stub |
+| 备份 | `assets/js/home-globe.js` | 未加载；仅作 Phase A 前参考 |
 
 ## 设计参考记录
 

@@ -12,7 +12,9 @@
     <link rel="stylesheet" href="assets/css/home.css" />
     <script src="assets/js/hero.js" defer></script>
     <script src="assets/js/mock-data.js" defer></script>
-    <script type="module" src="assets/js/home-globe.js"></script>
+    <script src="assets/js/vendor/gsap.min.js" defer></script>
+    <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+    <script type="module" src="assets/js/globe/index.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         if (document.body.dataset.page !== 'home') return;
@@ -54,23 +56,17 @@
       </section>
 
       <section id="ocean-explore" class="ocean-explore" aria-labelledby="ocean-explore-title" data-header-sentinel data-ocean-explore>
-        <div class="ocean-explore__bubbles" aria-hidden="true">
-          <span class="bubble bubble--far"></span><span class="bubble bubble--far"></span><span class="bubble bubble--far"></span>
-          <span class="bubble bubble--far"></span><span class="bubble bubble--far"></span><span class="bubble bubble--mid"></span>
-          <span class="bubble bubble--mid"></span><span class="bubble bubble--mid"></span><span class="bubble bubble--mid"></span>
-          <span class="bubble bubble--mid"></span><span class="bubble bubble--near"></span><span class="bubble bubble--near"></span>
-          <span class="bubble bubble--near"></span><span class="bubble bubble--near"></span><span class="bubble bubble--near"></span>
-          <span class="bubble bubble--near"></span><span class="bubble bubble--near"></span><span class="bubble bubble--front"></span>
-          <span class="bubble bubble--front"></span><span class="bubble bubble--front"></span>
-        </div>
         <div class="ocean-explore__inner">
           <div class="ocean-explore__layout">
-            <div class="ocean-explore__panel" data-ocean-panel>
+            <div class="ocean-explore__copy" data-ocean-panel>
               <div class="ocean-panel-intro" data-ocean-intro>
                 <p class="eyebrow ocean-explore__eyebrow">五大洋</p>
                 <h2 id="ocean-explore-title">我们在守护哪一片海？</h2>
-                <p>地球被一片相互联通的咸水覆盖。点击右侧地球上的标记，认识太平洋、大西洋、印度洋、南大洋与北冰洋——它们共同调节气候、承载生命，也需要我们的理解与行动。</p>
+                <p class="ocean-explore__lede">地球被一片相互联通的咸水覆盖。点击右侧地球上的标记，认识太平洋、大西洋、印度洋、南大洋与北冰洋——它们共同调节气候、承载生命，也需要我们的理解与行动。</p>
                 <p class="ocean-panel-hint">拖动地球可旋转视角；不拖动时它会缓慢自转。</p>
+                <div class="ocean-explore__actions">
+                  <a class="button button-secondary ocean-explore__link" href="pages/ocean.html">探索我们的海洋</a>
+                </div>
               </div>
               <article class="ocean-panel-detail" data-ocean-detail hidden>
                 <button type="button" class="ocean-panel-close" data-ocean-close aria-label="关闭并返回总介绍"><span aria-hidden="true">×</span></button>
@@ -80,6 +76,19 @@
               </article>
             </div>
             <div class="globe-scene" data-globe-scene>
+              <div class="globe-scene__toolbar">
+                <button
+                  type="button"
+                  class="shelves-toggle"
+                  data-shelves-toggle
+                  data-state="off"
+                  aria-pressed="false"
+                  aria-label="切换大陆架分布显示"
+                >
+                  <span class="shelves-toggle__label">大陆架分布</span>
+                  <span class="shelves-toggle__pill" aria-hidden="true"><span class="shelves-toggle__knob"></span></span>
+                </button>
+              </div>
               <div class="globe-canvas-wrap" data-globe-canvas-wrap>
                 <canvas data-globe-canvas aria-label="可拖动旋转的地球"></canvas>
                 <p class="globe-status" data-globe-status hidden role="status">

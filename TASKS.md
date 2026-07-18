@@ -19,6 +19,18 @@
 
 - [ ] 首页背景视频（0.6 倍速循环）的用户目视验收。
 
+## Phase A — `#ocean-explore` Convex 风格 Globe MVP（2026-07-18）
+
+- [x] A1 地球提亮：HemisphereLight、ACESFilmic exposure ~1.25、emissive、云层 ~0.38、大气 ~0.2、初始 rotation Y ~-25°
+- [x] A2 Convex 布局：深底渐变左文右球、移除 CSS 气泡层、大陆架 toggle UI、响应式与 a11y
+- [x] A3 模块架构：`assets/js/globe/*` + vendor EffectComposer/RenderPass/ShaderPass + GSAP
+- [x] A4 大陆架 toggle：程序化 shelves-mask、`uOffset` GSAP 1.2s、reduced-motion 即时切换
+- [x] A5 WebGL 气泡双 pass：earth RT + InstancedMesh 折射（40/20 实例）
+- [x] A6 五大洋 CSS2D 标记 + modal（Esc、键盘 a11y、`LANCUN_DATA.fiveOceans`）
+- [x] A7 性能：IntersectionObserver rAF、DPR cap、mobile 实例、`applyMotion` 集成
+- [x] A8 文档：`DATA_SOURCES.md`、vendor README；`home-globe.js` 保留为备份
+- [ ] Phase A 浏览器目视验收（桌面 + 移动、WebGL 降级提示）
+
 ## 接下来
 
 - [ ] 确认最终网站名称与主题范围。
@@ -57,3 +69,39 @@
 - [x] 首页 Hero 已接入用户提供的视频背景：静音、循环、固定 0.6 倍速。
 
 - [ ] 创建项目定制 Skill：至少完成一个代表性页面和一次视觉修复循环后再开始。
+
+## ocean-explore Convex 复刻
+
+> 总任务书：`docs/OCEAN_EXPLORE_CONVEX_PLAN.md`  
+> 目标：Convex「Where we are working」启发式 MVP；内容仍为五大洋；`#ocean-explore` 局部深底例外（`#0F172A → #1E3A8A`）。
+
+### Phase A · 今日 MVP
+
+- [ ] **A0** 前置：读取 AGENTS / DESIGN / ACCEPTANCE / 本计划；确认 serve.ps1 与 Vercel 一致
+- [ ] **A1** 地球调亮：HemisphereLight、ACES exposure ~1.25、emissive、云/大气 opacity、初始 rotation y ~-25°
+- [ ] **A2** 布局：Convex 深底渐变；左白字文案（非白岛卡片）；右大地球；大陆架 toggle UI；隐藏 CSS 气泡
+- [ ] **A3** 模块拆分：`assets/js/globe/`（GlobeScene / earth / shelves / bubbles / markers / composer stub）；vendor 本地化 EffectComposer + GSAP
+- [ ] **A4** 大陆架 toggle：placeholder `shelves-mask.png` + GSAP `uOffset` 0↔1；reduced-motion 即时切换
+- [ ] **A5** WebGL 气泡双 pass：RenderTarget(earth+clouds) → InstancedMesh IOR shader；40/20 实例
+- [ ] **A6** CSS2D 五大洋标记 + modal（Esc / 键盘 a11y）；对接 `LANCUN_DATA.fiveOceans`
+- [ ] **A7** 性能：IntersectionObserver 启停 rAF；mobile 降级；`LANCUN_homeGlobe.applyMotion()`
+- [ ] **A8** 文档 + 验收：DATA_SOURCES、设计例外说明、Vercel 无痕窗口 + Console 0 error
+
+### Phase B · 续做 backlog（+1–2 天）
+
+- [ ] **B1** 真实大陆架 mask（Natural Earth → `assets/media/globe/shelves-mask.png`）
+- [ ] **B2** 气泡 shader 精调（IOR 随距离、jitter、orbit、个别 content 贴图）
+- [ ] **B3** Composer 后处理：vignette + grain + FXAA
+- [ ] **B4** 地球 normal map + PMREM env
+
+### Phase C · 续做 backlog（+1–2 天）
+
+- [ ] **C1** CSS3DRenderer 标记（背对相机隐藏）
+- [ ] **C2** ScrollTrigger 相机 scrub / 可选 section pin
+- [ ] **C3** God Rays 体积光（可选；移动默认 OFF）
+
+### 明确不做（除非另开需求）
+
+- 整页 WebGL 场景转场
+- 流体模拟（fluid sim）
+- Howler 音效

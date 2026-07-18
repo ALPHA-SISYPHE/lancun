@@ -1,3 +1,7 @@
+/**
+ * @deprecated Backup of pre-Phase-A monolithic globe. Active entry: assets/js/globe/index.js
+ * Kept for reference; not loaded by index.html.
+ */
 import * as THREE from './vendor/three.module.min.js';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from './vendor/CSS2DRenderer.js';
