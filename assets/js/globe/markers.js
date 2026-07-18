@@ -1,8 +1,14 @@
-import { CSS2DObject, CSS2DRenderer } from '../../vendor/CSS2DRenderer.js';
+import * as THREE from '../vendor/three.module.min.js';
+import { CSS3DSprite, CSS3DRenderer } from '../vendor/CSS3DRenderer.js';
 import { latLonToVector3 } from './utils/latlon.js';
 
+const _markerPos = new THREE.Vector3();
+const _camPos = new THREE.Vector3();
+const HEMISPHERE_THRESHOLD = 0.05;
+
 /**
- * CSS2D ocean markers + left-panel detail wiring.
+ * CSS3D ocean markers (billboard sprites) + left-panel detail wiring.
+ * Markers on the back hemisphere are hidden relative to the camera.
  */
 export function createMarkers({
   earthGroup,
@@ -12,7 +18,7 @@ export function createMarkers({
   onSelect,
   onClose,
 }) {
-  const labelRenderer = new CSS2DRenderer();
+  const labelRenderer = new CSS3DRenderer();
   labelRenderer.domElement.className = 'globe-label-layer';
   canvasWrap.appendChild(labelRenderer.domElement);
 
@@ -72,11 +78,20 @@ export function createMarkers({
       e.stopPropagation();
       showDetail(ocean);
     });
-    const label = new CSS2DObject(el);
+    const label = new CSS3DSprite(el);
     label.position.copy(latLonToVector3(ocean.lat, ocean.lon, 1.06));
     earthGroup.add(label);
     markerPins.push({ el, ocean, label });
   });
+
+  const updateHemisphereVisibility = (camera) => {
+    camera.getWorldPosition(_camPos);
+
+    markerPins.forEach(({ label }) => {
+      label.getWorldPosition(_markerPos);
+      label.visible = _markerPos.dot(_camPos) > HEMISPHERE_THRESHOLD;
+    });
+  };
 
   return {
     labelRenderer,
@@ -84,6 +99,7 @@ export function createMarkers({
     showDetail,
     getActiveId: () => activeId,
     render(scene, camera) {
+      updateHemisphereVisibility(camera);
       labelRenderer.render(scene, camera);
     },
     setSize(w, h) {

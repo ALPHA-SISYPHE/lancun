@@ -1,13 +1,50 @@
 import * as THREE from '../../vendor/three.module.min.js';
-import { loadEarthTexture, loadCloudTexture } from './utils/textures.js';
+import { loadEarthTexture, loadCloudTexture, loadEarthNormalTexture } from './utils/textures.js';
 
 const INITIAL_ROTATION_Y = THREE.MathUtils.degToRad(-25);
 
+function createOceanEnvEquirectTexture() {
+  const width = 256;
+  const height = 128;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, height);
+  gradient.addColorStop(0, '#b8dcff');
+  gradient.addColorStop(0.42, '#3b82f6');
+  gradient.addColorStop(0.72, '#1e3a8a');
+  gradient.addColorStop(1, '#0f172a');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+function applyEarthEnvMap(material, renderer) {
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+
+  const equirect = createOceanEnvEquirectTexture();
+  const envMap = pmrem.fromEquirectangular(equirect).texture;
+  equirect.dispose();
+  pmrem.dispose();
+
+  material.envMap = envMap;
+  material.envMapIntensity = 0.28;
+  material.needsUpdate = true;
+  return envMap;
+}
+
 /**
- * @param {{ scene: THREE.Scene }} options
- * @returns {Promise<{ group: THREE.Group, earthMesh: THREE.Mesh, cloudsMesh: THREE.Mesh | null, atmosphereMesh: THREE.Mesh, setupLights: (scene: THREE.Scene) => void }>}
+ * @param {{ scene: THREE.Scene, renderer?: THREE.WebGLRenderer }} options
+ * @returns {Promise<{ group: THREE.Group, earthMesh: THREE.Mesh, cloudsMesh: THREE.Mesh | null, atmosphereMesh: THREE.Mesh, setupLights: (scene: THREE.Scene) => void, disposeExtras: () => void }>}
  */
-export async function createEarth({ scene }) {
+export async function createEarth({ scene, renderer }) {
   const group = new THREE.Group();
   group.rotation.y = INITIAL_ROTATION_Y;
 
@@ -32,8 +69,8 @@ export async function createEarth({ scene }) {
   const earthGeometry = new THREE.SphereGeometry(1, 64, 64);
   const earthMaterial = new THREE.MeshStandardMaterial({
     color: 0xffffff,
-    roughness: 0.62,
-    metalness: 0.08,
+    roughness: 0.58,
+    metalness: 0.06,
     emissive: new THREE.Color(0x1a3a52),
     emissiveIntensity: 0.22,
   });
@@ -52,6 +89,11 @@ export async function createEarth({ scene }) {
   group.add(atmosphereMesh);
 
   let cloudsMesh = null;
+  let envMap = null;
+
+  if (renderer) {
+    envMap = applyEarthEnvMap(earthMaterial, renderer);
+  }
 
   try {
     const earthMap = await loadEarthTexture();
@@ -60,6 +102,15 @@ export async function createEarth({ scene }) {
     earthMaterial.needsUpdate = true;
   } catch (err) {
     console.warn('Earth texture unavailable', err);
+  }
+
+  try {
+    const normalMap = await loadEarthNormalTexture();
+    earthMaterial.normalMap = normalMap;
+    earthMaterial.normalScale = new THREE.Vector2(0.75, 0.75);
+    earthMaterial.needsUpdate = true;
+  } catch (err) {
+    console.warn('Earth normal map unavailable', err);
   }
 
   try {
@@ -81,7 +132,11 @@ export async function createEarth({ scene }) {
 
   scene.add(group);
 
-  return { group, earthMesh, cloudsMesh, atmosphereMesh, setupLights };
+  const disposeExtras = () => {
+    envMap?.dispose?.();
+  };
+
+  return { group, earthMesh, cloudsMesh, atmosphereMesh, setupLights, disposeExtras };
 }
 
 export function configureRendererToneMapping(renderer) {

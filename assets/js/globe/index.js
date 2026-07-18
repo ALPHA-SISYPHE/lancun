@@ -1,4 +1,5 @@
 import { GlobeScene, motionReduced, showGlobeStatus } from './GlobeScene.js';
+import { bindGlobeScroll } from './scroll-bindings.js';
 
 export { motionReduced, showGlobeStatus };
 
@@ -25,10 +26,21 @@ async function initHomeGlobe() {
   const ok = await scene.init();
   if (!ok) return null;
 
+  const scrollBinding = bindGlobeScroll({
+    section,
+    camera: scene.camera,
+    earthGroup: scene.earthGroup,
+    reduceMotion: motionReduced,
+  });
+  scene.setScrollApply(scrollBinding.apply);
+
   return {
     applyMotion: () => scene.applyMotion(),
     setShelvesVisible: (on) => scene.setShelvesVisible(on),
-    dispose: () => scene.dispose(),
+    dispose: () => {
+      scrollBinding.dispose();
+      scene.dispose();
+    },
   };
 }
 

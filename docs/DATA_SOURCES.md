@@ -137,7 +137,7 @@ v2.3 光池/caustics 已废弃，不再作为装饰规范。
 | Three.js | r170 (npm) | MIT | WebGL 球体、光照、CSS2D 标记、RenderTarget 气泡折射 |
 | GSAP | 3.12.5 | Standard (free) | 大陆架 `uOffset` 切换动画（1.2s） |
 | ScrollTrigger | 3.12.5 | Standard (free) | GSAP 插件；Phase A 注册备用，Phase B+ 滚动驱动 |
-| EffectComposer / RenderPass / ShaderPass | three@0.170 examples | MIT | 本地 vendor；Phase B 后处理管线 |
+| EffectComposer / RenderPass / ShaderPass / FXAAShader | three@0.170 examples | MIT | 本地 vendor；Phase B 后处理（暗角 + 轻 grain + FXAA） |
 | 文件位置 | `assets/js/vendor/` | 见 `assets/js/vendor/README.md` | 首页 `#ocean-explore` 模块化 globe |
 
 ## 大陆架占位遮罩（Phase A）
@@ -160,7 +160,10 @@ v2.3 光池/caustics 已废弃，不再作为装饰规范。
 | 大陆架 | `shelves.js` | GSAP `uOffset` 0↔1 |
 | 气泡 | `bubbles.js` + `shaders/` | 双 pass：earth RT + InstancedMesh 折射 |
 | 标记 | `markers.js` | CSS2DRenderer + 五大洋 modal |
-| 后处理 | `composer.js` | Phase B stub |
+| 后处理 | `composer.js` | Phase B：TextureInput → Vignette → Grain → FXAA；移动/低 tier 直出 |
+| 地球贴图 | `assets/media/earth.jpg` | 本地优先；远程 fallback three.js examples |
+| 地球法线 | `assets/media/earth-normal.jpg`（可选） | 本地 → three.js `earth_normal_2048.jpg` → 程序化噪声 |
+| 环境反射 | `earth.js` PMREM | Canvas 海洋渐变 equirect → PMREM envMap（无 HDR 依赖） |
 | 备份 | `assets/js/home-globe.js` | 未加载；仅作 Phase A 前参考 |
 
 ## 设计参考记录

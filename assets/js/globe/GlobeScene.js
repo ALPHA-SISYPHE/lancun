@@ -43,15 +43,18 @@ export class GlobeScene {
     this.shelvesTween = null;
 
     this.earthRT = null;
+    this.compositeRT = null;
     this.earthGroup = null;
+    this.earthDisposeExtras = null;
     this.bubbles = null;
     this.shelves = null;
     this.markers = null;
     this.controls = null;
-    this.composer = createGlobeComposer();
+    this.composer = null;
     this.resizeObserver = null;
     this.intersectionObserver = null;
     this.idleTimer = null;
+    this._scrollApply = null;
 
     this._initRenderer();
   }
@@ -69,13 +72,15 @@ export class GlobeScene {
     configureRendererToneMapping(this.renderer);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
     this.renderer.setClearColor(0x000000, 0);
+    this.composer = createGlobeComposer(this.renderer);
   }
 
   async init() {
     if (!this.renderer) return false;
 
-    const { group } = await createEarth({ scene: this.scene });
+    const { group, disposeExtras } = await createEarth({ scene: this.scene, renderer: this.renderer });
     this.earthGroup = group;
+    this.earthDisposeExtras = disposeExtras;
 
     this.shelves = await createShelves(this.earthGroup);
     this.bubbles = createBubbles(this.earthGroup);
@@ -89,6 +94,10 @@ export class GlobeScene {
 
     const size = this._getSize();
     this.earthRT = new THREE.WebGLRenderTarget(size.w, size.h, {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+    });
+    this.compositeRT = new THREE.WebGLRenderTarget(size.w, size.h, {
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
     });
@@ -191,16 +200,14 @@ export class GlobeScene {
     if (this.earthRT) {
       this.earthRT.setSize(w * dpr, h * dpr);
     }
+    if (this.compositeRT) {
+      this.compositeRT.setSize(w * dpr, h * dpr);
+    }
+    this.composer?.setSize(w, h);
+    this.composer?.setPixelRatio?.(dpr);
   }
 
-  _renderFrame() {
-    if (!this.renderer || !this.earthGroup) return;
-
-    const reduced = motionReduced();
-    const elapsed = this.clock.getElapsedTime();
-    this.bubbles?.update(elapsed, reduced);
-    this.controls?.update();
-
+  _renderGlobeLayers() {
     const dpr = this.renderer.getPixelRatio();
     const size = this.renderer.getSize(new THREE.Vector2());
 
@@ -209,8 +216,9 @@ export class GlobeScene {
     this.renderer.clear();
     this.renderer.render(this.scene, this.camera);
 
+    const outputTarget = this.composer?.enabled ? this.compositeRT : null;
     this.camera.layers.set(0);
-    this.renderer.setRenderTarget(null);
+    this.renderer.setRenderTarget(outputTarget);
     this.renderer.clear();
     this.renderer.render(this.scene, this.camera);
 
@@ -220,6 +228,23 @@ export class GlobeScene {
       this.camera.layers.set(1);
       this.renderer.render(this.scene, this.camera);
       this.camera.layers.set(0);
+    }
+  }
+
+  _renderFrame() {
+    if (!this.renderer || !this.earthGroup) return;
+
+    const reduced = motionReduced();
+    const elapsed = this.clock.getElapsedTime();
+    this.bubbles?.update(elapsed, reduced);
+    this.controls?.update();
+    this._scrollApply?.();
+
+    this._renderGlobeLayers();
+
+    if (this.composer?.enabled && this.compositeRT) {
+      this.composer.setInputTexture(this.compositeRT.texture);
+      this.composer.render(this.clock.getDelta());
     }
 
     this.markers?.render(this.scene, this.camera);
@@ -244,6 +269,10 @@ export class GlobeScene {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
     }
+  }
+
+  setScrollApply(fn) {
+    this._scrollApply = fn;
   }
 
   applyMotion() {
@@ -299,13 +328,16 @@ export class GlobeScene {
     this.intersectionObserver?.disconnect();
     clearTimeout(this.idleTimer);
     this.shelvesTween?.kill?.();
+    this._scrollApply = null;
 
     this.bubbles?.dispose();
     this.shelves?.dispose();
     this.markers?.dispose();
     this.earthRT?.dispose();
+    this.compositeRT?.dispose();
+    this.earthDisposeExtras?.();
     this.controls?.dispose();
+    this.composer?.dispose();
     this.renderer?.dispose();
-    this.composer.dispose();
   }
 }

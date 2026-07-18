@@ -2,6 +2,8 @@ import * as THREE from '../../vendor/three.module.min.js';
 
 const EARTH_LOCAL = 'assets/media/earth.jpg';
 const EARTH_REMOTE = 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg';
+const EARTH_NORMAL_LOCAL = 'assets/media/earth-normal.jpg';
+const EARTH_NORMAL_REMOTE = 'https://threejs.org/examples/textures/planets/earth_normal_2048.jpg';
 const CLOUDS_LOCAL = 'assets/media/earth-clouds.png';
 const CLOUDS_REMOTE = 'https://threejs.org/examples/textures/planets/earth_clouds_1024.png';
 const SHELVES_LOCAL = 'assets/media/globe/shelves-mask.png';
@@ -26,6 +28,52 @@ export async function loadCloudTexture() {
   } catch {
     return loadTexture(CLOUDS_REMOTE);
   }
+}
+
+export async function loadEarthNormalTexture() {
+  try {
+    return await loadTexture(EARTH_NORMAL_LOCAL);
+  } catch {
+    try {
+      return await loadTexture(EARTH_NORMAL_REMOTE);
+    } catch {
+      return createProceduralEarthNormal();
+    }
+  }
+}
+
+/** Subtle equirect normal noise when no earth-normal asset is available. */
+function createProceduralEarthNormal() {
+  const size = 512;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size / 2;
+  const ctx = canvas.getContext('2d');
+  const imageData = ctx.createImageData(canvas.width, canvas.height);
+
+  for (let y = 0; y < canvas.height; y += 1) {
+    for (let x = 0; x < canvas.width; x += 1) {
+      const u = x / canvas.width;
+      const v = y / canvas.height;
+      const n =
+        Math.sin(u * Math.PI * 8 + v * 4.2) * 0.08 +
+        Math.sin(u * Math.PI * 22 + v * 11) * 0.04 +
+        (Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1 * 0.03;
+      const nx = 128 + n * 90;
+      const ny = 128 + n * 70;
+      const idx = (y * canvas.width + x) * 4;
+      imageData.data[idx] = nx;
+      imageData.data[idx + 1] = ny;
+      imageData.data[idx + 2] = 255;
+      imageData.data[idx + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  return texture;
 }
 
 /**
