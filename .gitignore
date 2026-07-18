@@ -1,0 +1,20 @@
+# Office / OS junk
+~$*.pptx
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / agent caches
+.cursor/
+.agents/
+.codexrules
+*.swp
+*.swo
+
+# Large local-only resources (upload later if needed)
+references/
+assets/media/
+
+# Local env / secrets (if added later)
+.env
+.env.*

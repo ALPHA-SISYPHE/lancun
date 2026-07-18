@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="澜存——以展示、科普与行动守护海洋生机。" />
+    <title>澜存｜同守澜海，生机永续</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/home.css" />
+    <script src="assets/js/hero.js" defer></script>
+    <script src="assets/js/mock-data.js" defer></script>
+    <script type="module" src="assets/js/home-globe.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (document.body.dataset.page !== 'home') return;
+        window.setTimeout(function () {
+          if (window.LANCUN_homeGlobe) return;
+          var status = document.querySelector('[data-globe-status]');
+          if (!status || !status.hidden) return;
+          status.hidden = false;
+          status.textContent =
+            '地球 3D 未能加载（常见于脚本模块被浏览器拦截）。请双击运行 serve.ps1，或执行 python -m http.server 8080 后打开 http://127.0.0.1:8080/index.html';
+        }, 3000);
+      });
+    </script>
+    <script src="assets/js/user-menu-html.js" defer></script>
+    <script src="assets/js/app.js" defer></script>
+  </head>
+  <body class="home-page" data-page="home">
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <header class="site-header site-header--overlay" data-site-header>
+      <a class="brand" href="index.html" aria-label="澜存首页"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">打开导航菜单</span><span aria-hidden="true">菜单</span></button>
+      <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
+        <a class="is-active" href="index.html" aria-current="page">首页</a><a href="pages/ocean.html">我们的海洋</a><a href="pages/rescue.html">海在呼救</a><a href="pages/species.html">生物档案</a><a href="pages/action.html">行动中心</a>
+      </nav>
+      <div class="header-actions" data-user-menu-host data-profile-href="pages/profile.html"></div>
+    </header>
+    <main id="main-content">
+      <section class="video-hero" aria-labelledby="hero-title">
+        <img class="hero-poster" width="1920" height="1080" alt="" decoding="async" />
+        <video class="hero-video" autoplay muted loop playsinline aria-hidden="true" data-hero-video></video>
+        <div class="video-fallback" aria-hidden="true"></div>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-artwork">
+          <p class="hero-kicker">LANCUN OCEAN PROTECTION</p>
+          <h1 id="hero-title"><span>同守澜海</span><strong>生机永续</strong></h1>
+          <p class="hero-note">留住每一片浪潮，让海洋生生不息</p>
+          <a class="hero-enter" href="#ocean-explore">进入海洋世界 <span aria-hidden="true">↓</span></a>
+        </div>
+      </section>
+
+      <section id="ocean-explore" class="ocean-explore" aria-labelledby="ocean-explore-title" data-header-sentinel data-ocean-explore>
+        <div class="ocean-explore__bubbles" aria-hidden="true">
+          <span class="bubble bubble--far"></span><span class="bubble bubble--far"></span><span class="bubble bubble--far"></span>
+          <span class="bubble bubble--far"></span><span class="bubble bubble--far"></span><span class="bubble bubble--mid"></span>
+          <span class="bubble bubble--mid"></span><span class="bubble bubble--mid"></span><span class="bubble bubble--mid"></span>
+          <span class="bubble bubble--mid"></span><span class="bubble bubble--near"></span><span class="bubble bubble--near"></span>
+          <span class="bubble bubble--near"></span><span class="bubble bubble--near"></span><span class="bubble bubble--near"></span>
+          <span class="bubble bubble--near"></span><span class="bubble bubble--near"></span><span class="bubble bubble--front"></span>
+          <span class="bubble bubble--front"></span><span class="bubble bubble--front"></span>
+        </div>
+        <div class="ocean-explore__inner">
+          <div class="ocean-explore__layout">
+            <div class="ocean-explore__panel" data-ocean-panel>
+              <div class="ocean-panel-intro" data-ocean-intro>
+                <p class="eyebrow ocean-explore__eyebrow">五大洋</p>
+                <h2 id="ocean-explore-title">我们在守护哪一片海？</h2>
+                <p>地球被一片相互联通的咸水覆盖。点击右侧地球上的标记，认识太平洋、大西洋、印度洋、南大洋与北冰洋——它们共同调节气候、承载生命，也需要我们的理解与行动。</p>
+                <p class="ocean-panel-hint">拖动地球可旋转视角；不拖动时它会缓慢自转。</p>
+              </div>
+              <article class="ocean-panel-detail" data-ocean-detail hidden>
+                <button type="button" class="ocean-panel-close" data-ocean-close aria-label="关闭并返回总介绍"><span aria-hidden="true">×</span></button>
+                <h3 data-ocean-detail-title></h3>
+                <p data-ocean-detail-text></p>
+                <a class="button button-secondary ocean-panel-more" data-ocean-detail-link href="pages/ocean.html">了解更多</a>
+              </article>
+            </div>
+            <div class="globe-scene" data-globe-scene>
+              <div class="globe-canvas-wrap" data-globe-canvas-wrap>
+                <canvas data-globe-canvas aria-label="可拖动旋转的地球"></canvas>
+                <p class="globe-status" data-globe-status hidden role="status">
+                  地球 3D 未能加载。请确认浏览器支持 WebGL；若仍空白，可在项目文件夹运行本地服务器后打开
+                  <code>http://127.0.0.1:8080/index.html</code>（见根目录 <code>serve.ps1</code>）。
+                </p>
+              </div>
+              <p class="globe-scene-hint">拖动旋转 · 点击 + 查看介绍</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><span>澜存</span><span>海洋保护展示与互动课程项目</span></footer>
+  </body>
+</html>

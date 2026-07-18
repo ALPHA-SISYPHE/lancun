@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的界面｜澜存</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/modules.css" />
+    <link rel="stylesheet" href="../assets/css/profile-dashboard.css" />
+    <script src="../assets/js/hero.js" defer></script>
+    <script src="../assets/js/mock-data.js" defer></script>
+    <script src="../assets/js/user-menu-html.js" defer></script>
+    <script src="../assets/js/app.js" defer></script>
+  </head>
+  <body data-page="profile">
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <header class="site-header site-header--overlay">
+      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button>
+      <nav id="primary-navigation" class="primary-navigation" aria-label="主导航"><a href="../index.html">首页</a><a href="ocean.html">我们的海洋</a><a href="rescue.html">海在呼救</a><a href="species.html">生物档案</a><a href="action.html">行动中心</a></nav>
+      <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
+    </header>
+    <main id="main-content" class="page-stage">
+      <section class="profile-guest-empty page-intro--dark" data-profile-guest>
+        <p class="eyebrow">我的界面</p>
+        <h1>尚未登录</h1>
+        <p>点击右上角头像「澜」登录或注册。账户、积分与行动记录仅保存在当前浏览器。</p>
+        <button class="button button-primary" type="button" data-open-user-menu>登录 / 注册</button>
+      </section>
+
+      <div class="dashboard-shell page-island" data-profile-app hidden>
+        <div class="dashboard-layout">
+          <aside class="dashboard-sidebar" aria-label="我的界面导航">
+            <div class="dashboard-sidebar__top"><a href="../index.html">← 返回站点</a></div>
+            <nav class="dashboard-nav-group">
+              <p class="dashboard-nav-label">我的守护</p>
+              <button type="button" class="dashboard-nav-item is-active" data-dashboard-nav="overview">概览</button>
+              <button type="button" class="dashboard-nav-item" data-dashboard-nav="actions">行动记录</button>
+              <button type="button" class="dashboard-nav-item" data-dashboard-nav="checkin">打卡进度</button>
+            </nav>
+            <nav class="dashboard-nav-group">
+              <p class="dashboard-nav-label">账户与设置</p>
+              <button type="button" class="dashboard-nav-item" data-dashboard-nav="profile">个人资料</button>
+              <button type="button" class="dashboard-nav-item" data-dashboard-nav="display">显示与播放</button>
+              <button type="button" class="dashboard-nav-item" data-dashboard-nav="security">登录与安全</button>
+            </nav>
+            <nav class="dashboard-nav-group">
+              <p class="dashboard-nav-label">快捷入口</p>
+              <a class="dashboard-nav-item" href="action.html">保护行动中心</a>
+              <a class="dashboard-nav-item" href="ocean.html">我们的海洋</a>
+              <button type="button" class="dashboard-nav-item" data-dashboard-nav="data">本地数据说明</button>
+            </nav>
+            <div class="dashboard-sidebar__profile">
+              <div class="avatar" data-avatar>澜</div>
+              <div><strong data-profile-name>守护者</strong><small data-profile-role>公众守护者</small></div>
+            </div>
+          </aside>
+
+          <div class="dashboard-main">
+            <section class="dashboard-view is-active" data-dashboard-view="overview">
+              <h2>概览</h2>
+              <p class="lead">你在澜海的守护足迹，仅保存在本机浏览器。</p>
+              <div class="dashboard-cards">
+                <article class="dashboard-card"><strong data-stat="points">0</strong><span>当前积分</span></article>
+                <article class="dashboard-card"><strong data-stat="actions">0</strong><span>累计行动次数</span></article>
+                <article class="dashboard-card"><strong data-stat="checkins">0</strong><span>本月打卡天数</span></article>
+              </div>
+            </section>
+
+            <section class="dashboard-view" data-dashboard-view="actions">
+              <h2>行动记录</h2>
+              <p class="lead">来自行动中心打卡等行为，按时间倒序展示。</p>
+              <div class="actions-table-wrap">
+                <table class="actions-table">
+                  <thead><tr><th scope="col">行动类型</th><th scope="col">时间</th></tr></thead>
+                  <tbody data-actions-table-body></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="dashboard-view" data-dashboard-view="checkin">
+              <h2>打卡进度</h2>
+              <p class="lead">本月已打卡日期会高亮显示。完整打卡请前往行动中心。</p>
+              <div class="calendar-grid" data-profile-calendar aria-label="本月打卡日历"></div>
+              <a class="button button-primary" href="action.html">前往行动中心打卡</a>
+            </section>
+
+            <section class="dashboard-view" data-dashboard-view="profile">
+              <h2>个人资料</h2>
+              <p class="lead">课程演示用本地账户，信息只读展示。</p>
+              <ul class="profile-detail-list">
+                <li><span>显示昵称</span><strong data-profile-name>—</strong></li>
+                <li><span>用户名</span><strong data-profile-username>—</strong></li>
+                <li><span>身份偏好</span><strong data-profile-role>—</strong></li>
+                <li><span>邮箱</span><strong data-profile-email>—</strong></li>
+                <li><span>注册时间</span><strong data-profile-created>—</strong></li>
+              </ul>
+            </section>
+
+            <section class="dashboard-view" data-dashboard-view="display">
+              <h2>显示与播放</h2>
+              <p class="lead">控制首页背景视频与页面动效。设置保存在本机浏览器。</p>
+              <form class="display-prefs-form" data-display-prefs-form>
+                <div class="field field--full">
+                  <label class="pref-toggle">
+                    <input type="checkbox" name="videoBackground" checked />
+                    <span>启用首页背景视频（关闭后仅显示摄影静帧）</span>
+                  </label>
+                </div>
+                <div class="field field--full">
+                  <label class="pref-toggle">
+                    <input type="checkbox" name="reduceMotion" />
+                    <span>减少页面动效（含下潜过渡与 Hero 缓动；系统「减少动态」也会生效）</span>
+                  </label>
+                </div>
+                <p class="status-message" data-display-prefs-status></p>
+              </form>
+            </section>
+
+            <section class="dashboard-view" data-dashboard-view="security">
+              <h2>登录与安全</h2>
+              <p class="lead">退出登录不会删除本地档案；清除数据将删除账户与全部记录。</p>
+              <div class="dashboard-quick-links">
+                <button class="button button-secondary" type="button" data-logout>退出登录</button>
+                <button class="text-button" type="button" data-profile-clear>清除本地账户与记录</button>
+              </div>
+            </section>
+
+            <section class="dashboard-view" data-dashboard-view="data">
+              <h2>本地数据说明</h2>
+              <p class="lead">本项目使用 localStorage 模拟登录、积分、打卡与行动记录，不连接真实服务器。密码以明文保存在浏览器中，仅用于课程作业演示，请勿使用真实密码。</p>
+              <p>站点内展示用污染与物种等数据为示例/mock，正式交付时将按 docs/DATA_SOURCES.md 标注来源。</p>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="site-footer"><span>澜存</span><span>账户信息仅保存在当前浏览器</span></footer>
+  </body>
+</html>
