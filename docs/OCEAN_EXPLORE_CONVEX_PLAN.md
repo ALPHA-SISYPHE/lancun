@@ -4,8 +4,8 @@
 
 | 项 | 内容 |
 |---|---|
-| 版本 | 1.0 |
-| 状态 | 已确认（Phase A 今日 MVP；Phase B/C 为 backlog） |
+| 版本 | 1.1 |
+| 状态 | Phase A MVP 视觉已修复（2026-07-18）；Composer 全量后处理暂跳过，待 earth pass 稳定后接回 |
 | 创建日期 | 2026-07-18 |
 | 关联页面 | `index.html#ocean-explore` |
 | 参考来源 | [Convex Seascape Survey](https://convexseascapesurvey.com/)「Where we are working」区块（只借交互结构与氛围，不复制品牌与文案） |
@@ -45,33 +45,35 @@
 
 ---
 
-## 2. 设计例外说明
+## 2. 设计对齐说明（无例外）
 
 ### 2.1 与 `DESIGN.md` v4 的关系
 
-全站 v4 基准为 **大疆风通透海水蓝 + 白内容岛**（`--surface-elevated`、`page-island` 等）。`#ocean-explore` 为 **局部视觉例外**：
+全站 v4 基准为 **大疆风通透海水蓝 + 白内容岛**（`--surface-elevated`、`page-island` 等）。  
+**2026-07-18 起：`#ocean-explore` 不再做局部深色例外**，构图可借 Convex，色/质跟 v4：
 
-| 维度 | 全站 v4 | `#ocean-explore` 例外 |
-|---|---|---|
-| Section 背景 | 雾感浅蓝渐变 / 海纹摄影 | **Convex 式深海军渐变** `#0F172A → #1E3A8A` |
-| 左栏文案 | 白岛卡片（`.ocean-explore__panel`） | **白字直接落在深底上**（或极淡 glass），对标 Convex 左文案区 |
-| 气泡 | CSS `.ocean-explore__bubbles` | **移除/隐藏**，改 WebGL InstancedMesh |
-| 标记详情 | 左栏 intro/detail 切换 | Phase A 可简化为 **modal**；左栏保留静态 intro |
+| 维度 | 要求 |
+|---|---|
+| Section 背景 | 雾感浅蓝 / `--mist-from` → `--mist-to`（**禁止** `#0F172A → #1E3A8A` 作本区主底） |
+| 左栏文案 | **白内容岛**（`.page-island` / `--surface-elevated`）+ `--ink` 深墨字 |
+| 右栏 | 浮空交互地球（离散球体，非壁纸） |
+| 气泡 | WebGL InstancedMesh 液体玻璃；全视口前后分层；强度克制 |
+| Composer | vignette **默认 OFF** |
+| 布局法 | 见 `docs/OCEAN_EXPLORE_CONSTITUTION.md`（38/62、Z 层、Y 轴自转） |
 
 ### 2.2 文档同步要求
 
-实现 Phase A 后须在以下文档各加 **一句例外说明**（若尚未写入）：
+- `DESIGN.md` §7 / §9：已声明无例外  
+- `docs/DESIGN_SYSTEM.md`：mirror `#ocean-explore` 跟 v4  
+- `docs/OCEAN_EXPLORE_CONSTITUTION.md`：v1.1 绑定法  
 
-- `DESIGN.md` §9 或新增 `#ocean-explore` 小节
-- `docs/DESIGN_SYSTEM.md` mirror 段
-
-**原则**：例外 **仅限 `#ocean-explore` section**，不得扩散为全站改回 v2 深色沉浸。
+**原则**：不得把深海军例外恢复为本 section 默认，也不得把深底扩散全站。
 
 ---
 
 ## 3. Phase A · 今日 MVP（A0–A8）
 
-> **完成标准**：线上可演示「深底 + 亮地球 + 大陆架开关 + 上升气泡 + 点五大洋」；不要求与 Convex 像素级一致。  
+> **完成标准**：线上可演示「v4 浅海雾底 + 白岛文案 + 亮地球 + 大陆架开关 + 上升气泡 + 点五大洋」；不要求与 Convex 像素级一致。  
 > **架构红线**：A3 模块拆分 + A5 气泡双 pass RenderTarget **今日必须落地**，否则 Phase B 成本翻倍。
 
 ---
@@ -247,7 +249,7 @@
 
 - `docs/DATA_SOURCES.md`：Three.js、GSAP、earth 贴图、shelves 占位说明
 - `TASKS.md`：Phase A 勾选 + Phase B/C 待办
-- `DESIGN.md` 或 `docs/DESIGN_SYSTEM.md`：`#ocean-explore` 深底例外一句
+- `DESIGN.md` / `docs/DESIGN_SYSTEM.md` / 宪法：`#ocean-explore` **无深底例外**，跟 v4 浅海雾 + 白岛
 
 **测试**：
 
@@ -304,7 +306,7 @@
 ```text
 assets/
 ├── css/
-│   ├── home.css                    # #ocean-explore 布局（Phase A 改深底）
+│   ├── home.css                    # #ocean-explore 布局（v4 浅海雾 + 白岛）
 │   └── globe-section.css           # 可选：globe 专用样式
 ├── js/
 │   ├── globe/
@@ -357,7 +359,7 @@ assets/
 | F2 | 大陆架 toggle | ON/OFF 可重复，扫入动画可见（reduced-motion 除外） |
 | F3 | WebGL 气泡 | 上升循环、采样地球 RT、section 外停止更新 |
 | F4 | 地球交互 | 可拖动旋转；未拖动时缓慢自转（reduced-motion 除外） |
-| F5 | 布局 | 深底 `#0F172A → #1E3A8A`；左白字右地球；无 CSS 气泡层 |
+| F5 | 布局 | v4 浅海雾底；左白岛右浮空球；38/62；Composer OFF |
 
 ### 7.2 技术
 
@@ -383,7 +385,7 @@ assets/
 |---|---|---|
 | DOC1 | DATA_SOURCES | Three、GSAP、贴图、shelves 占位已记录 |
 | DOC2 | TASKS.md | Phase A 勾选；B/C backlog 存在 |
-| DOC3 | 设计例外 | DESIGN 或 DESIGN_SYSTEM 注明 `#ocean-explore` 深底例外 |
+| DOC3 | 设计对齐 | DESIGN / DESIGN_SYSTEM / 宪法注明 `#ocean-explore` **无深底例外**、跟 v4 |
 
 ---
 
@@ -394,7 +396,7 @@ assets/
 | 今日时间不够 | Phase A 不完整 | 中 | **保 A5 气泡双 pass**；可砍 C 全部、B 全部；A6 modal 用最简 HTML |
 | Vercel 模块 404 | 线上地球空白 | 中 | vendor 全部提交仓库；相对路径 import；部署后无痕验收 |
 | 移动端 FPS 低 | 卡顿、发热 | 中 | 实例数↓、DPR=1；Phase B/C 后处理默认移动 OFF |
-| 与 v4 配色冲突 | 全站视觉割裂 | 低 | 例外 **仅限** `#ocean-explore`；文档固定说明 |
+| 与 v4 配色冲突 | 全站视觉割裂 | 低 | 本 section **跟 v4**；禁止恢复深底例外 |
 | Phase A 未拆模块 | Phase B 重写成本翻倍 | 中 | A3 + A5 架构今日必须落地 |
 | 纹理远程 fallback 失败 | 地球不可读 | 低 | 本地 `assets/media/` 优先；占位材质 + status 提示 |
 | GSAP / WebGL 内存泄漏 | 长时间滚动后卡顿 | 低 | section 不可见 `dispose` / `stop`；页面切换清理 listener |
@@ -408,7 +410,7 @@ assets/
 1. 用户在当前对话中的明确要求
 2. `AGENTS.md`
 3. **本文件** `docs/OCEAN_EXPLORE_CONVEX_PLAN.md`
-4. `DESIGN.md`（注意 `#ocean-explore` 例外，勿把深底扩散全站）
+4. `DESIGN.md` + `docs/OCEAN_EXPLORE_CONSTITUTION.md`（`#ocean-explore` 跟 v4，无深底例外）
 5. `docs/ACCEPTANCE.md`、`docs/DATA_SOURCES.md`
 6. `TASKS.md` 中「ocean-explore Convex 复刻」勾选状态
 
@@ -418,13 +420,13 @@ assets/
 
 ```text
 执行 Phase A（今日 MVP）完整清单 A0–A8：
-1. #ocean-explore Convex 深底布局，隐藏 CSS 气泡与白岛卡片
+1. #ocean-explore v4 浅海雾底 + 左白岛 + 右浮空球（构图可借 Convex，色/质跟 DESIGN）
 2. 调亮地球（A1 参数）
 3. 拆分 assets/js/globe/ 模块，vendor 本地化 GSAP + EffectComposer 套件
 4. 大陆架 toggle + placeholder mask + GSAP uOffset
 5. WebGL 气泡：RenderTarget 双 pass + InstancedMesh 简化 IOR shader
 6. CSS2D 五大洋标记 + modal；IO 启停 + reduced-motion
-7. 更新 DATA_SOURCES / TASKS / 设计例外说明
+7. 更新 DATA_SOURCES / TASKS / 宪法与 DESIGN（无深底例外）
 8. Vercel 验收
 Phase B/C 今日不做，仅维护 TASKS.md backlog。
 ```
@@ -441,7 +443,7 @@ Agent 结束时应提供：
 ### 9.4 协作约束（来自 AGENTS.md）
 
 - 一次集中完成一个可验收目标（Phase A 为一个目标）。
-- 不得未经用户确认做全站「最终美化」；`#ocean-explore` 例外已在本文档确认。
+- 不得未经用户确认做全站「最终美化」；`#ocean-explore` **已取消深底例外**，跟 v4。
 - 第三方库用途须在 `DATA_SOURCES.md` 说明；关键功能不依赖 CDN。
 - 修改视觉前读取 `DESIGN.md` 与 lancun-design Skill（工具用法）。
 - 保留用户已有成果；`home-globe.js` 迁移时保留可回滚 backup。

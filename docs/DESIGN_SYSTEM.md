@@ -43,7 +43,17 @@
 ## 5. 废弃（v2.3）
 
 - `body::after` 全站光池、`ocean-caustics` 展示已关闭
+- `#ocean-explore` 深色 Convex 沉浸例外已撤销（2026-07-18）
+
+## 5.1 `#ocean-explore`（v4 对齐，无例外）
+
+| 项 | 实现 |
+|---|---|
+| Section 底 | `--mist-from` → `--mist-to` 浅海雾渐变 |
+| 左栏 | `.page-island` / `--surface-elevated` + `--ink` |
+| WebGL clear | 不透明 `0xe0f2fe`（`--mist-to`），禁止 alpha=0 白屏 |
+| 布局 | 见 `docs/OCEAN_EXPLORE_CONSTITUTION.md` |
 
 ## 6. 相关
 
-- [`DESIGN.md`](../DESIGN.md) · [`.codexrules`](../.codexrules) · [`DATA_SOURCES.md`](DATA_SOURCES.md)
+- [`DESIGN.md`](../DESIGN.md) · [`.codexrules`](../.codexrules) · [`DATA_SOURCES.md`](DATA_SOURCES.md) · [`OCEAN_EXPLORE_CONSTITUTION.md`](OCEAN_EXPLORE_CONSTITUTION.md)

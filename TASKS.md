@@ -18,6 +18,19 @@
 ## 正在进行
 
 - [ ] 首页背景视频（0.6 倍速循环）的用户目视验收。
+- [ ] 「我们的海洋」「海的作用」具体指标讨论 → 写入 `docs/OCEAN_PAGE.md` 附录 A.2。
+
+## 「我们的海洋」页面宪法（2026-07-18）
+
+> 权威：`docs/OCEAN_PAGE.md` v1.1（计划兼宪法）
+
+- [x] 锁定三节结构：海洋数据看板 → 海的作用 → 五大洋竖排
+- [x] 锁定删除本页可拖地球与三节点；污染数据不进本页
+- [x] 锁定第一节 **6 看板**（Coral Watch×3 + NOAA×3）；Protected Planet 移出第一节
+- [x] 第一节 6 指标写入 `OCEAN_PAGE.md` 附录 A.1
+- [x] 锁定方案 B：Coral Watch + NOAA + mock 降级（第一节）
+- [x] 同步 `PAGE_STRUCTURE.md`、`DATA_SOURCES.md`
+- [ ] 确认附录 A.2「海的作用」指标后，实现轮重写 `pages/ocean.html`
 
 ## Phase A — `#ocean-explore` Convex 风格 Globe MVP（2026-07-18）
 
@@ -73,19 +86,48 @@
 ## ocean-explore Convex 复刻
 
 > 总任务书：`docs/OCEAN_EXPLORE_CONVEX_PLAN.md`  
-> 目标：Convex「Where we are working」启发式 MVP；内容仍为五大洋；`#ocean-explore` 局部深底例外（`#0F172A → #1E3A8A`）。
+> **视觉/布局绑定法：** `docs/OCEAN_EXPLORE_CONSTITUTION.md`（黄金比 38/62、Z 层、地球铅垂轴、液体玻璃气泡前后分层；改前/改后强制截图自检）  
+> 目标：Convex「Where we are working」**构图**启发式 MVP；内容仍为五大洋；**色/质跟 v4（无深底例外）**：浅海雾底 + 白内容岛 + 浮空地球。绑定法：`OCEAN_EXPLORE_CONSTITUTION.md` v1.1。
+
+### Constitution 落地（2026-07-18）
+
+- [x] 写入 `OCEAN_EXPLORE_CONSTITUTION.md` + 本条 TASKS 索引
+- [x] 黄金比布局 38/62 + 地球右区尺度 / Y 轴自转（polar 窄带锁定）
+- [x] 气泡前后分层 + 液体玻璃；Composer vignette 保持 OFF
+- [x] Playwright 自检截图 `constitution-check-before.png` / `constitution-check-after.png`
+- [x] **v1.1** 撤销深色例外：浅海雾底 + 白岛文案 + 地球完整浮空（viewOffset 右区）+ 海洋提亮 + 气泡克制
+- [x] Composer vignette 仍 OFF（用户未要求开启）
+- [x] **v1.3** 右区几何中心 + 整球安全边；`earthGroup.rotation.y` 独立自转/拖拽（移除 OrbitControls.autoRotate）；scroll 仅 dolly
 
 ### Phase A · 今日 MVP
 
-- [ ] **A0** 前置：读取 AGENTS / DESIGN / ACCEPTANCE / 本计划；确认 serve.ps1 与 Vercel 一致
-- [ ] **A1** 地球调亮：HemisphereLight、ACES exposure ~1.25、emissive、云/大气 opacity、初始 rotation y ~-25°
-- [ ] **A2** 布局：Convex 深底渐变；左白字文案（非白岛卡片）；右大地球；大陆架 toggle UI；隐藏 CSS 气泡
-- [ ] **A3** 模块拆分：`assets/js/globe/`（GlobeScene / earth / shelves / bubbles / markers / composer stub）；vendor 本地化 EffectComposer + GSAP
-- [ ] **A4** 大陆架 toggle：placeholder `shelves-mask.png` + GSAP `uOffset` 0↔1；reduced-motion 即时切换
-- [ ] **A5** WebGL 气泡双 pass：RenderTarget(earth+clouds) → InstancedMesh IOR shader；40/20 实例
-- [ ] **A6** CSS2D 五大洋标记 + modal（Esc / 键盘 a11y）；对接 `LANCUN_DATA.fiveOceans`
-- [ ] **A7** 性能：IntersectionObserver 启停 rAF；mobile 降级；`LANCUN_homeGlobe.applyMotion()`
+- [x] **A0** 前置：读取 AGENTS / DESIGN / ACCEPTANCE / 本计划；确认 serve.ps1 与 Vercel 一致
+- [x] **A1** 地球调亮：HemisphereLight、ACES exposure ~1.25、emissive、云/大气 opacity、初始 rotation y ~-25°
+- [x] **A2** 布局：Convex 深底渐变；左白字文案（非白岛卡片）；右大地球；大陆架 toggle UI；隐藏 CSS 气泡
+- [x] **A3** 模块拆分：`assets/js/globe/`（GlobeScene / earth / shelves / bubbles / markers / composer stub）；vendor 本地化 EffectComposer + GSAP
+- [x] **A4** 大陆架 toggle：placeholder `shelves-mask.png` + GSAP `uOffset` 0↔1；reduced-motion 即时切换
+- [x] **A5** WebGL 气泡双 pass：RenderTarget(earth+clouds) → InstancedMesh IOR shader；40/20 实例
+- [x] **A6** CSS3D 五大洋标记 + modal（Esc / 键盘 a11y）；对接 `LANCUN_DATA.fiveOceans`
+- [x] **A7** 性能：IntersectionObserver 启停 rAF；mobile 降级；`LANCUN_homeGlobe.applyMotion()`
 - [ ] **A8** 文档 + 验收：DATA_SOURCES、设计例外说明、Vercel 无痕窗口 + Console 0 error
+
+### ocean-explore 视觉修复（2026-07-18）
+
+- [x] 白屏回归：WebGL 透明清屏 + 浏览器合成 → 改用 `#0F172A` 不透明清屏 + section/canvas-host 深底渐变兜底
+- [x] 地球不可见：`camera.layers.disableAll()` 双 pass 与 composer RT 路径导致 mesh 未写入帧缓冲；改为 bubble `visible` 切换 + 直接 screen pass
+- [x] 布局：`::before` 深底、`overlay` 左栏渐变可读、地球偏右 framing（`EARTH_OFFSET` / `CAMERA_HOME`）
+- [x] 本地 `#ocean-explore` 桌面/窄屏截图 + Console 0 blocking error
+
+### Phase D — Convex 分阶段修复（2026-07-18）
+
+- [x] **D0** 不透明 `setClearColor(0x0f172a, 1)`；禁用 alpha=0 清屏；气泡默认关直至地球验收
+- [x] **D0** 地球为右侧离散交互球体（非全屏背景）；`EARTH_OFFSET (0.72,-0.02,0)` / `CAMERA_HOME (-0.22,0.06,2.45)` / fov 36
+- [x] **D0→D1** CSS3D `+` 标记 scale `0.0015`（根因：默认 scale=1 → ~32000px 白雾覆盖）
+- [x] **D1** 大陆架 toggle 改底部左侧（Convex）；hint 右下；overlay `pointer-events: none`；标记点击开详情
+- [x] **D2** 气泡减速：`uBounds~(1.2,1.6,1.0)`、`uSpeed 0.12`、boundsFade 按 bounds 缩放；折射 RT 清屏用海军蓝
+- [ ] **D3** Composer vignette `uStrength~0.18`（参数已备，未接回渲染环——待目视确认气泡稳定后启用）
+- [x] **D4** 布局：去掉顶栏 toolbar；footer 左 toggle / 右 hint；左栏文案 scrim 不盖死地球
+- [ ] **D-验收** 用户目视：亚太朝向、气泡可见度、是否启用 Composer
 
 ### Phase B · 续做 backlog（+1–2 天）
 

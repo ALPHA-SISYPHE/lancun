@@ -19,11 +19,13 @@ uniform float uJitterAmplitude;
 
 varying vec3 vNormal;
 varying vec3 vViewDir;
+varying vec3 vWorldPos;
 varying vec2 vScreenUv;
 varying vec2 vUv;
 varying float vAlpha;
 varying float vCenterToCamera;
 varying float vContentMix;
+varying float vDisplacement;
 
 const float PI = 3.14159265359;
 
@@ -48,7 +50,7 @@ float snoise(vec3 v) {
     + i.x + vec4(0.0, i1.x, i2.x, 1.0));
   float n_ = 1.0 / 7.0;
   vec3 ns = n_ * vec3(1.0, 0.5, 0.25);
-  vec3 j = p - 49.0 * floor(p * ns.z * ns.z);
+  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
   vec4 x_ = floor(j * ns.z) + 0.5;
   vec4 y_ = floor(j * ns.y) + 0.5;
   vec4 x = x_ * ns.x + 0.5;
@@ -88,34 +90,38 @@ void main() {
   float jitter = sin(centerPos.x + centerPos.z * uJitterFrequency + uTime * uJitterSpeed + iPhase * PI * 2.0);
   centerPos.x += jitter * uJitterAmplitude;
 
-  vec3 local = position * iScale + centerPos;
+  float bubbleRadius = iScale;
+  vec3 local = position * bubbleRadius + centerPos;
 
   float wobble = snoise(local * uNoiseFrequency + uTime * uNoiseSpeed + iPhase);
   wobble = wobble * 0.5 + 0.5;
   local += normal * wobble * uNoiseAmplitude;
+  vDisplacement = wobble * uNoiseAmplitude;
 
   vec3 fromEarth = centerPos - uEarthOrigin;
   float dist = length(fromEarth);
   vec3 radial = dist > 0.0001 ? fromEarth / dist : vec3(0.0, 1.0, 0.0);
   vec3 tangent = normalize(cross(radial, vec3(0.0, 1.0, 0.0)));
   vec3 bitangent = cross(radial, tangent);
-  vec3 orbitOffset = tangent * sin(uTime * 0.12 + iPhase * 6.28318) * 0.04 / uBubbleOrbitTightness
-    + bitangent * cos(uTime * 0.12 + iPhase * 4.0) * 0.04 / uBubbleOrbitTightness;
+  vec3 orbitOffset = tangent * sin(uTime * 0.08 + iPhase * 6.28318) * 0.012 / uBubbleOrbitTightness
+    + bitangent * cos(uTime * 0.08 + iPhase * 4.0) * 0.012 / uBubbleOrbitTightness;
   local += orbitOffset;
 
-  float push = smoothstep(1.32, 1.06, dist);
-  local += radial * push * uBubbleDisplacementStrength * 0.22;
+  float push = smoothstep(1.18, 0.92, dist);
+  local += radial * push * uBubbleDisplacementStrength * 0.14;
 
-  vec4 mvPosition = modelViewMatrix * vec4(local, 1.0);
+  vec4 worldPosition = modelMatrix * vec4(local, 1.0);
+  vec4 mvPosition = viewMatrix * worldPosition;
 
   vNormal = normalize(normalMatrix * normal);
   vViewDir = normalize(-mvPosition.xyz);
+  vWorldPos = worldPosition.xyz;
   vScreenUv = (projectionMatrix * mvPosition).xy * 0.5 + 0.5;
   vCenterToCamera = abs(distance(centerPos, cameraPosition));
 
   float boundsFade = smoothstep(1.0, 3.0, abs(centerPos.y - uBounds.y * 0.5))
     * smoothstep(1.0, 3.0, abs(centerPos.y + uBounds.y * 0.5));
-  vAlpha = (0.22 + iScale * 0.28) * boundsFade;
+  vAlpha = (0.08 + bubbleRadius * 0.14) * boundsFade;
 
   gl_Position = projectionMatrix * mvPosition;
 }

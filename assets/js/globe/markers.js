@@ -80,6 +80,8 @@ export function createMarkers({
     });
     const label = new CSS3DSprite(el);
     label.position.copy(latLonToVector3(ocean.lat, ocean.lon, 1.06));
+    // CSS3D maps ~1 world unit ≈ 1 CSS px; unit-sphere pins need ~1/500–1/800 scale.
+    label.scale.setScalar(0.0015);
     earthGroup.add(label);
     markerPins.push({ el, ocean, label });
   });

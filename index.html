@@ -73,26 +73,36 @@
       </section>
 
       <section id="ocean-explore" class="ocean-explore" aria-labelledby="ocean-explore-title" data-header-sentinel data-ocean-explore>
-        <div class="ocean-explore__inner">
-          <div class="ocean-explore__layout">
-            <div class="ocean-explore__copy" data-ocean-panel>
-              <div class="ocean-panel-intro" data-ocean-intro>
-                <p class="eyebrow ocean-explore__eyebrow">五大洋</p>
-                <h2 id="ocean-explore-title">我们在守护哪一片海？</h2>
-                <p class="ocean-explore__lede">地球被一片相互联通的咸水覆盖。点击右侧地球上的标记，认识太平洋、大西洋、印度洋、南大洋与北冰洋——它们共同调节气候、承载生命，也需要我们的理解与行动。</p>
-                <p class="ocean-panel-hint">拖动地球可旋转视角；不拖动时它会缓慢自转。</p>
-                <div class="ocean-explore__actions">
-                  <a class="button button-secondary ocean-explore__link" href="pages/ocean.html">探索我们的海洋</a>
+        <div class="ocean-explore__canvas-host" data-globe-scene data-globe-canvas-wrap>
+          <canvas data-globe-canvas aria-label="可拖动旋转的地球"></canvas>
+          <p class="globe-status" data-globe-status hidden role="status">
+            地球 3D 未能加载。请确认浏览器支持 WebGL；若仍空白，可在项目文件夹运行本地服务器后打开
+            <code>http://127.0.0.1:8080/index.html</code>（见根目录 <code>serve.ps1</code>）。
+          </p>
+        </div>
+        <div class="ocean-explore__overlay">
+          <div class="ocean-explore__inner">
+            <div class="ocean-explore__layout">
+              <div class="ocean-explore__copy page-island" data-ocean-panel>
+                <div class="ocean-panel-intro" data-ocean-intro>
+                  <p class="eyebrow ocean-explore__eyebrow">五大洋</p>
+                  <h2 id="ocean-explore-title">我们在守护哪一片海？</h2>
+                  <p class="ocean-explore__lede">地球被一片相互联通的咸水覆盖。点击右侧地球上的标记，认识太平洋、大西洋、印度洋、南大洋与北冰洋——它们共同调节气候、承载生命，也需要我们的理解与行动。</p>
+                  <p class="ocean-panel-hint">拖动地球可旋转视角；不拖动时它会缓慢自转。</p>
+                  <div class="ocean-explore__actions">
+                    <a class="button button-secondary ocean-explore__link" href="pages/ocean.html">探索我们的海洋</a>
+                  </div>
                 </div>
+                <article class="ocean-panel-detail" data-ocean-detail hidden>
+                  <button type="button" class="ocean-panel-close" data-ocean-close aria-label="关闭并返回总介绍"><span aria-hidden="true">×</span></button>
+                  <h3 data-ocean-detail-title></h3>
+                  <p data-ocean-detail-text></p>
+                  <a class="button button-secondary ocean-panel-more" data-ocean-detail-link href="pages/ocean.html">了解更多</a>
+                </article>
               </div>
-              <article class="ocean-panel-detail" data-ocean-detail hidden>
-                <button type="button" class="ocean-panel-close" data-ocean-close aria-label="关闭并返回总介绍"><span aria-hidden="true">×</span></button>
-                <h3 data-ocean-detail-title></h3>
-                <p data-ocean-detail-text></p>
-                <a class="button button-secondary ocean-panel-more" data-ocean-detail-link href="pages/ocean.html">了解更多</a>
-              </article>
+              <div class="ocean-explore__stage" aria-hidden="true"></div>
             </div>
-            <div class="globe-scene" data-globe-scene>
+            <div class="ocean-explore__footer">
               <div class="globe-scene__toolbar">
                 <button
                   type="button"
@@ -105,13 +115,6 @@
                   <span class="shelves-toggle__label">大陆架分布</span>
                   <span class="shelves-toggle__pill" aria-hidden="true"><span class="shelves-toggle__knob"></span></span>
                 </button>
-              </div>
-              <div class="globe-canvas-wrap" data-globe-canvas-wrap>
-                <canvas data-globe-canvas aria-label="可拖动旋转的地球"></canvas>
-                <p class="globe-status" data-globe-status hidden role="status">
-                  地球 3D 未能加载。请确认浏览器支持 WebGL；若仍空白，可在项目文件夹运行本地服务器后打开
-                  <code>http://127.0.0.1:8080/index.html</code>（见根目录 <code>serve.ps1</code>）。
-                </p>
               </div>
               <p class="globe-scene-hint">拖动旋转 · 点击 + 查看介绍</p>
             </div>

@@ -1,6 +1,6 @@
 /**
- * ScrollTrigger scrub for #ocean-explore — subtle earth rotation + camera dolly.
- * Skipped when prefers-reduced-motion / lancun prefs.
+ * ScrollTrigger subtle camera dolly for #ocean-explore.
+ * Does NOT touch earthGroup.rotation.y — constitution v1.3 owns independent Y spin.
  */
 export function bindGlobeScroll({ section, camera, earthGroup, reduceMotion }) {
   const noop = { apply: () => {}, dispose: () => {} };
@@ -11,8 +11,8 @@ export function bindGlobeScroll({ section, camera, earthGroup, reduceMotion }) {
 
   window.gsap.registerPlugin(window.ScrollTrigger);
 
-  const baseRotY = earthGroup.rotation.y;
-  const state = { rot: 0, dolly: 1 };
+  const state = { dolly: 1 };
+  const homeZ = () => camera.userData.homeZ ?? camera.position.z;
 
   const trigger = window.ScrollTrigger.create({
     trigger: section,
@@ -20,22 +20,20 @@ export function bindGlobeScroll({ section, camera, earthGroup, reduceMotion }) {
     end: 'bottom 12%',
     scrub: 0.55,
     onUpdate: (self) => {
-      const p = self.progress;
-      state.rot = p * 0.32;
-      state.dolly = 1 - p * 0.045;
+      state.dolly = 1 - self.progress * 0.04;
     },
   });
 
   const apply = () => {
-    earthGroup.rotation.y = baseRotY + state.rot;
-    if (state.dolly !== 1) camera.position.multiplyScalar(state.dolly);
+    // Keep X/Y fixed; only scale Z from resize-fitted home distance.
+    camera.position.z = homeZ() * state.dolly;
   };
 
   return {
     apply,
     dispose: () => {
       trigger.kill();
-      earthGroup.rotation.y = baseRotY;
+      camera.position.z = homeZ();
     },
   };
 }

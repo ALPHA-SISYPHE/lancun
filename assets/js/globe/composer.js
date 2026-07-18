@@ -9,8 +9,8 @@ const VignetteShader = {
   name: 'VignetteShader',
   uniforms: {
     tDiffuse: { value: null },
-    uStrength: { value: 0.38 },
-    uSoftness: { value: 0.55 },
+    uStrength: { value: 0.18 },
+    uSoftness: { value: 0.62 },
   },
   vertexShader: CopyShader.vertexShader,
   fragmentShader: /* glsl */ `
@@ -72,7 +72,8 @@ class TextureInputPass extends Pass {
 
   render(renderer, _writeBuffer, readBuffer) {
     this.material.uniforms.tDiffuse.value = this.texture;
-    renderer.setRenderTarget(readBuffer);
+    const target = this.renderToScreen ? null : readBuffer;
+    renderer.setRenderTarget(target);
     renderer.clear();
     this.fsQuad.render(renderer);
   }

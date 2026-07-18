@@ -20,11 +20,13 @@ uniform float uJitterAmplitude;
 
 varying vec3 vNormal;
 varying vec3 vViewDir;
+varying vec3 vWorldPos;
 varying vec2 vScreenUv;
 varying vec2 vUv;
 varying float vAlpha;
 varying float vCenterToCamera;
 varying float vContentMix;
+varying float vDisplacement;
 
 const float PI = 3.14159265359;
 
@@ -89,34 +91,40 @@ void main() {
   float jitter = sin(centerPos.x + centerPos.z * uJitterFrequency + uTime * uJitterSpeed + iPhase * PI * 2.0);
   centerPos.x += jitter * uJitterAmplitude;
 
-  vec3 local = position * iScale + centerPos;
+  float bubbleRadius = iScale;
+  vec3 local = position * bubbleRadius + centerPos;
 
   float wobble = snoise(local * uNoiseFrequency + uTime * uNoiseSpeed + iPhase);
   wobble = wobble * 0.5 + 0.5;
   local += normal * wobble * uNoiseAmplitude;
+  vDisplacement = wobble * uNoiseAmplitude;
 
   vec3 fromEarth = centerPos - uEarthOrigin;
   float dist = length(fromEarth);
   vec3 radial = dist > 0.0001 ? fromEarth / dist : vec3(0.0, 1.0, 0.0);
   vec3 tangent = normalize(cross(radial, vec3(0.0, 1.0, 0.0)));
   vec3 bitangent = cross(radial, tangent);
-  vec3 orbitOffset = tangent * sin(uTime * 0.12 + iPhase * 6.28318) * 0.04 / uBubbleOrbitTightness
-    + bitangent * cos(uTime * 0.12 + iPhase * 4.0) * 0.04 / uBubbleOrbitTightness;
+  vec3 orbitOffset = tangent * sin(uTime * 0.08 + iPhase * 6.28318) * 0.012 / uBubbleOrbitTightness
+    + bitangent * cos(uTime * 0.08 + iPhase * 4.0) * 0.012 / uBubbleOrbitTightness;
   local += orbitOffset;
 
-  float push = smoothstep(1.32, 1.06, dist);
-  local += radial * push * uBubbleDisplacementStrength * 0.22;
+  float push = smoothstep(1.18, 0.92, dist);
+  local += radial * push * uBubbleDisplacementStrength * 0.14;
 
-  vec4 mvPosition = modelViewMatrix * vec4(local, 1.0);
+  vec4 worldPosition = modelMatrix * vec4(local, 1.0);
+  vec4 mvPosition = viewMatrix * worldPosition;
 
   vNormal = normalize(normalMatrix * normal);
   vViewDir = normalize(-mvPosition.xyz);
+  vWorldPos = worldPosition.xyz;
   vScreenUv = (projectionMatrix * mvPosition).xy * 0.5 + 0.5;
   vCenterToCamera = abs(distance(centerPos, cameraPosition));
 
-  float boundsFade = smoothstep(1.0, 3.0, abs(centerPos.y - uBounds.y * 0.5))
-    * smoothstep(1.0, 3.0, abs(centerPos.y + uBounds.y * 0.5));
-  vAlpha = (0.22 + iScale * 0.28) * boundsFade;
+  // Soft edge fade scaled to uBounds (was hard-coded for large bounds → alpha≈0).
+  float halfY = max(uBounds.y * 0.5, 0.01);
+  float boundsFade = 1.0 - smoothstep(halfY * 0.78, halfY, abs(centerPos.y));
+  // Liquid-glass body alpha — visible but not overpowering
+  vAlpha = (0.11 + bubbleRadius * 0.18) * boundsFade;
 
   gl_Position = projectionMatrix * mvPosition;
 }
@@ -135,25 +143,34 @@ uniform float uIorBg;
 uniform float uShininess;
 uniform float uSpecularStrength;
 uniform float uDiffuseStrength;
+uniform float uAmbientStrength;
+uniform float uNoiseAmplitude;
 uniform float uColorFresnelPower;
 uniform vec3 uFresnelColor;
+uniform vec3 uSectionBgColor;
 uniform vec3 uLightPos;
 uniform vec3 uLightColor;
+uniform float uAlphaBoost;
 
 varying vec3 vNormal;
 varying vec3 vViewDir;
+varying vec3 vWorldPos;
 varying vec2 vScreenUv;
 varying vec2 vUv;
 varying float vAlpha;
 varying float vCenterToCamera;
 varying float vContentMix;
+varying float vDisplacement;
 
 vec3 specularHighlight(vec3 lightColor, float shininess) {
-  vec3 lightDir = normalize(uLightPos);
+  vec3 lightDir = normalize(uLightPos - vWorldPos);
   vec3 viewDir = normalize(vViewDir);
   vec3 halfDir = normalize(lightDir + viewDir);
-  float spec = pow(max(dot(normalize(vNormal), halfDir), 0.0), shininess);
-  return lightColor * spec * uSpecularStrength;
+  float ndotl = max(dot(normalize(vNormal), lightDir), 0.0);
+  float ndoth = max(dot(normalize(vNormal), halfDir), 0.0);
+  vec3 diffuse = ndotl * lightColor * uDiffuseStrength;
+  vec3 spec = pow(ndoth, shininess) * lightColor * uSpecularStrength;
+  return diffuse + spec;
 }
 
 void main() {
@@ -163,24 +180,41 @@ void main() {
   float iorScale = mix(uIorNormalsMax, uIorNormalsMin, camT);
 
   vec3 n = normalize(vNormal);
-  vec2 refractOffset = n.xy * iorScale + n.yz * (iorScale * 0.45);
-  vec3 refracted = texture2D(tDiffuse, uv + refractOffset).rgb;
-  refracted = mix(refracted, refracted * uIorBg, 0.15);
-
   vec3 viewDir = normalize(vViewDir);
+
+  vec2 bendUv = uv + n.xy * iorScale;
+  vec2 bendUvOuter = uv + n.xy * iorScale * 1.55 + n.yz * (iorScale * 0.34);
+  vec4 bgCenter = texture2D(tDiffuse, clamp(bendUv, 0.0, 1.0));
+  vec4 bgOuter = texture2D(tDiffuse, clamp(bendUvOuter, 0.0, 1.0));
+  vec3 refracted = mix(bgCenter.rgb, bgOuter.rgb, 0.42);
+  refracted = mix(refracted, refracted * uIorBg, 0.16);
+  float bgPresence = max(bgCenter.a, bgOuter.a);
+  refracted = mix(uSectionBgColor, refracted, max(bgPresence, 0.55));
+
+  // Soft glass body — slight cool tint readable on light mist bg
+  vec3 glassBody = mix(uSectionBgColor, vec3(0.78, 0.90, 0.98), 0.22);
+  refracted = mix(glassBody, refracted, 0.76);
+
+  vec3 lighting = specularHighlight(uLightColor, uShininess);
+  vec3 color = refracted * (vec3(uAmbientStrength) + lighting);
+
   float fresnel = pow(1.0 - max(dot(viewDir, n), 0.0), uColorFresnelPower);
-  vec3 tint = mix(vec3(0.72, 0.92, 1.0), uFresnelColor, 0.35);
-  vec3 color = mix(refracted, tint, fresnel * 0.48);
-  color += specularHighlight(uLightColor, uShininess);
-  color += uFresnelColor * fresnel * 0.22;
+  float rimMix = mix(1.1, 0.88, smoothstep(0.0, max(uNoiseAmplitude * 2.0, 0.001), vDisplacement));
+  // Cooler rim so glass reads on light seawater blue without overpowering
+  vec3 rimTint = mix(vec3(0.45, 0.62, 0.78), uFresnelColor, 0.55);
+  color += rimTint * fresnel * rimMix * 0.38;
+  color += vec3(1.0) * pow(fresnel, 3.2) * 0.12;
 
   if (vContentMix > 0.5) {
-    vec2 contentUv = vUv * 0.85 + 0.075;
+    vec2 contentUv = vUv * 0.82 + 0.09;
     vec3 content = texture2D(tContent, contentUv).rgb;
-    color = mix(color, content, 0.38 * (1.0 - fresnel * 0.6));
+    color = mix(color, content, 0.24 * (1.0 - fresnel * 0.72));
   }
 
-  float alpha = vAlpha + fresnel * 0.42;
-  gl_FragColor = vec4(color * uDiffuseStrength, clamp(alpha, 0.0, 0.85));
+  float specMask = lighting.g * 0.5 + 0.5;
+  float alpha = (vAlpha + fresnel * 0.18 + specMask * 0.03) * uAlphaBoost;
+  alpha = clamp(alpha, 0.06, 0.34);
+
+  gl_FragColor = vec4(color, alpha);
 }
 `;

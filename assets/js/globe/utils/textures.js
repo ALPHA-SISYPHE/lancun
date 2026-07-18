@@ -136,6 +136,35 @@ function createProceduralShelvesMask(size = 1024) {
   return texture;
 }
 
+function createProceduralEarthTexture(width = 1024, height = 512) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  const ocean = ctx.createLinearGradient(0, 0, 0, height);
+  ocean.addColorStop(0, '#1e4976');
+  ocean.addColorStop(0.5, '#2563eb');
+  ocean.addColorStop(1, '#1e3a8a');
+  ctx.fillStyle = ocean;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = '#3d7a52';
+  for (const c of CONTINENTS) {
+    const cx = ((c.lon + 180) / 360) * width;
+    const cy = ((90 - c.lat) / 180) * height;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, c.rx * (width / 360) * 1.6, c.ry * (height / 180) * 1.6, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  return texture;
+}
+
 export async function loadEarthTexture() {
   if (await hasLocalAsset(EARTH_LOCAL)) {
     try {
@@ -144,7 +173,12 @@ export async function loadEarthTexture() {
       console.warn('Local earth texture unavailable, using remote fallback', err);
     }
   }
-  return loadTexture(EARTH_REMOTE);
+  try {
+    return await loadTexture(EARTH_REMOTE);
+  } catch (err) {
+    console.warn('Remote earth texture unavailable, using procedural fallback', err);
+    return createProceduralEarthTexture();
+  }
 }
 
 export async function loadCloudTexture() {

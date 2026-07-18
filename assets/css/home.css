@@ -22,40 +22,79 @@
 .hero-enter { display: inline-flex; gap: .65rem; margin-top: var(--space-4); padding: .65rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.55); color: inherit; text-decoration: none; transition: transform var(--duration-ui) var(--ease-ui), opacity var(--duration-ui) var(--ease-ui); }
 .hero-enter:hover { opacity: 0.88; transform: translateY(-2px); }
 
-/* —— Ocean explore (Convex-style globe section) —— */
+/* —— Ocean explore (v4: mist sea blue + white island + floating earth) —— */
 .ocean-explore {
-  --globe-scene-height: min(52vh, 36rem);
-  --globe-scene-width: min(92vw, 32rem);
   position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  overflow: hidden;
+  color: var(--ink);
+  background: linear-gradient(165deg, var(--mist-from) 0%, var(--mist-to) 55%, #dbeafe 100%);
+  scroll-margin-top: 4.75rem;
+}
+
+.ocean-explore__canvas-host {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: auto;
+  /* Fallback if WebGL late — match opaque clear */
+  background: var(--mist-to);
+}
+
+.ocean-explore__overlay {
+  position: relative;
+  z-index: 2;
   min-height: 100svh;
   padding-block: clamp(4rem, 10vw, 6rem);
-  overflow: hidden;
-  color: var(--on-dark);
-  background: linear-gradient(165deg, var(--bg-abyss) 0%, var(--bg-sea-lit) 100%);
-  scroll-margin-top: 4.75rem;
+  pointer-events: none;
+  background: transparent;
 }
 
 .ocean-explore__inner {
   position: relative;
-  z-index: 2;
   width: min(calc(100% - 4rem), var(--page-width));
   margin-inline: auto;
+  min-height: min(85vh, 40rem);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--space-2);
+  align-content: stretch;
+}
+
+.ocean-explore__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  pointer-events: none;
 }
 
 .ocean-explore__layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(18rem, 1.15fr);
-  gap: clamp(1.5rem, 4vw, 3rem);
+  /* Constitution: golden-ratio horizontal split ~38% copy / ~62% earth stage */
+  grid-template-columns: minmax(0, 0.382fr) minmax(0, 0.618fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
   align-items: center;
-  min-height: min(85vh, 40rem);
+  min-height: 0;
+}
+
+.ocean-explore__stage {
+  /* Right zone reservation — earth framed by WebGL into this visual mass */
+  min-height: min(62vh, 32rem);
+  pointer-events: none;
 }
 
 .ocean-explore__copy {
-  max-width: 34rem;
+  max-width: 26rem;
+  width: 100%;
+  pointer-events: auto;
+  padding: clamp(1.25rem, 3vw, 2rem);
 }
 
 .ocean-explore__eyebrow {
-  color: var(--accent-sparkle);
+  color: var(--brand-heading-sub);
   margin-bottom: var(--space-2);
 }
 
@@ -65,28 +104,28 @@
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  color: var(--on-dark);
+  color: var(--ink);
 }
 
 .ocean-explore__lede,
 .ocean-explore__copy p {
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--ink-muted);
   line-height: 1.65;
 }
 
-.ocean-panel-hint,
-.globe-scene-hint {
+.ocean-panel-hint {
   margin-top: var(--space-3);
   font-size: .85rem;
-}
-
-.ocean-panel-hint {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--ink-muted);
+  opacity: 0.9;
 }
 
 .globe-scene-hint {
-  color: rgba(255, 255, 255, 0.55);
-  text-align: center;
+  margin: 0;
+  font-size: .85rem;
+  color: var(--ink-muted);
+  text-align: right;
+  pointer-events: none;
 }
 
 .ocean-explore__actions {
@@ -94,24 +133,24 @@
 }
 
 .ocean-explore__link {
-  border-color: rgba(255, 255, 255, 0.35);
-  color: var(--on-dark);
-  background: rgba(59, 130, 246, 0.18);
+  border-color: var(--hairline);
+  color: var(--ink);
+  background: var(--surface-elevated);
 }
 
 .ocean-explore__link:hover {
-  background: rgba(59, 130, 246, 0.32);
-  border-color: rgba(255, 255, 255, 0.55);
+  background: var(--mist-from);
+  border-color: var(--brand-primary);
+  color: var(--brand-strong);
 }
 
 .ocean-panel-detail {
   position: relative;
   padding: var(--space-3);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--on-dark);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  background: var(--mist-from);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
 }
 
 .ocean-panel-detail[hidden] { display: none !important; }
@@ -121,11 +160,11 @@
   padding-right: 2rem;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--on-dark);
+  color: var(--ink);
 }
 
 .ocean-panel-detail p {
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--ink-muted);
 }
 
 .ocean-panel-close {
@@ -136,37 +175,26 @@
   width: 2.25rem;
   height: 2.25rem;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--hairline);
   border-radius: 50%;
-  background: rgba(15, 23, 42, 0.35);
-  color: var(--on-dark);
+  background: var(--surface-elevated);
+  color: var(--ink);
   cursor: pointer;
   font-size: 1.25rem;
   line-height: 1;
 }
 
-.ocean-panel-close:hover { background: rgba(59, 130, 246, 0.35); }
+.ocean-panel-close:hover { background: var(--mist-to); }
 
 .ocean-panel-more { margin-top: var(--space-3); }
 
 .ocean-panel-intro[hidden] { display: none !important; }
 
-/* WebGL globe */
-.globe-scene {
-  position: relative;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: var(--space-2);
-  width: var(--globe-scene-width);
-  max-width: 100%;
-  height: var(--globe-scene-height);
-  margin-inline: auto;
-  justify-self: end;
-}
-
+/* WebGL globe — full-section canvas host; UI overlays in __overlay */
 .globe-scene__toolbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  pointer-events: auto;
 }
 
 .shelves-toggle {
@@ -175,10 +203,11 @@
   gap: var(--space-2);
   min-height: 2.75rem;
   padding: 0.35rem 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-pill);
-  background: rgba(15, 23, 42, 0.45);
-  color: var(--on-dark);
+  background: var(--surface-elevated);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
   font-size: 0.875rem;
   cursor: pointer;
   transition: background var(--duration-ui) var(--ease-ui), border-color var(--duration-ui) var(--ease-ui);
@@ -186,8 +215,8 @@
 
 .shelves-toggle:hover,
 .shelves-toggle:focus-visible {
-  background: rgba(59, 130, 246, 0.28);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: var(--mist-from);
+  border-color: var(--brand-primary);
   outline: none;
 }
 
@@ -196,7 +225,7 @@
   width: 2.5rem;
   height: 1.35rem;
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(15, 23, 42, 0.12);
   transition: background var(--duration-ui) var(--ease-ui);
 }
 
@@ -208,42 +237,37 @@
   height: 1.05rem;
   border-radius: 50%;
   background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.18);
   transition: transform var(--duration-ui) var(--ease-ui);
 }
 
 .shelves-toggle[data-state="on"] .shelves-toggle__pill {
-  background: rgba(94, 234, 212, 0.45);
+  background: rgba(59, 130, 246, 0.45);
 }
 
 .shelves-toggle[data-state="on"] .shelves-toggle__knob {
   transform: translateX(1.15rem);
 }
 
-.globe-canvas-wrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  min-height: min(48vh, 22rem);
-  flex: 1;
-  min-width: 0;
-}
-
 .globe-status {
   position: absolute;
-  inset: 0;
+  inset: auto 50% 50% auto;
   z-index: 8;
   display: grid;
   place-items: center;
+  width: min(22rem, 88vw);
   padding: var(--space-3);
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.65;
   text-align: center;
-  color: var(--on-dark);
-  background: var(--glass-sea);
-  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
-  border: 1px solid var(--glass-border);
+  color: var(--ink);
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-island);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius);
+  transform: translate(50%, 50%);
+  pointer-events: auto;
 }
 
 .globe-status[hidden] {
@@ -255,11 +279,12 @@
   word-break: break-all;
 }
 
-.globe-scene canvas {
+.ocean-explore__canvas-host canvas {
   display: block;
   width: 100%;
   height: 100%;
   touch-action: none;
+  background: transparent;
 }
 
 .globe-label-layer {
@@ -267,6 +292,7 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  background: transparent;
 }
 
 .globe-label-layer .globe-pin {
@@ -310,31 +336,30 @@
     min-height: auto;
   }
 
-  .globe-scene {
-    order: -1;
-    --globe-scene-width: min(92vw, 22rem);
-    --globe-scene-height: min(48vh, 22rem);
-    justify-self: center;
+  .ocean-explore__stage {
+    min-height: min(52vh, 22rem);
   }
 
-  .globe-scene__toolbar {
-    justify-content: center;
+  .ocean-explore__footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .globe-scene-hint {
+    text-align: left;
   }
 }
 
 @media (min-width: 59rem) {
-  .ocean-explore {
-    --globe-scene-width: min(46vw, 560px);
-    --globe-scene-height: min(54vh, 38rem);
-  }
-
-  .globe-canvas-wrap {
-    min-height: min(46vw, 560px);
+  .ocean-explore__layout {
+    min-height: min(72vh, 36rem);
   }
 }
 
 @media (max-width: 36rem) {
-  .ocean-explore { padding-block: var(--space-4); }
+  .ocean-explore__overlay {
+    padding-block: var(--space-4);
+  }
 }
 
 html[data-reduced-motion="true"] .shelves-toggle__knob,

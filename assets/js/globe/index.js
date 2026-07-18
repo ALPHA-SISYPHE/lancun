@@ -54,6 +54,7 @@ async function initHomeGlobe() {
   return {
     applyMotion: () => scene.applyMotion(),
     setShelvesVisible: (on) => scene.setShelvesVisible(on),
+    setBubblesVisible: (on) => scene.setBubblesVisible(on),
     dispose: () => {
       scrollBinding.dispose();
       scene.dispose();
