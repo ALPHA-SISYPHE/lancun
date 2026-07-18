@@ -22,12 +22,13 @@
 
 ## 「我们的海洋」页面宪法（2026-07-18）
 
-> 权威：`docs/OCEAN_PAGE.md` v1.1（计划兼宪法）
+> 权威：`docs/OCEAN_PAGE.md` v1.2（计划兼宪法）
 
 - [x] 锁定三节结构：海洋数据看板 → 海的作用 → 五大洋竖排
 - [x] 锁定删除本页可拖地球与三节点；污染数据不进本页
 - [x] 锁定第一节 **6 看板**（Coral Watch×3 + NOAA×3）；Protected Planet 移出第一节
 - [x] 第一节 6 指标写入 `OCEAN_PAGE.md` 附录 A.1
+- [x] `OCEAN_PAGE.md` §0 用户需求摘要（v1.2）
 - [x] 锁定方案 B：Coral Watch + NOAA + mock 降级（第一节）
 - [x] 同步 `PAGE_STRUCTURE.md`、`DATA_SOURCES.md`
 - [ ] 确认附录 A.2「海的作用」指标后，实现轮重写 `pages/ocean.html`
@@ -98,6 +99,7 @@
 - [x] **v1.1** 撤销深色例外：浅海雾底 + 白岛文案 + 地球完整浮空（viewOffset 右区）+ 海洋提亮 + 气泡克制
 - [x] Composer vignette 仍 OFF（用户未要求开启）
 - [x] **v1.3** 右区几何中心 + 整球安全边；`earthGroup.rotation.y` 独立自转/拖拽（移除 OrbitControls.autoRotate）；scroll 仅 dolly
+- [x] **v1.4** 球心整屏 69%（Q1=C）；`min(右区宽,高)×0.74` 禁止裁切（Q2=A）；废止 stage 内栏锚点
 
 ### Phase A · 今日 MVP
 

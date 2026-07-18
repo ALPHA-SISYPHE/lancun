@@ -2,10 +2,10 @@
 
 | 项 | 内容 |
 |---|---|
-| 版本 | **1.3** |
+| 版本 | **1.4** |
 | 地位 | `#ocean-explore` **绑定视觉与布局法**；与本文件冲突时，以本文件为准（用户当场口头例外除外） |
 | 创建 | 2026-07-18 |
-| 修订 | 2026-07-18 — **v1.3**：地球球心落在右黄金区几何中心；整球入画 + 8–12% 安全边；**独立自转** = `earthGroup.rotation.y`（禁用 OrbitControls.autoRotate）；保留 v1.2 独立 layers + v4 浅底 |
+| 修订 | 2026-07-18 — **v1.4**：球心锚定 **整屏** 右黄金区中心（≈视口宽 **69%**，非内栏 stage）；缩放 = `min(右区宽,右区高)×0.74` 禁止裁切；决策来源 **用户 Q1=C / Q2=A**。保留 v1.3 独立自转 + v1.2 layers + v4 浅底 |
 | 参考 | Convex「Where we are working」**仅借构图**（左文右球、浮空球、前后气泡）；色/质跟 `DESIGN.md` v4 |
 | 本地验收 | `http://127.0.0.1:8080/index.html#ocean-explore` |
 | 关联 | `docs/OCEAN_EXPLORE_CONVEX_PLAN.md`（任务书）、根目录 `DESIGN.md`（全站色/质，**本 section 无例外**） |
@@ -26,10 +26,11 @@
 | 分割比 | 桌面端水平 **左 ≈ 38% / 右 ≈ 62%**（φ 近似：`1 : 1.618` → `38.2% : 61.8%`） |
 | 左栏（小） | **白内容岛**承载文案 + CTA；不抢地球主体 |
 | 右栏（大） | **地球作为可交互浮空物体的取景区**；不得把地球当全屏壁纸 |
-| **右区中央（硬性 · v1.3）** | 地球球心的屏幕投影须落在桌面 **右黄金区**（约宽 38%–100%）的 **几何中心**（测 `.ocean-explore__stage` 相对 canvas；缺省 `0.38 + 0.31 = 0.69`） |
-| **完整球体（硬性）** | 右黄金区内必须能看见 **整颗地球的球体剪影**；四周相对球直径留约 **8–12%** 安全边；**禁止**顶底/左右裁切；相机距离 / FOV / `setViewOffset` 保证 |
-| 实现 | CSS `grid-template-columns` 约 `0.382fr 0.618fr`（或等价 `minmax`）；窄屏可叠成单列，但仍须保留「球在文案下/后、尺度够大、轮廓完整」 |
-| 禁止 | 近似对半分（~50/50）、左栏过宽吞掉右区、地球居中铺满整段、球体被边框严重裁切、把球当壁纸铺满、球心落在左岛或整段正中 |
+| **右区中央（硬性 · v1.4）** | 「右半区」= **整屏 / section canvas 全宽** 上 `x ∈ [0.38, 1.0]`；球心投影目标 **`x = 0.69`**（`0.38 + 0.62/2`）。**禁止**以 `.ocean-explore__stage` / `page-width` 内栏中心作为球心锚点（stage 仅 CSS 占位） |
+| **完整球体（硬性 · v1.4）** | `diameter_px ≤ min(rightZoneW, rightZoneH) × 0.74`（右区宽≈`0.62×canvasW`，高≈`canvasH`）；留约 8–12% 安全边；**宁可略小，禁止裁切、禁止压住左白岛**；桌面优先 |
+| 实现 | CSS 列比可仍约 38/62；球心与尺寸以 **整屏分数** 计算并随 resize 重算 |
+| 禁止 | 球心贴右缘裁切、只按高度放大导致左右溢出、用内栏 stage 中心代替整屏 69% |
+| 决策记录 | **用户 2026-07-18：Q1=C，Q2=A** |
 
 **Earth is NOT background wallpaper; it is a discrete floating interactive 3D object inserted into the page.**
 
@@ -84,8 +85,8 @@
 
 | 规则 | 要求 |
 |---|---|
-| 尺度 | 投影直径约 **右区高度的 70–78%**（整球 + 安全边）；右区主角，不是角落小饰品；同时满足 §1 |
-| 形态 | 清晰球体轮廓；浮在右区中央；**完整轮廓可见**；**不**填满整段作 backdrop、**不**被视口边严重裁切 |
+| 尺度 | 投影直径 = **`min(右区宽, 右区高) × 0.74`**（整球 + 安全边）；右区主角；同时满足 §1 v1.4 |
+| 形态 | 清晰球体轮廓；浮在 **整屏 69% 宽** 处；**完整轮廓可见**；**不**填满整段作 backdrop、**不**被视口边严重裁切 |
 | **独立自转（硬性）** | 自动旋转 = 每帧递增 **`earthGroup.rotation.y`**（绕世界 / 铅垂 Y）；拖动 = 绕同一轴改 `rotation.y` |
 | 自转轴 | **仅绕竖直 / 铅垂轴（世界 Y）**；**禁止**翻滚（tumble / 乱极角） |
 | 相机 | 相机 **固定正对球心**（可微调 z）；**禁止**用 `OrbitControls.autoRotate` 或绕球转相机伪装自转 |
@@ -153,7 +154,8 @@ AFTER — Layout
 [ ] 桌面约 38/62，左文右球
 [ ] 左栏为白内容岛（深墨字）
 [ ] 地球是离散球体，非全屏壁纸
-[ ] 右黄金区内可见完整球体剪影（未被严重裁切）
+[ ] 球心屏幕 x ≈ 整屏 69% ±2%（非内栏 stage 中心）
+[ ] 整球入画：无右缘/顶底裁切；未压住左白岛
 
 AFTER — Z-layer / Three.js layers
 [ ] 通透海水蓝浅底可见且无白屏
@@ -165,9 +167,9 @@ AFTER — Z-layer / Three.js layers
 [ ] UI 在最上层且可点区域正确
 
 AFTER — Earth
-[ ] 球心 ≈ 右栏几何中心
-[ ] 整球入画 + 约 8–12% 安全边（相对球直径）
-[ ] 投影直径约右区高 70–78%
+[ ] 球心 ≈ 视口宽 0.69（整屏右黄金区中心）
+[ ] diameter ≤ min(0.62×W, H) × 0.74
+[ ] 整球入画 + 约 8–12% 安全边
 [ ] 球体轮廓清晰、浮空、离散
 [ ] 可拖拽改 earthGroup.rotation.y（非绕球转相机）
 [ ] 低速绕竖直轴自转（earthGroup.rotation.y；无 tumble）
@@ -213,8 +215,8 @@ AFTER — Safety
 | CSS 列比 | `grid-template-columns: minmax(0, 0.382fr) minmax(0, 0.618fr)` |
 | Section 底 | `linear-gradient` 用 `--mist-from` / `--mist-to`（或等价浅海雾） |
 | 左栏 | `.page-island` 或同 token 白岛：`--surface-elevated` + `--shadow-island` + `--ink` |
-| 球心屏幕位 | 测 stage 中心 → `setViewOffset`；缺省 NDC 中心 x≈0.69 |
-| Camera / FOV | 固定 lookAt 球心；按 FOV/`z` 使投影直径 ≈ 右区高 70–78%（整球 + 安全边） |
+| 球心屏幕位 | 固定 `EARTH_VIEW_CENTER_X = 0.69`（整屏 canvas 宽）；`setViewOffset`；用 project 校验 `earthScreenX` |
+| Camera / FOV | 固定 lookAt 球心；`targetDiameter = min(0.62×W, H) × 0.74` 反算 z；**禁止**过紧 z 下限导致放大裁切 |
 | 自转 | `earthGroup.rotation.y` 低速自转 + pointer 拖 yaw；**禁止** OrbitControls.autoRotate |
 | Three.js layers | Earth = **0**；back bubbles = **1**；front bubbles = **2**；多 pass + shared depth |
 | Bubbles | 全视口 frustum 采样；`uSectionBgColor` 对齐浅底；强度克制 |

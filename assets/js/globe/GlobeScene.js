@@ -12,10 +12,13 @@ const EARTH_OFFSET = new THREE.Vector3(0, 0, 0);
 const CAMERA_FOV = 34;
 /** Sphere mesh radius (+ atmosphere margin) for framing math. */
 const EARTH_FRAME_RADIUS = 1.08;
-/** Target projected diameter as fraction of right-stage height (70–78%). */
-const EARTH_DIAMETER_OF_STAGE_H = 0.74;
-/** Fallback: right-zone center as fraction of canvas width (0.38 + 0.62/2). */
-const EARTH_VIEW_CENTER_X_FALLBACK = 0.69;
+/** Constitution v1.4: diameter = min(rightZoneW, rightZoneH) * this (8–12% margin). */
+const EARTH_FIT_FRACTION = 0.74;
+/** Full-viewport right golden zone: [0.38, 1.0] → center = 0.38 + 0.62/2. */
+const RIGHT_ZONE_LEFT = 0.38;
+const RIGHT_ZONE_WIDTH = 0.62;
+/** Ball center as fraction of full canvas/section width (NOT inner page-width stage). */
+const EARTH_VIEW_CENTER_X = RIGHT_ZONE_LEFT + RIGHT_ZONE_WIDTH * 0.5; // 0.69
 /** rad/s — slow plumb-axis spin on earthGroup.rotation.y */
 const EARTH_SPIN_SPEED = 0.085;
 const DRAG_YAW_PER_PX = 0.0055;
@@ -298,59 +301,54 @@ export class GlobeScene {
   }
 
   /**
-   * Measure right golden-zone center as fraction of canvas width.
-   */
-  _measureEarthViewCenterX(canvasW) {
-    if (canvasW < 1) return EARTH_VIEW_CENTER_X_FALLBACK;
-    const stage = this.section?.querySelector('.ocean-explore__stage');
-    const host = this.canvasWrap || this.section;
-    if (!stage || !host) return EARTH_VIEW_CENTER_X_FALLBACK;
-
-    const stageRect = stage.getBoundingClientRect();
-    const hostRect = host.getBoundingClientRect();
-    if (stageRect.width < 8 || hostRect.width < 8) return EARTH_VIEW_CENTER_X_FALLBACK;
-
-    const centerX = stageRect.left + stageRect.width * 0.5 - hostRect.left;
-    return THREE.MathUtils.clamp(centerX / hostRect.width, 0.55, 0.92);
-  }
-
-  /**
-   * Shift projection so earth sits at right-stage geometric center.
+   * Constitution v1.4: place world origin at full-canvas x = 0.69 (viewport right golden center).
+   * Three.js: positive offsetX shifts frustum sampling; negative offset moves content right.
    */
   _applyEarthViewOffset(w, h) {
     if (!this.camera || w < 1 || h < 1) return;
-    const centerX = this._measureEarthViewCenterX(w);
+    const centerX = EARTH_VIEW_CENTER_X;
     const xOffset = -Math.round((centerX - 0.5) * w);
     this.camera.setViewOffset(w, h, xOffset, 0, w, h);
     this.camera.updateProjectionMatrix();
   }
 
   /**
-   * Pull camera so full sphere fits in right stage with ~8–12% margin (diameter ~74% stage H).
+   * Fit sphere diameter to min(rightZoneW, rightZoneH) * 0.74 — never clip left/right/top/bottom.
    */
-  _fitCameraToStage(canvasW, canvasH) {
-    if (!this.camera || canvasH < 1) return;
+  _fitCameraToRightZone(canvasW, canvasH) {
+    if (!this.camera || canvasW < 1 || canvasH < 1) return;
 
-    const stage = this.section?.querySelector('.ocean-explore__stage');
-    const host = this.canvasWrap || this.section;
-    let stageH = canvasH * 0.72;
-    if (stage && host) {
-      const sr = stage.getBoundingClientRect();
-      const hr = host.getBoundingClientRect();
-      if (sr.height > 8) stageH = sr.height;
-      else if (hr.height > 8) stageH = hr.height * 0.85;
-    }
+    const rightZoneW = canvasW * RIGHT_ZONE_WIDTH;
+    const rightZoneH = canvasH;
+    const targetPx = Math.max(80, Math.min(rightZoneW, rightZoneH) * EARTH_FIT_FRACTION);
 
-    const targetPx = Math.max(120, stageH * EARTH_DIAMETER_OF_STAGE_H);
     const fovRad = THREE.MathUtils.degToRad(this.camera.fov);
     const tanHalf = Math.tan(fovRad * 0.5);
     // diameter_px ≈ (2R / z) / (2 tan(fov/2)) * canvasH  =>  z = R * canvasH / (tanHalf * diameter_px)
     let z = (EARTH_FRAME_RADIUS * canvasH) / (tanHalf * targetPx);
-    z = THREE.MathUtils.clamp(z, 3.6, 8.5);
+    // Soft clamp only: allow larger z so we never force a too-large sphere that clips.
+    z = THREE.MathUtils.clamp(z, 2.8, 14);
 
     this.camera.position.set(0, 0, z);
     this.camera.lookAt(EARTH_OFFSET);
     this.camera.userData.homeZ = z;
+  }
+
+  /** Project earth origin to CSS pixel X fraction of canvas (debug + self-check). */
+  _updateEarthScreenDebug(canvasW, canvasH) {
+    if (!this.camera || !this.earthGroup || canvasW < 1) return;
+    const v = EARTH_OFFSET.clone().project(this.camera);
+    const screenX = (v.x * 0.5 + 0.5) * canvasW;
+    const screenY = (-v.y * 0.5 + 0.5) * canvasH;
+    const fracX = screenX / canvasW;
+    if (typeof window !== 'undefined') {
+      if (!window.__globeDebug) window.__globeDebug = {};
+      window.__globeDebug.earthScreenX = screenX;
+      window.__globeDebug.earthScreenY = screenY;
+      window.__globeDebug.earthScreenFracX = fracX;
+      window.__globeDebug.targetFracX = EARTH_VIEW_CENTER_X;
+      window.__globeDebug.camPos = this.camera.position.toArray();
+    }
   }
 
   resize() {
@@ -359,7 +357,7 @@ export class GlobeScene {
     if (w < 1 || h < 1) return;
 
     this.camera.aspect = w / h;
-    this._fitCameraToStage(w, h);
+    this._fitCameraToRightZone(w, h);
     this._applyEarthViewOffset(w, h);
     const dpr = Math.min(window.devicePixelRatio, MAX_DPR);
     this.renderer.setPixelRatio(dpr);
@@ -376,6 +374,8 @@ export class GlobeScene {
     }
     this.composer?.setSize?.(w, h);
     this.composer?.setPixelRatio?.(dpr);
+
+    this._updateEarthScreenDebug(w, h);
   }
 
   /**
@@ -458,8 +458,10 @@ export class GlobeScene {
     this._renderGlobeLayers();
     this.markers?.render(this.scene, this.camera);
 
+    const { w, h } = this._getSize();
+    this._updateEarthScreenDebug(w, h);
+
     if (typeof window !== 'undefined' && window.__globeDebug) {
-      window.__globeDebug.camPos = this.camera.position.toArray();
       window.__globeDebug.earthRotY = this.earthGroup.rotation.y;
       window.__globeDebug.spinEnabled = this._spinEnabled;
       window.__globeDebug.dragging = this._dragging;
