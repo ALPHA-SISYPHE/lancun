@@ -1,0 +1,684 @@
+/* 生物档案 · 框架稿（DESIGN.md v1.0 tokens） */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.species-page-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.species-page-nav a {
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+  color: var(--brand-heading-sub);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--mist-to);
+}
+
+.species-page-nav a:hover {
+  color: var(--brand-strong);
+}
+
+.species-section {
+  padding-block: clamp(2.5rem, 6vw, 5rem);
+  border-top: 1px solid var(--hairline);
+}
+
+.species-section:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+/* —— 检索区 —— */
+.species-search {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+}
+
+.species-search__field-wrap {
+  position: relative;
+  width: min(100%, 70%);
+  z-index: 2;
+}
+
+.species-search__field {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.35rem 0.35rem 1rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  background: var(--glass-sea);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow var(--duration-ui) var(--ease-ui), border-color var(--duration-ui) var(--ease-ui);
+}
+
+.species-search__field:focus-within {
+  border-color: rgba(59, 130, 246, 0.55);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.species-search__icon {
+  color: var(--ink-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.species-search__field input {
+  min-height: 2.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1rem;
+  outline: none;
+}
+
+.species-search__field input::placeholder {
+  color: var(--ink-muted);
+}
+
+.species-search__clear {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.species-search__clear:hover {
+  background: rgba(13, 31, 40, 0.06);
+  color: var(--ink);
+}
+
+.species-search__submit {
+  min-height: 2.5rem;
+  padding-inline: 1rem;
+}
+
+.species-search__suggest {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.species-search__suggest li button {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.species-search__suggest li button:hover,
+.species-search__suggest li button:focus-visible {
+  background: var(--mist-to);
+  outline: none;
+}
+
+.species-tags {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.species-tag {
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  background: var(--glass-sea);
+  backdrop-filter: blur(var(--glass-blur));
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--duration-ui) var(--ease-ui), color var(--duration-ui) var(--ease-ui), border-color var(--duration-ui) var(--ease-ui);
+}
+
+.species-tag:hover {
+  border-color: rgba(59, 130, 246, 0.45);
+}
+
+.species-tag.is-active {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  color: #fff;
+}
+
+/* —— 看板 —— */
+.species-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.species-metric-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: var(--space-3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  background: var(--glass-sea);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--duration-ui) var(--ease-ui), border-color var(--duration-ui) var(--ease-ui);
+}
+
+.species-metric-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.species-metric-card__icon {
+  color: var(--brand-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.species-metric-card__value {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.species-metric-card__label {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.species-metric-card__note {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.species-metrics-note {
+  margin-bottom: var(--space-3);
+}
+
+/* —— 网格 —— */
+.species-grid-wrap {
+  position: relative;
+}
+
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  opacity: 0;
+  transition: opacity 250ms var(--ease-ui);
+}
+
+.species-grid--visible {
+  opacity: 1;
+}
+
+.species-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 18rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  transition: transform var(--duration-ui) var(--ease-ui), border-color var(--duration-ui) var(--ease-ui);
+}
+
+.species-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.species-card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(145deg, var(--brand-secondary) 0%, var(--bg-sea-lit) 100%);
+  overflow: hidden;
+}
+
+.species-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.species-card__placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  padding: var(--space-2);
+}
+
+.species-badge {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.species-badge--red {
+  background: #dc2626;
+  color: #fff;
+}
+
+.species-badge--orange {
+  background: #ea580c;
+  color: #fff;
+}
+
+.species-badge--yellow {
+  background: #eab308;
+  color: #1e293b;
+}
+
+.species-badge--blue {
+  background: #64748b;
+  color: #fff;
+}
+
+.species-card__body {
+  display: grid;
+  gap: 0.35rem;
+  padding: var(--space-2);
+  align-content: start;
+}
+
+.species-card__name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.species-card__latin {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+  font-style: italic;
+}
+
+.species-card__summary {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.species-card__link {
+  justify-self: start;
+  margin-top: 0.25rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--brand-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.species-empty {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  padding: var(--space-4);
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.species-empty__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.species-empty__text {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+/* —— 识别区 —— */
+.species-recognizer {
+  display: grid;
+  grid-template-columns: 45fr 55fr;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-shell);
+  background: var(--glass-sea);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+}
+
+.species-upload-zone {
+  display: grid;
+  min-height: 16rem;
+  padding: var(--space-3);
+  border: 2px dashed var(--hairline);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: border-color var(--duration-ui) var(--ease-ui), background var(--duration-ui) var(--ease-ui);
+}
+
+.species-upload-zone:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+.species-upload-zone.is-dragover {
+  border-color: var(--brand-primary);
+  border-style: solid;
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.species-upload-zone__placeholder,
+.species-upload-zone__preview,
+.species-upload-zone__loading {
+  display: grid;
+  gap: 0.5rem;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.species-upload-zone__icon {
+  font-size: 2rem;
+  color: var(--brand-primary);
+}
+
+.species-upload-zone__hint {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+}
+
+.species-upload-zone__preview img {
+  max-width: 100%;
+  max-height: 10rem;
+  border-radius: var(--radius);
+  object-fit: cover;
+}
+
+.species-upload-zone__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+}
+
+.species-upload-zone__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.species-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: var(--brand-primary);
+  border-radius: 50%;
+  animation: species-spin 0.8s linear infinite;
+}
+
+@keyframes species-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.species-recognizer__result {
+  display: grid;
+  align-content: start;
+  padding: var(--space-3);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.species-result {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.species-result--idle {
+  place-items: center;
+  text-align: center;
+  min-height: 12rem;
+  align-content: center;
+}
+
+.species-result__icon {
+  font-size: 2.5rem;
+  color: var(--brand-primary);
+  opacity: 0.6;
+}
+
+.species-result__level {
+  margin: 0;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.species-confidence {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.species-confidence__bar {
+  height: 0.5rem;
+  border-radius: var(--radius-pill);
+  background: rgba(59, 130, 246, 0.15);
+  overflow: hidden;
+}
+
+.species-confidence__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand-primary);
+  transition: width 400ms var(--ease-ui);
+}
+
+.species-result__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.species-result__fail-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+/* —— 弹窗 —— */
+.species-modal {
+  width: min(calc(100% - 2rem), 42rem);
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-shell);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  overflow: auto;
+}
+
+.species-modal::backdrop {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+.species-modal__inner {
+  position: relative;
+}
+
+.species-modal__close {
+  position: absolute;
+  z-index: 2;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.species-modal__hero {
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(145deg, var(--brand-secondary) 0%, var(--bg-sea-lit) 100%);
+  background-size: cover;
+  background-position: center;
+}
+
+.species-modal__body {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.species-modal__latin {
+  margin: 0;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+.species-modal__section h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.species-modal__section p {
+  margin: 0;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+/* —— 响应式 —— */
+@media (max-width: 1199px) {
+  .species-search__field-wrap {
+    width: min(100%, 90%);
+  }
+
+  .species-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .species-search__field-wrap {
+    width: 100%;
+  }
+
+  .species-search__field {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .species-search__submit {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .species-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .species-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .species-recognizer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .species-metric-card:hover,
+  .species-card:hover {
+    transform: none;
+  }
+
+  .species-grid {
+    transition: none;
+  }
+
+  .species-spinner {
+    animation: none;
+    border-top-color: var(--brand-primary);
+  }
+}
+
+html[data-reduced-motion="true"] .species-metric-card:hover,
+html[data-reduced-motion="true"] .species-card:hover {
+  transform: none;
+}

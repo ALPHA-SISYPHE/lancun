@@ -1,1 +1,238 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>海洋生物档案｜澜存</title><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" /><link rel="stylesheet" href="../assets/css/base.css" /><link rel="stylesheet" href="../assets/css/modules.css" /><script src="../assets/js/mock-data.js" defer></script><script src="../assets/js/user-menu-html.js" defer></script><script src="../assets/js/app.js" defer></script></head><body data-page="species"><a class="skip-link" href="#main-content">跳到主要内容</a><header class="site-header site-header--overlay"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button><nav id="primary-navigation" class="primary-navigation" aria-label="主导航"><a href="../index.html">首页</a><a href="ocean.html">我们的海洋</a><a href="rescue.html">海在呼救</a><a class="is-active" href="species.html" aria-current="page">生物档案</a><a href="action.html">行动中心</a></nav><div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div></header><main id="main-content" class="page-stage"><section class="page-intro page-intro--dark"><div><p class="eyebrow">03 / 海洋生物档案</p><h1>认识一个生命，理解一片海。</h1><p class="lead">按分类检索物种档案，或上传一张照片体验“识别器”流程。真实 AI 识别服务将在获得合适的国内服务授权后接入。</p></div><span class="tag">档案与识别框架</span></section><div class="page-island page-shell"><section class="two-column"><div><div class="filter-row" aria-label="物种分类筛选"><button class="filter-button is-active" type="button" data-species-filter="all">全部</button><button class="filter-button" type="button" data-species-filter="爬行动物">爬行动物</button><button class="filter-button" type="button" data-species-filter="鱼类">鱼类</button><button class="filter-button" type="button" data-species-filter="无脊椎动物">无脊椎动物</button><button class="filter-button" type="button" data-species-filter="哺乳动物">哺乳动物</button></div><div class="card-grid section" data-species-list></div></div><aside class="card"><p class="eyebrow">海洋动物识别器</p><h2>上传照片，开始识别。</h2><div class="upload-zone"><label for="species-upload">从电脑选择图片，或在手机上拍照<br /><input id="species-upload" type="file" accept="image/*" capture="environment" /></label></div><p class="status-message" data-recognition-result>识别服务尚未接入。上传后将展示完整的交互反馈与接入提示。</p><p class="source-note">后续可接入合规的国内视觉识别 API；当前不会上传或保存你的图片。</p></aside></section></div></main><footer class="site-footer"><span>澜存</span><span>识别器为前端交互框架，不提供真实 AI 结论</span></footer></body></html>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="澜存——海洋生物档案：物种检索、保护等级科普与 AI 识别演示。" />
+    <title>海洋生物档案｜澜存</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/modules.css" />
+    <link rel="stylesheet" href="../assets/css/species-page.css" />
+    <script src="../assets/js/mock-data.js" defer></script>
+    <script src="../assets/js/user-menu-html.js" defer></script>
+    <script src="../assets/js/app.js" defer></script>
+    <script src="../assets/js/species-page.js" defer></script>
+  </head>
+  <body data-page="species">
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <header class="site-header site-header--overlay">
+      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button>
+      <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
+        <a href="../index.html">首页</a>
+        <a href="ocean.html">我们的海洋</a>
+        <a href="rescue.html">海在呼救</a>
+        <a class="is-active" href="species.html" aria-current="page">生物档案</a>
+        <a href="action.html">行动中心</a>
+      </nav>
+      <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
+    </header>
+
+    <main id="main-content" class="page-stage">
+      <section class="page-intro page-intro--dark">
+        <div>
+          <p class="eyebrow">03 / 海洋生物档案</p>
+          <h1>认识一个生命，理解一片海。</h1>
+          <p class="lead">
+            按分类检索物种档案，浏览保护等级科普看板，或上传一张照片体验识别流程。当前为结构框架稿，识别结果为演示 mock。
+          </p>
+        </div>
+        <span class="tag">结构框架稿</span>
+      </section>
+
+      <div class="page-island page-shell">
+        <nav class="species-page-nav" aria-label="本页章节">
+          <a href="#species-search">物种检索</a>
+          <a href="#species-archive">档案看板</a>
+          <a href="#species-recognizer">AI 识别</a>
+        </nav>
+
+        <section id="species-search" class="species-section" aria-labelledby="species-search-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第一节</p>
+              <h2 id="species-search-title">濒危物种检索</h2>
+              <p class="lead">输入中文名或别名，配合分类标签筛选下方档案网格。</p>
+            </div>
+          </div>
+
+          <div class="species-search">
+            <div class="species-search__field-wrap">
+              <label class="visually-hidden" for="species-search-input">搜索物种</label>
+              <div class="species-search__field">
+                <span class="species-search__icon" aria-hidden="true">⌕</span>
+                <input
+                  id="species-search-input"
+                  type="search"
+                  data-species-search
+                  placeholder="搜索物种中文名或别名…"
+                  autocomplete="off"
+                  enterkeyhint="search"
+                />
+                <button class="species-search__clear" type="button" data-species-search-clear aria-label="清空搜索" hidden>
+                  ×
+                </button>
+                <button class="species-search__submit button button-primary" type="button" data-species-search-submit>
+                  搜索
+                </button>
+              </div>
+              <ul class="species-search__suggest" data-species-suggest hidden role="listbox" aria-label="搜索建议"></ul>
+            </div>
+
+            <div class="species-tags" role="group" aria-label="物种分类筛选">
+              <button class="species-tag is-active" type="button" data-species-tag="all" aria-pressed="true">全部</button>
+              <button class="species-tag" type="button" data-species-tag="mammal" aria-pressed="false">哺乳动物</button>
+              <button class="species-tag" type="button" data-species-tag="reptile" aria-pressed="false">海龟与爬行动物</button>
+              <button class="species-tag" type="button" data-species-tag="coral" aria-pressed="false">珊瑚与腔肠动物</button>
+              <button class="species-tag" type="button" data-species-tag="fish" aria-pressed="false">鱼类</button>
+              <button class="species-tag" type="button" data-species-tag="seabird" aria-pressed="false">海鸟</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="species-archive" class="species-section section" aria-labelledby="species-archive-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第二节</p>
+              <h2 id="species-archive-title">生物数据看板与物种档案</h2>
+              <p class="lead">正面科普统计与可检索物种卡片库；点击卡片查看完整档案。</p>
+            </div>
+          </div>
+
+          <div class="species-metric-grid" data-species-metrics aria-busy="true"></div>
+          <p class="source-note species-metrics-note">看板数字为演示统计，正式出处待补。</p>
+
+          <div class="species-grid-wrap">
+            <div class="species-grid species-grid--visible" data-species-list aria-live="polite" aria-busy="true"></div>
+            <div class="species-empty" data-species-empty hidden>
+              <p class="species-empty__title">未找到相关物种</p>
+              <p class="species-empty__text">请尝试其他关键词或重置筛选。</p>
+              <button class="button" type="button" data-species-reset>重置筛选</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="species-recognizer" class="species-section section" aria-labelledby="species-recognizer-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第三节</p>
+              <h2 id="species-recognizer-title">海洋动物 AI 识别器</h2>
+              <p class="lead">上传或拖放图片，体验识别流程。Phase A 为前端演示，不会上传至任何服务器。</p>
+            </div>
+          </div>
+
+          <div class="species-recognizer" data-species-recognizer>
+            <div class="species-recognizer__upload">
+              <div
+                class="species-upload-zone"
+                data-species-upload-zone
+                role="button"
+                tabindex="0"
+                aria-label="上传图片进行识别，支持拖放或点击选择"
+              >
+                <input
+                  type="file"
+                  data-species-file-input
+                  accept="image/jpeg,image/png"
+                  capture="environment"
+                  hidden
+                />
+                <div class="species-upload-zone__placeholder" data-species-upload-placeholder>
+                  <span class="species-upload-zone__icon" aria-hidden="true">↑</span>
+                  <p>拖放图片到此处，或点击选择文件</p>
+                  <p class="species-upload-zone__hint">支持 JPG / PNG · 移动端可拍照</p>
+                </div>
+                <div class="species-upload-zone__preview" data-species-upload-preview hidden>
+                  <img data-species-preview-img alt="" />
+                  <div class="species-upload-zone__meta">
+                    <span data-species-preview-name></span>
+                    <span data-species-preview-size></span>
+                  </div>
+                  <div class="species-upload-zone__actions">
+                    <button class="button" type="button" data-species-reupload>重新上传</button>
+                    <button class="button" type="button" data-species-cancel-upload>取消</button>
+                  </div>
+                </div>
+                <div class="species-upload-zone__loading" data-species-upload-loading hidden>
+                  <span class="species-spinner" aria-hidden="true"></span>
+                  <p>识别中，请稍候…</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="species-recognizer__result" data-species-recognition-result aria-live="polite">
+              <div class="species-result species-result--idle" data-species-result-idle>
+                <span class="species-result__icon" aria-hidden="true">◎</span>
+                <p>上传图片，一键识别海洋生物</p>
+                <p class="source-note">演示识别 · 非真实 AI 结论</p>
+              </div>
+              <div class="species-result species-result--success" data-species-result-success hidden>
+                <p class="eyebrow">演示识别结果</p>
+                <h3 data-species-result-name></h3>
+                <p class="species-result__level" data-species-result-level></p>
+                <div class="species-confidence">
+                  <span>置信度</span>
+                  <div class="species-confidence__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <span data-species-confidence-fill></span>
+                  </div>
+                  <span data-species-confidence-text></span>
+                </div>
+                <p data-species-result-summary></p>
+                <div class="species-result__actions">
+                  <button class="button button-primary" type="button" data-species-result-view>查看完整档案</button>
+                  <button class="button" type="button" data-species-result-retry>重新识别</button>
+                </div>
+              </div>
+              <div class="species-result species-result--fail" data-species-result-fail hidden>
+                <p class="species-result__fail-title">未能识别该图片</p>
+                <p>请更换清晰的正面或侧面照片后重试。</p>
+                <button class="button" type="button" data-species-result-retry-fail>重新上传</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <dialog class="species-modal" data-species-modal aria-labelledby="species-modal-title">
+      <div class="species-modal__inner">
+        <button class="species-modal__close" type="button" data-species-modal-close aria-label="关闭">×</button>
+        <div class="species-modal__hero" data-species-modal-image></div>
+        <div class="species-modal__body">
+          <span class="species-badge" data-species-modal-badge></span>
+          <h2 id="species-modal-title" data-species-modal-name></h2>
+          <p class="species-modal__latin" data-species-modal-latin></p>
+          <div class="species-modal__section">
+            <h3>分布区域</h3>
+            <p data-species-modal-distribution></p>
+          </div>
+          <div class="species-modal__section">
+            <h3>生活习性</h3>
+            <p data-species-modal-habitat></p>
+          </div>
+          <div class="species-modal__section">
+            <h3>生存现状</h3>
+            <p data-species-modal-status></p>
+          </div>
+          <div class="species-modal__section">
+            <h3>保护措施</h3>
+            <p data-species-modal-protection></p>
+          </div>
+          <p class="source-note" data-species-modal-source></p>
+          <a class="button button-primary" href="action.html">前往行动中心</a>
+        </div>
+      </div>
+    </dialog>
+
+    <footer class="site-footer">
+      <span>澜存</span>
+      <span>识别器为前端交互框架，不提供真实 AI 结论</span>
+    </footer>
+  </body>
+</html>
