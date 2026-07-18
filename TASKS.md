@@ -107,6 +107,7 @@
 - [x] **v1.7** 统一绑定锚点法：比例 1.12 实测驱动 + 双栏几何 Y 同心 + bounds-fit 整球 containment；废止 dolly / rem MQ / 0.74 主 cap；`visualViewport` + rAF
 - [x] **v1.8** Containment First：Visible Safe Rect + 二分/X-nudge/forced-shrink；100% zoom 整球必可见；`constitution-v18-verify.mjs`
 - [x] **v1.9** 单文件重写：删除 `assets/js/globe/**`；新建 `assets/js/ocean-globe.js`（earthGroup.position + camera.z，无 setViewOffset）；`constitution-v19-verify.mjs`
+- [x] **v1.9.1 interim**：删除地球（`ocean-globe.js`）；气泡回滚原版 `globe/bubbles.js`；入口 `ocean-bubbles.js?v=20`；地球待重做
 
 ### Phase A · 今日 MVP
 

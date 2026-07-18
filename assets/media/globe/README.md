@@ -9,7 +9,7 @@
 | **来源** | Phase B 程序化占位：简化大陆轮廓 + 近岸架带（`scripts/generate-shelves-mask.mjs`） |
 | **重新生成** | `node scripts/generate-shelves-mask.mjs` |
 | **替换** | 待 Natural Earth / bathymetry 数据验证后可换真实遮罩 |
-| **运行时回退** | 若 PNG 404，`assets/js/ocean-globe.js` 使用程序化 Canvas mask |
+| **运行时回退** | 若 PNG 404，`assets/js/globe/utils/textures.js` 使用程序化 Canvas mask（地球暂移除，本 mask 暂未挂载） |
 
 ## bubble-content（运行时）
 

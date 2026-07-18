@@ -2,11 +2,11 @@
 
 | 项 | 内容 |
 |---|---|
-| 版本 | **1.9** |
+| 版本 | **1.9.1 interim** |
 | 地位 | `#ocean-explore` **绑定视觉与布局法**；与本文件冲突时，以本文件为准（用户当场口头例外除外） |
 | 创建 | 2026-07-18 |
-| 修订 | 2026-07-18 — **v1.9**：**单文件重写** — 删除 `assets/js/globe/**`；实现入口仅 [`assets/js/ocean-globe.js`](../assets/js/ocean-globe.js)；构图用 **earthGroup.position + camera.z**（**废止 setViewOffset**）；Containment First 不变 |
-| 前版 | v1.8 — Visible Safe Rect + 二分/X-nudge；仍用旧 GlobeScene + setViewOffset |
+| 修订 | 2026-07-18 — **v1.9.1 interim**：**地球已移除**；入口 [`assets/js/ocean-bubbles.js`](../assets/js/ocean-bubbles.js)；气泡恢复为 pre-v1.9 液体玻璃栈（`assets/js/globe/bubbles.js` + shaders）；地球重做待后续任务 |
+| 前版 | v1.9 — 单文件 ocean-globe.js（已废止并删除） |
 | 参考 | Convex「Where we are working」**仅借构图**（左文右球、浮空球、前后气泡）；色/质跟 `DESIGN.md` v4 |
 | 本地验收 | `http://127.0.0.1:8080/index.html#ocean-explore` |
 | 关联 | `docs/OCEAN_EXPLORE_CONVEX_PLAN.md`（任务书）、根目录 `DESIGN.md`（全站色/质，**本 section 无例外**） |
@@ -229,8 +229,8 @@ AFTER — Safety
 | Section 底 | `linear-gradient` 用 `--mist-from` / `--mist-to`（或等价浅海雾） |
 | 左栏 | `.page-island` 或同 token 白岛：`--surface-elevated` + `--shadow-island` + `--ink` |
 | Framing solver | `ocean-globe.js`：measure → binary maxD → X-nudge → forced-shrink → **earthGroup.position + camera.z**（无 setViewOffset） |
-| Entry | `assets/js/ocean-globe.js?v=19`（仅此文件；旧 `globe/` 已删） |
-| Debug | `__globeDebug`：`module: ocean-globe@v19`、`visibleSafeRect`、`clip*`、`solverMode`、`earthPos` |
+| Entry (interim) | `assets/js/ocean-bubbles.js?v=20` + 原版 `globe/bubbles.js`；**无地球 mesh** |
+| Debug | `__globeDebug.module === 'ocean-bubbles@v20'`；`earthRemoved: true` |
 | 白岛锚 | `[data-ocean-panel]`；双栏 = copy/stage 几何并排 |
 | 事件 | resize + visualViewport.resize + ResizeObserver；rAF debounce |
 | 自转 | `earthGroup.rotation.y` 低速自转 + pointer 拖 yaw；**禁止** OrbitControls.autoRotate |
