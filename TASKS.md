@@ -18,20 +18,22 @@
 ## 正在进行
 
 - [ ] 首页背景视频（0.6 倍速循环）的用户目视验收。
-- [ ] 「我们的海洋」「海的作用」具体指标讨论 → 写入 `docs/OCEAN_PAGE.md` 附录 A.2。
+- [ ] 「我们的海洋」页面视觉框架稿用户确认（结构已实现，见 `pages/ocean.html`）。
 
 ## 「我们的海洋」页面宪法（2026-07-18）
 
-> 权威：`docs/OCEAN_PAGE.md` v1.2（计划兼宪法）
+> 权威：`docs/OCEAN_PAGE.md` v1.3（计划兼宪法）
 
 - [x] 锁定三节结构：海洋数据看板 → 海的作用 → 五大洋竖排
 - [x] 锁定删除本页可拖地球与三节点；污染数据不进本页
 - [x] 锁定第一节 **6 看板**（Coral Watch×3 + NOAA×3）；Protected Planet 移出第一节
 - [x] 第一节 6 指标写入 `OCEAN_PAGE.md` 附录 A.1
+- [x] 附录 A.2「海的作用」4 卡 + CO₂ 折线已锁定（v1.3）
+- [x] 附录 A.3 五大洋小看板（地理+生态）已锁定（v1.3）
 - [x] `OCEAN_PAGE.md` §0 用户需求摘要（v1.2）
 - [x] 锁定方案 B：Coral Watch + NOAA + mock 降级（第一节）
-- [x] 同步 `PAGE_STRUCTURE.md`、`DATA_SOURCES.md`
-- [ ] 确认附录 A.2「海的作用」指标后，实现轮重写 `pages/ocean.html`
+- [x] 同步 `PAGE_STRUCTURE.md`、`DATA_SOURCES.md`、`mock-data.js` 占位
+- [x] 实现轮重写 `pages/ocean.html`（三节骨架 + 数据渲染，v1.3）
 
 ## Phase A — `#ocean-explore` Convex 风格 Globe MVP（2026-07-18）
 
@@ -88,7 +90,7 @@
 
 > 总任务书：`docs/OCEAN_EXPLORE_CONVEX_PLAN.md`  
 > **视觉/布局绑定法：** `docs/OCEAN_EXPLORE_CONSTITUTION.md`（黄金比 38/62、Z 层、地球铅垂轴、液体玻璃气泡前后分层；改前/改后强制截图自检）  
-> 目标：Convex「Where we are working」**构图**启发式 MVP；内容仍为五大洋；**色/质跟 v4（无深底例外）**：浅海雾底 + 白内容岛 + 浮空地球。绑定法：`OCEAN_EXPLORE_CONSTITUTION.md` v1.1。
+> 目标：Convex「Where we are working」**构图**启发式 MVP；内容仍为五大洋；**色/质跟 v4（无深底例外）**：浅海雾底 + 白内容岛 + 浮空地球。绑定法：`OCEAN_EXPLORE_CONSTITUTION.md` **v1.6**（白岛 ×1.12 尺度 + 桌面球心 Y 对齐 + 球心 X 69%）。
 
 ### Constitution 落地（2026-07-18）
 
@@ -100,6 +102,8 @@
 - [x] Composer vignette 仍 OFF（用户未要求开启）
 - [x] **v1.3** 右区几何中心 + 整球安全边；`earthGroup.rotation.y` 独立自转/拖拽（移除 OrbitControls.autoRotate）；scroll 仅 dolly
 - [x] **v1.4** 球心整屏 69%（Q1=C）；`min(右区宽,高)×0.74` 禁止裁切（Q2=A）；废止 stage 内栏锚点
+- [x] **v1.5** 美术匹配尺度：白岛 `[data-ocean-panel]` 高度 × **1.12** 定地球直径（Q1=A / Q2=1.12）；`min(右区宽,高)×0.74` 降为 cap；`ResizeObserver` 重测
+- [x] **v1.6** 桌面垂直对齐：球心 Y = 白岛垂直中心（锚点 A，仅 ≥59rem）；`setViewOffset` Y + debug `earthScreenFracY`
 
 ### Phase A · 今日 MVP
 
