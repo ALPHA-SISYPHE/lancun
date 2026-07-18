@@ -59,13 +59,13 @@
 | 右栏 | 浮空交互地球（离散球体，非壁纸） |
 | 气泡 | WebGL InstancedMesh 液体玻璃；全视口前后分层；强度克制 |
 | Composer | vignette **默认 OFF** |
-| 布局法 | 见 `docs/OCEAN_EXPLORE_CONSTITUTION.md`（38/62、Z 层、Y 轴自转、v1.5 白岛×1.12 尺度、**v1.6 桌面球心 Y 对齐**） |
+| 布局法 | 见 `docs/OCEAN_EXPLORE_CONSTITUTION.md`（38/62、Z 层、Y 轴自转、**v1.7 统一锚点 + bounds-fit**） |
 
 ### 2.2 文档同步要求
 
 - `DESIGN.md` §7 / §9：已声明无例外  
 - `docs/DESIGN_SYSTEM.md`：mirror `#ocean-explore` 跟 v4  
-- `docs/OCEAN_EXPLORE_CONSTITUTION.md`：**v1.6** 绑定法（白岛×1.12 尺度 + 桌面球心 Y 对齐 + 球心 X 69%）  
+- `docs/OCEAN_EXPLORE_CONSTITUTION.md`：**v1.7** 绑定法（统一锚点 + bounds-fit + 废止 scroll dolly）  
 
 **原则**：不得把深海军例外恢复为本 section 默认，也不得把深底扩散全站。
 

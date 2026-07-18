@@ -90,7 +90,7 @@
 
 > 总任务书：`docs/OCEAN_EXPLORE_CONVEX_PLAN.md`  
 > **视觉/布局绑定法：** `docs/OCEAN_EXPLORE_CONSTITUTION.md`（黄金比 38/62、Z 层、地球铅垂轴、液体玻璃气泡前后分层；改前/改后强制截图自检）  
-> 目标：Convex「Where we are working」**构图**启发式 MVP；内容仍为五大洋；**色/质跟 v4（无深底例外）**：浅海雾底 + 白内容岛 + 浮空地球。绑定法：`OCEAN_EXPLORE_CONSTITUTION.md` **v1.6**（白岛 ×1.12 尺度 + 桌面球心 Y 对齐 + 球心 X 69%）。
+> 目标：Convex「Where we are working」**构图**启发式 MVP；内容仍为五大洋；**色/质跟 v4（无深底例外）**：浅海雾底 + 白内容岛 + 浮空地球。绑定法：`OCEAN_EXPLORE_CONSTITUTION.md` **v1.7**（统一锚点 + bounds-fit 稳定构图）。
 
 ### Constitution 落地（2026-07-18）
 
@@ -104,6 +104,7 @@
 - [x] **v1.4** 球心整屏 69%（Q1=C）；`min(右区宽,高)×0.74` 禁止裁切（Q2=A）；废止 stage 内栏锚点
 - [x] **v1.5** 美术匹配尺度：白岛 `[data-ocean-panel]` 高度 × **1.12** 定地球直径（Q1=A / Q2=1.12）；`min(右区宽,高)×0.74` 降为 cap；`ResizeObserver` 重测
 - [x] **v1.6** 桌面垂直对齐：球心 Y = 白岛垂直中心（锚点 A，仅 ≥59rem）；`setViewOffset` Y + debug `earthScreenFracY`
+- [x] **v1.7** 统一绑定锚点法：比例 1.12 实测驱动 + 双栏几何 Y 同心 + bounds-fit 整球 containment；废止 dolly / rem MQ / 0.74 主 cap；`visualViewport` + rAF
 
 ### Phase A · 今日 MVP
 

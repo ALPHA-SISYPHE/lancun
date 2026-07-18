@@ -2,10 +2,10 @@
 
 | 项 | 内容 |
 |---|---|
-| 版本 | **1.6** |
+| 版本 | **1.7** |
 | 地位 | `#ocean-explore` **绑定视觉与布局法**；与本文件冲突时，以本文件为准（用户当场口头例外除外） |
 | 创建 | 2026-07-18 |
-| 修订 | 2026-07-18 — **v1.6**：**桌面垂直对齐** — 球心屏幕 Y = 白岛 `[data-ocean-panel]` **垂直中心**（±2% canvas 高）；锚点 A、**仅桌面 ≥59rem**；移动端 Y 回退 canvas 50%。保留 v1.5 直径 ×1.12、v1.4 球心 X 69%、v1.3 自转 |
+| 修订 | 2026-07-18 — **v1.7**：**统一绑定锚点法** — 白岛实测驱动 **比例 1.12** + **Y 同心**（双栏几何判定）；**投影 bounds-fit** 保证整球始终在 canvas 内；废止 ScrollTrigger dolly、`matchMedia 59rem` 定对齐、`0.74` 作主 cap；监听 `visualViewport` + `ResizeObserver` |
 | 参考 | Convex「Where we are working」**仅借构图**（左文右球、浮空球、前后气泡）；色/质跟 `DESIGN.md` v4 |
 | 本地验收 | `http://127.0.0.1:8080/index.html#ocean-explore` |
 | 关联 | `docs/OCEAN_EXPLORE_CONVEX_PLAN.md`（任务书）、根目录 `DESIGN.md`（全站色/质，**本 section 无例外**） |
@@ -27,13 +27,13 @@
 | 左栏（小） | **白内容岛**承载文案 + CTA；不抢地球主体 |
 | 右栏（大） | **地球作为可交互浮空物体的取景区**；不得把地球当全屏壁纸 |
 | **右区中央（硬性 · v1.4）** | 「右半区」= **整屏 / section canvas 全宽** 上 `x ∈ [0.38, 1.0]`；球心投影目标 **`x = 0.69`**（`0.38 + 0.62/2`）。**禁止**以 `.ocean-explore__stage` / `page-width` 内栏中心作为球心锚点（stage 仅 CSS 占位） |
-| **美术匹配尺度（硬性 · v1.5）** | 主锚：左白内容岛 `.ocean-explore__copy` / `[data-ocean-panel]` 的 `getBoundingClientRect().height`（**不含** footer toggle）；目标直径 **`copyHeight × 1.12`**；随 resize / 字体 / intro-detail 切换 **实时重测** |
-| **垂直对齐（硬性 · v1.6 · 桌面）** | 桌面 `≥59rem`：球心屏幕 **Y = 白岛 `[data-ocean-panel]` 垂直中心**（与 v1.5 同锚，**不含** footer）；容差 **±2% canvas 高**；`setViewOffset` Y 偏移 |
-| **垂直对齐（移动端）** | `<59rem` stacked：**不强制** Y 对齐；球心 Y 保持 canvas **50%** |
-| **完整球体 / 安全 cap（硬性 · v1.4→v1.5）** | `diameter_px ≤ min(artTarget, min(rightZoneW, rightZoneH) × 0.74)`；右区宽≈`0.62×canvasW`，高≈`canvasH`；留约 8–12% 安全边；**宁可略小，禁止裁切、禁止压住左白岛** |
-| 实现 | CSS 列比可仍约 38/62；球心 X/Y 以 **整屏分数** + 白岛 rect 计算；直径以 **白岛高度 × 1.12** 为主；`ResizeObserver` 监听白岛 |
-| 禁止 | 球心贴右缘裁切、球心 Y 固定 canvas 50% 而白岛已偏移（桌面）、只按右区高度放大导致压左岛、用内栏 stage 中心代替整屏 69% |
-| 决策记录 | **球心 X 2026-07-18：Q1=C，Q2=A**；**尺度 2026-07-18：Q1=A，Q2=1.12**；**垂直 Y 2026-07-18：锚点 A，仅桌面 ≥59rem** |
+| **统一绑定锚点（硬性 · v1.7）** | 锚点：`[data-ocean-panel]` 相对 canvas-host 同帧 rect；比例常数 diameter:copyHeight=1.12（像素每帧实测，随 zoom 同步） |
+| **双栏（几何判定 · v1.7）** | copy 与 stage 左右并排：球心 X=69%、Y=copyCenterY |
+| **单列** | stacked：Y=canvas 50%；min(copyH×1.12, bounds-fit) |
+| **Containment** | 投影整球 bounds 在 canvas 内 ≥2% 边距；左缘 ≥ copy 右缘 + gap |
+| 实现 | `_resolveEarthFraming` 闭环；visualViewport + RO + rAF |
+| 废止 v1.7 | 0.74 主 cap、matchMedia 59rem、ScrollTrigger dolly |
+| 决策 | 1.12 / 锚点 A / 双栏 Y / dolly off — 2026-07-18 |
 
 **Earth is NOT background wallpaper; it is a discrete floating interactive 3D object inserted into the page.**
 
@@ -88,11 +88,11 @@
 
 | 规则 | 要求 |
 |---|---|
-| 尺度 | 投影直径 = **`min(copyPanelHeight × 1.12, min(右区宽, 右区高) × 0.74)`**（白岛美术匹配 + 安全 cap）；同时满足 §1 v1.5 |
-| 球心 X | 整屏 **69%** 宽（v1.4）；`setViewOffset` X |
-| **球心 Y（桌面 · v1.6）** | 球心屏幕 Y = 白岛 `[data-ocean-panel]` **垂直中心**；±2% canvas 高；`setViewOffset` Y |
-| **球心 Y（移动）** | `<59rem`：canvas 垂直 **50%**（不强制跟白岛） |
-| 形态 | 清晰球体轮廓；浮在 **整屏 69% 宽** 处；桌面与白岛 **同一高度线**；**完整轮廓可见** |
+| 尺度 | **比例律**：目标 `copyHeight × 1.12`；经 **bounds-fit 闭环** 求解 z + `setViewOffset`；可缩小至 containment，不可裁切 |
+| 球心 X | 双栏：整屏 **69%**（v1.4）；单列：canvas 50% 或 fit 中心 |
+| **球心 Y** | 双栏：白岛 **垂直中心**（±2%）；单列：canvas **50%** |
+| 稳定性 | `resize` + `visualViewport.resize` + `ResizeObserver`（copy/layout/host）；rAF 合并；**禁止** scroll dolly 改 z |
+| 形态 | 清晰球体轮廓；双栏时与白岛 **同一高度线**；**整球始终在 canvas 可视区内** |
 | **独立自转（硬性）** | 自动旋转 = 每帧递增 **`earthGroup.rotation.y`**（绕世界 / 铅垂 Y）；拖动 = 绕同一轴改 `rotation.y` |
 | 自转轴 | **仅绕竖直 / 铅垂轴（世界 Y）**；**禁止**翻滚（tumble / 乱极角） |
 | 相机 | 相机 **固定正对球心**（可微调 z）；**禁止**用 `OrbitControls.autoRotate` 或绕球转相机伪装自转 |
@@ -161,8 +161,9 @@ AFTER — Layout
 [ ] 左栏为白内容岛（深墨字）
 [ ] 地球是离散球体，非全屏壁纸
 [ ] 球心屏幕 x ≈ 整屏 69% ±2%（非内栏 stage 中心）
-[ ] 桌面：球心 screenY ≈ 白岛垂直中心 ±2% canvas 高（v1.6）
-[ ] 整球入画：无右缘/顶底裁切；未压住左白岛
+[ ] 双栏：球心 screenY ≈ copyPanelCenterY ±0.02；containmentOk = true
+[ ] 整球 bounds 在 canvas 内（≥2% 边距）；未压住左白岛
+[ ] 无 scroll dolly 改 z
 
 AFTER — Z-layer / Three.js layers
 [ ] 通透海水蓝浅底可见且无白屏
@@ -175,11 +176,10 @@ AFTER — Z-layer / Three.js layers
 
 AFTER — Earth
 [ ] 球心 ≈ 视口宽 0.69（整屏右黄金区中心）
-[ ] 桌面：earthScreenFracY ≈ copyPanelCenterFracY ±0.02
-[ ] 白岛锚点：`[data-ocean-panel]` 高度（不含 footer toggle）
-[ ] earthDiameter / copyPanelHeight ≈ 1.12 ± 0.03（或受 zoneCap 压下仍 ≤ cap）
-[ ] diameter ≤ min(copyH×1.12, min(0.62×W, H) × 0.74)
-[ ] 整球入画 + 约 8–12% 安全边；无需浏览器 zoom out 即可见整球
+[ ] 双栏：earthScreenFracY ≈ copyPanelCenterFracY ±0.02
+[ ] containmentOk；ratioActual ≤ 1.12 + 0.03
+[ ] 白岛锚点：`[data-ocean-panel]`（不含 footer）
+[ ] 整球入画；窗口/browser zoom 后仍可见
 [ ] 球体轮廓清晰、浮空、离散
 [ ] 可拖拽改 earthGroup.rotation.y（非绕球转相机）
 [ ] 低速绕竖直轴自转（earthGroup.rotation.y；无 tumble）
@@ -225,9 +225,9 @@ AFTER — Safety
 | CSS 列比 | `grid-template-columns: minmax(0, 0.382fr) minmax(0, 0.618fr)` |
 | Section 底 | `linear-gradient` 用 `--mist-from` / `--mist-to`（或等价浅海雾） |
 | 左栏 | `.page-island` 或同 token 白岛：`--surface-elevated` + `--shadow-island` + `--ink` |
-| 球心屏幕位 | X：`EARTH_VIEW_CENTER_X = 0.69`；Y（桌面）：白岛垂直中心分数 → `setViewOffset(x, y)`；project 校验 `earthScreenFracX/Y` |
-| 白岛锚 | `[data-ocean-panel]` / `.ocean-explore__copy`；`ResizeObserver` 重测 height + centerY |
-| Camera / FOV | 固定 lookAt 球心；`artTarget = copyHeight × 1.12`；`targetDiameter = min(artTarget, min(0.62×W, H) × 0.74)` 反算 z；**禁止**过紧 z 下限导致放大裁切 |
+| Framing solver | `_resolveEarthFraming`：measure anchor → targetD=copyH×1.12 → loop bounds-fit → setViewOffset + z |
+| 白岛锚 | `[data-ocean-panel]`；双栏 = copy/stage 几何并排 |
+| 事件 | resize + visualViewport.resize + ResizeObserver；rAF debounce |
 | 自转 | `earthGroup.rotation.y` 低速自转 + pointer 拖 yaw；**禁止** OrbitControls.autoRotate |
 | Three.js layers | Earth = **0**；back bubbles = **1**；front bubbles = **2**；多 pass + shared depth |
 | Bubbles | 全视口 frustum 采样；`uSectionBgColor` 对齐浅底；强度克制 |
