@@ -2,11 +2,11 @@
 
 | 项 | 内容 |
 |---|---|
-| 版本 | **1.9.1 interim** |
+| 版本 | **1.9.2 interim** |
 | 地位 | `#ocean-explore` **绑定视觉与布局法**；与本文件冲突时，以本文件为准（用户当场口头例外除外） |
 | 创建 | 2026-07-18 |
-| 修订 | 2026-07-18 — **v1.9.1 interim**：**地球已移除**；入口 [`assets/js/ocean-bubbles.js`](../assets/js/ocean-bubbles.js)；气泡恢复为 pre-v1.9 液体玻璃栈（`assets/js/globe/bubbles.js` + shaders）；地球重做待后续任务 |
-| 前版 | v1.9 — 单文件 ocean-globe.js（已废止并删除） |
+| 修订 | 2026-07-18 — **v1.9.2 interim**：**临时深底**（用户批准，对标 Convex 玻璃水滴）；地球仍移除；气泡 = 上浮 + 流体弹性形变 + 深底玻璃质感；入口 `ocean-bubbles.js?v=21` |
+| 前版 | v1.9.1 — 地球移除 + 浅底原版气泡 |
 | 参考 | Convex「Where we are working」**仅借构图**（左文右球、浮空球、前后气泡）；色/质跟 `DESIGN.md` v4 |
 | 本地验收 | `http://127.0.0.1:8080/index.html#ocean-explore` |
 | 关联 | `docs/OCEAN_EXPLORE_CONVEX_PLAN.md`（任务书）、根目录 `DESIGN.md`（全站色/质，**本 section 无例外**） |
@@ -55,8 +55,7 @@
 | L4 | UI overlay | 白岛文案、大陆架 toggle、hint；`pointer-events` 见 §5 |
 
 禁止把全部气泡画在同一层且永远盖住地球，却声称「有前后景深」。  
-**禁止**再使用 `#0F172A → #1E3A8A` 深海军例外底作为本 section 主背景。  
-**禁止**「深色例外」：本 section **无**深底白字例外；始终 v4 mist + 白内容岛。
+**临时例外（v1.9.2 · 用户批准）**：`ocean-explore--dark-interim` 允许 `#0F172A → #1E3A8A` 深底 + 浅色字，**仅用于气泡对标**；地球重做或用户撤销后须恢复 v4 mist + 白内容岛。
 
 ### 2.2 Three.js `mesh.layers` 法（硬性 · v1.2）
 
@@ -229,8 +228,9 @@ AFTER — Safety
 | Section 底 | `linear-gradient` 用 `--mist-from` / `--mist-to`（或等价浅海雾） |
 | 左栏 | `.page-island` 或同 token 白岛：`--surface-elevated` + `--shadow-island` + `--ink` |
 | Framing solver | `ocean-globe.js`：measure → binary maxD → X-nudge → forced-shrink → **earthGroup.position + camera.z**（无 setViewOffset） |
-| Entry (interim) | `assets/js/ocean-bubbles.js?v=20` + 原版 `globe/bubbles.js`；**无地球 mesh** |
-| Debug | `__globeDebug.module === 'ocean-bubbles@v20'`；`earthRemoved: true` |
+| Entry (interim) | `assets/js/ocean-bubbles.js?v=23`；深底玻璃水滴；**无地球 mesh** |
+| Bubble motion | 自下而上 wrap rise；弹性 squash/stretch + fbm 表面形变（非 scale 脉冲） |
+| Debug | `__globeDebug.module === 'ocean-bubbles@v23'`；`darkInterim: true`；`earthRemoved: true` |
 | 白岛锚 | `[data-ocean-panel]`；双栏 = copy/stage 几何并排 |
 | 事件 | resize + visualViewport.resize + ResizeObserver；rAF debounce |
 | 自转 | `earthGroup.rotation.y` 低速自转 + pointer 拖 yaw；**禁止** OrbitControls.autoRotate |

@@ -2,40 +2,41 @@ import * as THREE from '../vendor/three.module.min.js';
 import { bubbleVert, bubbleFrag } from './shaders/bubble-shaders.js';
 import { createBubbleContentTexture } from './utils/textures.js';
 
-const BUBBLE_COUNT_DESKTOP = { back: 28, front: 32 };
-const BUBBLE_COUNT_MOBILE = { back: 12, front: 14 };
+const BUBBLE_COUNT_DESKTOP = { back: 24, front: 36 };
+const BUBBLE_COUNT_MOBILE = { back: 10, front: 16 };
 
-/** Convex-inspired liquid-glass defaults (constitution Bubble law). */
+/** Convex-inspired liquid-glass on dark interim navy. */
 const BUBBLE_DEFAULTS = {
-  uSpeed: 0.1,
-  uBounds: new THREE.Vector3(1.35, 1.85, 1.15),
-  uViewDepthMin: 1.6,
-  uViewDepthMax: 7.2,
-  uNoiseAmplitude: 0.004,
-  uNoiseSpeed: 0.1,
-  uNoiseFrequency: new THREE.Vector3(0.78, 0.71, 0.7),
-  uBubbleOrbitTightness: 2.8,
-  uBubbleDisplacementStrength: 0.12,
+  uSpeed: 0.16,
+  uBounds: new THREE.Vector3(1.55, 2.35, 1.35),
+  uViewDepthMin: 1.5,
+  uViewDepthMax: 6.8,
+  uNoiseAmplitude: 0.045,
+  uNoiseSpeed: 0.28,
+  uNoiseFrequency: new THREE.Vector3(1.15, 0.95, 1.05),
+  uBubbleOrbitTightness: 2.2,
+  uBubbleDisplacementStrength: 0.06,
   uEarthOrigin: new THREE.Vector3(0, 0, 0),
-  uJitterSpeed: 0.28,
-  uJitterFrequency: 3.2,
-  uJitterAmplitude: 0.006,
+  uJitterSpeed: 0.2,
+  uJitterFrequency: 2.2,
+  uJitterAmplitude: 0.018,
+  uElasticAmp: 0.26,
+  uElasticSpeed: 1.65,
   uCamDistMin: 1.85,
   uCamDistMax: 0.32,
-  uIorNormalsMin: -0.08,
-  uIorNormalsMax: -0.04,
-  uIorBg: 1.03,
-  uShininess: 140.0,
-  uSpecularStrength: 1.15,
-  uDiffuseStrength: 0.38,
-  uAmbientStrength: 0.42,
-  uColorFresnelPower: 4.4,
-  uFresnelColor: new THREE.Color(0x7eb8e0),
-  /* Match v4 mist-to clear — refraction fallback on light sea bg */
-  uSectionBgColor: new THREE.Color(0xe0f2fe),
-  uLightPos: new THREE.Vector3(-1.8, 2.4, 3.2),
+  uIorNormalsMin: -0.16,
+  uIorNormalsMax: -0.07,
+  uIorBg: 1.12,
+  uShininess: 300.0,
+  uSpecularStrength: 3.25,
+  uDiffuseStrength: 0.58,
+  uAmbientStrength: 0.6,
+  uColorFresnelPower: 2.35,
+  uFresnelColor: new THREE.Color(0xd8ecff),
+  uSectionBgColor: new THREE.Color(0x1e4a8c),
+  uLightPos: new THREE.Vector3(-1.8, 4.5, 4.5),
   uLightColor: new THREE.Color(0xffffff),
-  uAlphaBoost: 1.0,
+  uAlphaBoost: 1.08,
 };
 
 function bubbleCounts() {
@@ -82,7 +83,11 @@ function fillBubbleAttributes(camera, count, offsets, phases, scales, contents, 
     offsets[i * 3 + 2] = position.z;
     phases[i] = Math.random();
     const depthScale = THREE.MathUtils.lerp(0.22, 0.92, depthT);
-    scales[i] = depthScale * (0.88 + Math.random() * 0.28);
+    // Nearer = larger glass orbs; seed a few hero droplets on front layer
+    const nearBoost = depthBias < 0.4 ? 1.55 : 0.85;
+    let s = depthScale * nearBoost * (0.9 + Math.random() * 0.65);
+    if (depthBias < 0.4 && (i === 0 || i === 5 || i === 12)) s *= 1.55;
+    scales[i] = s;
     contents[i] = i === 3 || i === 11 ? 1 : 0;
   }
 }
@@ -105,6 +110,8 @@ function buildUniforms(alphaBoost) {
     uJitterSpeed: { value: BUBBLE_DEFAULTS.uJitterSpeed },
     uJitterFrequency: { value: BUBBLE_DEFAULTS.uJitterFrequency },
     uJitterAmplitude: { value: BUBBLE_DEFAULTS.uJitterAmplitude },
+    uElasticAmp: { value: BUBBLE_DEFAULTS.uElasticAmp },
+    uElasticSpeed: { value: BUBBLE_DEFAULTS.uElasticSpeed },
     uCamDistMin: { value: BUBBLE_DEFAULTS.uCamDistMin },
     uCamDistMax: { value: BUBBLE_DEFAULTS.uCamDistMax },
     uIorNormalsMin: { value: BUBBLE_DEFAULTS.uIorNormalsMin },
@@ -149,7 +156,7 @@ function createBubbleGroup(opts) {
     contentTexture,
   } = opts;
 
-  const geometry = new THREE.SphereGeometry(0.042, 24, 24);
+  const geometry = new THREE.SphereGeometry(0.055, 32, 32);
   const offsets = new Float32Array(count * 3);
   const phases = new Float32Array(count);
   const scales = new Float32Array(count);
@@ -227,7 +234,7 @@ export function createBubbles({ scene, camera }) {
     layer: 1,
     depthTest: true,
     renderOrder: -1,
-    alphaBoost: 0.55,
+    alphaBoost: 0.95,
     contentTexture,
   });
 
@@ -235,11 +242,11 @@ export function createBubbles({ scene, camera }) {
     scene,
     camera,
     count: counts.front,
-    depthBias: 0.18,
+    depthBias: 0.12,
     layer: 2,
     depthTest: false,
     renderOrder: 2,
-    alphaBoost: 0.72,
+    alphaBoost: 1.25,
     contentTexture,
   });
 

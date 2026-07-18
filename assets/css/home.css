@@ -22,7 +22,7 @@
 .hero-enter { display: inline-flex; gap: .65rem; margin-top: var(--space-4); padding: .65rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.55); color: inherit; text-decoration: none; transition: transform var(--duration-ui) var(--ease-ui), opacity var(--duration-ui) var(--ease-ui); }
 .hero-enter:hover { opacity: 0.88; transform: translateY(-2px); }
 
-/* —— Ocean explore (v4: mist sea blue + white island + floating earth) —— */
+/* —— Ocean explore (v4 mist default; --dark-interim = Convex bubble match) —— */
 .ocean-explore {
   position: relative;
   isolation: isolate;
@@ -31,6 +31,53 @@
   color: var(--ink);
   background: linear-gradient(165deg, var(--mist-from) 0%, var(--mist-to) 55%, #dbeafe 100%);
   scroll-margin-top: 4.75rem;
+}
+
+/* Temporary exception: dark navy for glass-bubble matching (no earth).
+   Gradient: top lighter royal/cerulean → bottom near-black (Convex-like). */
+.ocean-explore--dark-interim {
+  color: rgba(255, 255, 255, 0.92);
+  background:
+    radial-gradient(70% 55% at 58% 28%, rgba(70, 140, 230, 0.55) 0%, transparent 62%),
+    linear-gradient(180deg, #3d8fd4 0%, #2b6cb0 22%, #1e4a8c 48%, #102848 74%, #050d16 100%);
+}
+
+.ocean-explore--dark-interim .ocean-explore__canvas-host {
+  background: linear-gradient(180deg, #3d8fd4 0%, #1e4a8c 42%, #0a1628 100%);
+}
+
+.ocean-explore--dark-interim .ocean-explore__copy.page-island {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.ocean-explore--dark-interim .ocean-explore__eyebrow {
+  color: rgba(147, 197, 253, 0.85);
+}
+
+.ocean-explore--dark-interim .ocean-explore__copy h2 {
+  color: #fff;
+  font-weight: 300;
+}
+
+.ocean-explore--dark-interim .ocean-explore__lede,
+.ocean-explore--dark-interim .ocean-explore__copy p {
+  color: rgba(226, 232, 240, 0.78);
+}
+
+.ocean-explore--dark-interim .ocean-explore__link {
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #fff;
+  background: transparent;
+}
+
+.ocean-explore--dark-interim .ocean-explore__link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #fff;
+  color: #fff;
 }
 
 .ocean-explore__canvas-host {

@@ -1,11 +1,12 @@
 /**
- * #ocean-explore interim — bubbles only (constitution v1.9.1)
- * Earth / markers / shelves removed. Original liquid-glass bubbles restored.
+ * #ocean-explore interim — dark navy glass bubbles (v21)
+ * Earth off. Convex-like dark bg + liquid elastic rise.
  */
 import * as THREE from './vendor/three.module.min.js';
 import { createBubbles } from './globe/bubbles.js';
 
-const SECTION_CLEAR = 0xe0f2fe;
+/** Mid navy — matches brighter bottom-dark / top-light interim gradient. */
+const SECTION_CLEAR = 0x1e4a8c;
 const CAMERA_FOV = 34;
 const MAX_DPR = 2;
 const LAYER_BUBBLE_BACK = 1;
@@ -26,6 +27,46 @@ function showStatus(message) {
   el.hidden = false;
 }
 
+function createDarkGradientTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+  // Vertical: top light → bottom dark (canvas y=0 is top)
+  const g = ctx.createLinearGradient(0, 0, 0, 512);
+  g.addColorStop(0, '#5aa6e8');
+  g.addColorStop(0.18, '#3d8fd4');
+  g.addColorStop(0.38, '#2b6cb0');
+  g.addColorStop(0.58, '#1a4578');
+  g.addColorStop(0.78, '#0c1f38');
+  g.addColorStop(1, '#050d16');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 512, 512);
+  // Upper-center glow (Convex-like light filtering down)
+  const topGlow = ctx.createRadialGradient(300, 110, 20, 290, 160, 300);
+  topGlow.addColorStop(0, 'rgba(130, 190, 255, 0.5)');
+  topGlow.addColorStop(0.45, 'rgba(60, 120, 200, 0.22)');
+  topGlow.addColorStop(1, 'rgba(10, 22, 40, 0)');
+  ctx.fillStyle = topGlow;
+  ctx.fillRect(0, 0, 512, 512);
+  // Soft bokeh for refraction interest
+  for (let i = 0; i < 44; i++) {
+    const x = Math.random() * 512;
+    const y = Math.random() * 400;
+    const r = 5 + Math.random() * 28;
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, r);
+    glow.addColorStop(0, 'rgba(140, 195, 255, 0.22)');
+    glow.addColorStop(1, 'rgba(10, 22, 40, 0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
 class OceanBubbles {
   constructor({ section, canvas, canvasWrap }) {
     this.section = section;
@@ -42,6 +83,10 @@ class OceanBubbles {
     this.renderer = null;
     this.bubbles = null;
     this.diffuseRT = null;
+    this.bgTexture = null;
+    this.bgScene = null;
+    this.bgCamera = null;
+    this.bgMesh = null;
     this.running = false;
     this.visible = false;
     this.animationId = null;
@@ -53,6 +98,8 @@ class OceanBubbles {
   }
 
   init() {
+    this.section.classList.add('ocean-explore--dark-interim');
+
     try {
       this.renderer = new THREE.WebGLRenderer({
         canvas: this.canvas,
@@ -69,6 +116,15 @@ class OceanBubbles {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.setClearColor(SECTION_CLEAR, 1);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+
+    this.bgTexture = createDarkGradientTexture();
+    this.bgScene = new THREE.Scene();
+    this.bgCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    this.bgMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(2, 2),
+      new THREE.MeshBasicMaterial({ map: this.bgTexture, depthTest: false, depthWrite: false }),
+    );
+    this.bgScene.add(this.bgMesh);
 
     this.bubbles = createBubbles({ scene: this.scene, camera: this.camera });
     this.bubbles.setEarthOrigin?.(new THREE.Vector3(0, 0, 0));
@@ -119,8 +175,9 @@ class OceanBubbles {
 
     if (typeof window !== 'undefined') {
       window.__globeDebug = {
-        module: 'ocean-bubbles@v20',
+        module: 'ocean-bubbles@v27',
         earthRemoved: true,
+        darkInterim: true,
         bubbles: true,
         camPos: this.camera.position.toArray(),
       };
@@ -185,15 +242,21 @@ class OceanBubbles {
     const size = this.renderer.getSize(new THREE.Vector2());
     const dpr = this.renderer.getPixelRatio();
 
-    // Mist-only diffuse for bubble refraction (no earth).
+    // Dark gradient into RT for IOR sampling
     this.renderer.setRenderTarget(this.diffuseRT);
     this.renderer.setClearColor(SECTION_CLEAR, 1);
     this.renderer.clear(true, true, true);
+    if (this.bgScene && this.bgCamera) {
+      this.renderer.render(this.bgScene, this.bgCamera);
+    }
     this.renderer.setRenderTarget(null);
 
     this.renderer.setViewport(0, 0, size.x * dpr, size.y * dpr);
     this.renderer.setClearColor(SECTION_CLEAR, 1);
     this.renderer.clear(true, true, true);
+    if (this.bgScene && this.bgCamera) {
+      this.renderer.render(this.bgScene, this.bgCamera);
+    }
 
     this.renderer.autoClear = false;
     this.camera.layers.disableAll();
@@ -249,6 +312,9 @@ class OceanBubbles {
     this._unsubs.forEach((fn) => fn());
     this.bubbles?.dispose();
     this.diffuseRT?.dispose();
+    this.bgTexture?.dispose();
+    this.bgMesh?.geometry?.dispose();
+    this.bgMesh?.material?.dispose();
     this.renderer?.dispose();
   }
 }
