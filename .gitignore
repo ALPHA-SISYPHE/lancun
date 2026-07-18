@@ -11,9 +11,10 @@ desktop.ini
 *.swp
 *.swo
 
-# Large local-only resources (upload later if needed)
+# Large local-only resources
 references/
-assets/media/
+assets/media/hero.original.mp4
+assets/media/*.original.*
 
 # Local env / secrets (if added later)
 .env
