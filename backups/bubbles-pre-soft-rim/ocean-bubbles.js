@@ -180,7 +180,7 @@ class OceanBubbles {
     if (typeof window === 'undefined') return;
     const uTime = this.bubbles?.frontMesh?.material?.uniforms?.uTime?.value ?? null;
     window.__globeDebug = {
-      module: 'ocean-bubbles@v44',
+      module: 'ocean-bubbles@v37',
       earthRemoved: true,
       darkInterim: true,
       bubbles: true,
