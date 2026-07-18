@@ -49,13 +49,13 @@ function createDarkGradientTexture() {
   topGlow.addColorStop(1, 'rgba(10, 22, 40, 0)');
   ctx.fillStyle = topGlow;
   ctx.fillRect(0, 0, 512, 512);
-  // Soft bokeh for refraction interest
-  for (let i = 0; i < 44; i++) {
+  // Soft bokeh for refraction — keep faint so not mistaken for sharp bubbles
+  for (let i = 0; i < 18; i++) {
     const x = Math.random() * 512;
-    const y = Math.random() * 400;
-    const r = 5 + Math.random() * 28;
+    const y = Math.random() * 360;
+    const r = 4 + Math.random() * 16;
     const glow = ctx.createRadialGradient(x, y, 0, x, y, r);
-    glow.addColorStop(0, 'rgba(140, 195, 255, 0.22)');
+    glow.addColorStop(0, 'rgba(140, 195, 255, 0.1)');
     glow.addColorStop(1, 'rgba(10, 22, 40, 0)');
     ctx.fillStyle = glow;
     ctx.beginPath();
@@ -180,7 +180,7 @@ class OceanBubbles {
     if (typeof window === 'undefined') return;
     const uTime = this.bubbles?.frontMesh?.material?.uniforms?.uTime?.value ?? null;
     window.__globeDebug = {
-      module: 'ocean-bubbles@v28',
+      module: 'ocean-bubbles@v37',
       earthRemoved: true,
       darkInterim: true,
       bubbles: true,
@@ -188,6 +188,8 @@ class OceanBubbles {
       visible: this.visible,
       uTime,
       reduced: motionReduced(),
+      bubbleCount: this.bubbles?.count ?? null,
+      scaleStats: this.bubbles?.getScaleStats?.() ?? null,
       camPos: this.camera?.position?.toArray?.() ?? null,
     };
   }

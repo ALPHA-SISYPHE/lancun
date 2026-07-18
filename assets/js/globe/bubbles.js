@@ -2,8 +2,20 @@ import * as THREE from '../vendor/three.module.min.js';
 import { bubbleVert, bubbleFrag } from './shaders/bubble-shaders.js';
 import { createBubbleContentTexture } from './utils/textures.js';
 
-const BUBBLE_COUNT_DESKTOP = { back: 24, front: 36 };
-const BUBBLE_COUNT_MOBILE = { back: 10, front: 16 };
+/** Sparse Convex-like counts (~12 desktop / ~8 mobile). */
+const BUBBLE_COUNT_DESKTOP = { back: 4, front: 8 };
+const BUBBLE_COUNT_MOBILE = { back: 3, front: 5 };
+
+/** Screen-space diameter as fraction of viewport WIDTH (Convex refs ~3%–9.5%). */
+const DIAMETER_VW_MIN = 0.03;
+const DIAMETER_VW_MAX = 0.085;
+const DIAMETER_VW_HARD_MIN = 0.025;
+const DIAMETER_VW_HARD_MAX = 0.1;
+
+/** Extra gap beyond r1+r2 in NDC-height units; also used as horizontal corridor margin. */
+const SEPARATION = 0.7;
+const PLACE_ATTEMPTS = 80;
+const GEO_RADIUS = 0.055;
 
 /** Convex-inspired liquid-glass on dark interim navy. */
 const BUBBLE_DEFAULTS = {
@@ -11,17 +23,18 @@ const BUBBLE_DEFAULTS = {
   uBounds: new THREE.Vector3(1.55, 2.35, 1.35),
   uViewDepthMin: 1.5,
   uViewDepthMax: 6.8,
-  uNoiseAmplitude: 0.045,
-  uNoiseSpeed: 0.38,
+  uNoiseAmplitude: 0.008,
+  uNoiseSpeed: 0.22,
   uNoiseFrequency: new THREE.Vector3(1.15, 0.95, 1.05),
   uBubbleOrbitTightness: 2.2,
   uBubbleDisplacementStrength: 0.06,
   uEarthOrigin: new THREE.Vector3(0, 0, 0),
-  uJitterSpeed: 0.35,
+  uJitterSpeed: 0.16,
   uJitterFrequency: 2.2,
-  uJitterAmplitude: 0.028,
-  uElasticAmp: 0.3,
-  uElasticSpeed: 2.1,
+  uJitterAmplitude: 0.005,
+  /** Near-zero axial pulse — size stays locked; only micro surface deform. */
+  uElasticAmp: 0.005,
+  uElasticSpeed: 0.65,
   uCamDistMin: 1.85,
   uCamDistMax: 0.32,
   uIorNormalsMin: -0.16,
@@ -45,21 +58,52 @@ function bubbleCounts() {
     : BUBBLE_COUNT_DESKTOP;
 }
 
+function aspectOf(camera) {
+  return Math.max(camera.aspect || 1, 0.5);
+}
+
+/** Convert width-fraction diameter to height-fraction for frustum math / NDC radii. */
+function diameterVwToVh(camera, diameterVw) {
+  return diameterVw * aspectOf(camera);
+}
+
 /**
- * Full-viewport frustum placement; depthBias: 0 = nearer (front), 1 = farther (back).
- * @param {THREE.PerspectiveCamera} camera
- * @param {() => number} rng
- * @param {number} depthBias
+ * World-space iScale so sphere (GEO_RADIUS * iScale) spans diameterVw of viewport width at dist.
  */
-function placeInViewFrustum(camera, rng, depthBias) {
-  const ndcX = (rng() * 2 - 1) * 1.28;
-  const ndcY = (rng() * 2 - 1) * 1.15;
+function diameterVwToScale(camera, dist, diameterVw) {
+  const diameterVh = diameterVwToVh(camera, diameterVw);
+  const fovRad = THREE.MathUtils.degToRad(camera.fov);
+  const frustumH = 2 * dist * Math.tan(fovRad * 0.5);
+  const worldRadius = (diameterVh * frustumH) * 0.5;
+  return worldRadius / GEO_RADIUS;
+}
+
+function overlapsAccepted(ndcX, ndcY, ndcR, accepted, aspect) {
+  for (let i = 0; i < accepted.length; i += 1) {
+    const a = accepted[i];
+    const minSep = (ndcR + a.ndcR) * (1 + SEPARATION);
+    // Horizontal corridor: survives pure Y rise without crossing.
+    const dxH = Math.abs(ndcX - a.ndcX) * aspect;
+    if (dxH < minSep) return true;
+    const dy = ndcY - a.ndcY;
+    if (Math.hypot(dxH, dy) < minSep) return true;
+  }
+  return false;
+}
+
+/**
+ * Place one bubble: NDC sample + depth → world pos + VW-relative scale; reject if overlaps.
+ * @returns {{ position: THREE.Vector3, scale: number, ndcX: number, ndcY: number, ndcR: number, diameterVw: number } | null}
+ */
+function tryPlaceBubble(camera, rng, depthBias, accepted, diameterVw) {
+  const aspect = aspectOf(camera);
+  const ndcX = (rng() * 2 - 1) * 0.92;
+  const ndcY = (rng() * 2 - 1) * 0.88;
   const depthT = THREE.MathUtils.clamp(
     Math.pow(rng(), 0.55) * 0.55 + depthBias * 0.45,
     0,
     1,
   );
-
   const target = new THREE.Vector3(ndcX, ndcY, 0.5);
   target.unproject(camera);
   const dir = target.sub(camera.position).normalize();
@@ -68,27 +112,80 @@ function placeInViewFrustum(camera, rng, depthBias) {
     BUBBLE_DEFAULTS.uViewDepthMax,
     depthT,
   );
-
-  return {
-    position: camera.position.clone().add(dir.multiplyScalar(dist)),
-    depthT,
-  };
+  const position = camera.position.clone().add(dir.multiplyScalar(dist));
+  // NDC radii are in height-normalized units (same as previous vh-based ndcR).
+  const ndcR = diameterVwToVh(camera, diameterVw);
+  if (overlapsAccepted(ndcX, ndcY, ndcR, accepted, aspect)) return null;
+  const scale = diameterVwToScale(camera, dist, diameterVw);
+  return { position, scale, ndcX, ndcY, ndcR, diameterVw };
 }
 
-function fillBubbleAttributes(camera, count, offsets, phases, scales, contents, depthBias) {
+/**
+ * Fill attributes for a layer; shares `accepted` with the other layer for global non-overlap.
+ */
+function fillBubbleAttributes(camera, count, offsets, phases, scales, contents, depthBias, accepted) {
+  const nearPrefer = depthBias < 0.4;
   for (let i = 0; i < count; i += 1) {
-    const { position, depthT } = placeInViewFrustum(camera, Math.random, depthBias);
-    offsets[i * 3] = position.x;
-    offsets[i * 3 + 1] = position.y;
-    offsets[i * 3 + 2] = position.z;
+    let placed = null;
+    // Spread across [MIN, MAX] — keep mins readable (no dust). Front slightly larger bias.
+    const tSize = nearPrefer
+      ? 0.25 + Math.random() * 0.75
+      : Math.random() * 0.65;
+    let diameterVw = THREE.MathUtils.clamp(
+      THREE.MathUtils.lerp(DIAMETER_VW_MIN, DIAMETER_VW_MAX, tSize),
+      DIAMETER_VW_HARD_MIN,
+      DIAMETER_VW_HARD_MAX,
+    );
+
+    for (let attempt = 0; attempt < PLACE_ATTEMPTS; attempt += 1) {
+      if (attempt > 0 && attempt % 24 === 0) {
+        // Nudge smaller for packing only — never below hard min.
+        diameterVw = Math.max(DIAMETER_VW_HARD_MIN, diameterVw * 0.92);
+      }
+      placed = tryPlaceBubble(camera, Math.random, depthBias, accepted, diameterVw);
+      if (placed) break;
+    }
+
+    if (!placed) {
+      diameterVw = DIAMETER_VW_HARD_MIN;
+      for (let attempt = 0; attempt < 40 && !placed; attempt += 1) {
+        placed = tryPlaceBubble(camera, Math.random, depthBias, accepted, diameterVw);
+      }
+    }
+
+    if (!placed) {
+      const aspect = aspectOf(camera);
+      const ndcX = i % 2 === 0 ? -0.85 : 0.85;
+      const ndcY = -0.75 + (i / Math.max(count, 1)) * 1.4;
+      const dist = BUBBLE_DEFAULTS.uViewDepthMax;
+      const target = new THREE.Vector3(ndcX, ndcY, 0.5).unproject(camera);
+      const dir = target.sub(camera.position).normalize();
+      const ndcR = diameterVwToVh(camera, DIAMETER_VW_HARD_MIN);
+      placed = {
+        position: camera.position.clone().add(dir.multiplyScalar(dist)),
+        scale: diameterVwToScale(camera, dist, DIAMETER_VW_HARD_MIN),
+        ndcX,
+        ndcY,
+        ndcR,
+        diameterVw: DIAMETER_VW_HARD_MIN,
+      };
+      if (overlapsAccepted(ndcX, ndcY, placed.ndcR, accepted, aspect)) {
+        placed.ndcX = THREE.MathUtils.clamp(ndcX + (i + 1) * 0.12, -0.95, 0.95);
+      }
+    }
+
+    accepted.push({
+      ndcX: placed.ndcX,
+      ndcY: placed.ndcY,
+      ndcR: placed.ndcR,
+    });
+
+    offsets[i * 3] = placed.position.x;
+    offsets[i * 3 + 1] = placed.position.y;
+    offsets[i * 3 + 2] = placed.position.z;
     phases[i] = Math.random();
-    const depthScale = THREE.MathUtils.lerp(0.22, 0.92, depthT);
-    // Nearer = larger glass orbs; seed a few hero droplets on front layer
-    const nearBoost = depthBias < 0.4 ? 1.55 : 0.85;
-    let s = depthScale * nearBoost * (0.9 + Math.random() * 0.65);
-    if (depthBias < 0.4 && (i === 0 || i === 5 || i === 12)) s *= 1.55;
-    scales[i] = s;
-    contents[i] = i === 3 || i === 11 ? 1 : 0;
+    scales[i] = placed.scale;
+    contents[i] = i === 2 ? 1 : 0;
   }
 }
 
@@ -141,6 +238,7 @@ function buildUniforms(alphaBoost) {
  *   renderOrder: number,
  *   alphaBoost: number,
  *   contentTexture: THREE.Texture,
+ *   accepted: Array<{ ndcX: number, ndcY: number, ndcR: number }>,
  * }} opts
  */
 function createBubbleGroup(opts) {
@@ -154,15 +252,16 @@ function createBubbleGroup(opts) {
     renderOrder,
     alphaBoost,
     contentTexture,
+    accepted,
   } = opts;
 
-  const geometry = new THREE.SphereGeometry(0.055, 32, 32);
+  const geometry = new THREE.SphereGeometry(GEO_RADIUS, 32, 32);
   const offsets = new Float32Array(count * 3);
   const phases = new Float32Array(count);
   const scales = new Float32Array(count);
   const contents = new Float32Array(count);
 
-  fillBubbleAttributes(camera, count, offsets, phases, scales, contents, depthBias);
+  fillBubbleAttributes(camera, count, offsets, phases, scales, contents, depthBias, accepted);
 
   geometry.setAttribute('iOffset', new THREE.InstancedBufferAttribute(offsets, 3));
   geometry.setAttribute('iPhase', new THREE.InstancedBufferAttribute(phases, 1));
@@ -177,7 +276,6 @@ function createBubbleGroup(opts) {
     vertexShader: bubbleVert,
     fragmentShader: bubbleFrag,
     transparent: true,
-    // Back bubbles write depth so they occlude each other; earth still occludes them via pass order.
     depthWrite: depthTest,
     depthTest,
     blending: THREE.NormalBlending,
@@ -194,19 +292,9 @@ function createBubbleGroup(opts) {
     material,
     count,
     depthBias,
-    relayout(activeCamera) {
-      if (!activeCamera) return;
-      fillBubbleAttributes(
-        activeCamera,
-        count,
-        geometry.attributes.iOffset.array,
-        geometry.attributes.iPhase.array,
-        geometry.attributes.iScale.array,
-        geometry.attributes.iContent.array,
-        depthBias,
-      );
-      geometry.attributes.iOffset.needsUpdate = true;
-      geometry.attributes.iScale.needsUpdate = true;
+    accepted,
+    relayout() {
+      /* joint relayout handled by createBubbles */
     },
     dispose() {
       scene.remove(mesh);
@@ -217,14 +305,13 @@ function createBubbleGroup(opts) {
 }
 
 /**
- * Dual bubble groups (constitution §2.2):
- * back = layer 1 (behind earth, depth-tested), front = layer 2.
- * Earth stays exclusively on layer 0 — never share mask with bubbles.
+ * Dual bubble groups: sparse, viewport-relative size, NDC non-overlap (horizontal corridors).
  * @param {{ scene: THREE.Scene, camera: THREE.PerspectiveCamera }} options
  */
 export function createBubbles({ scene, camera }) {
   const counts = bubbleCounts();
   const contentTexture = createBubbleContentTexture();
+  const accepted = [];
 
   const back = createBubbleGroup({
     scene,
@@ -236,6 +323,7 @@ export function createBubbles({ scene, camera }) {
     renderOrder: -1,
     alphaBoost: 0.95,
     contentTexture,
+    accepted,
   });
 
   const front = createBubbleGroup({
@@ -248,9 +336,31 @@ export function createBubbles({ scene, camera }) {
     renderOrder: 2,
     alphaBoost: 1.25,
     contentTexture,
+    accepted,
   });
 
   const groups = [back, front];
+
+  function relayoutAll(activeCamera) {
+    if (!activeCamera) return;
+    accepted.length = 0;
+    groups.forEach((g) => {
+      const geo = g.mesh.geometry;
+      fillBubbleAttributes(
+        activeCamera,
+        g.count,
+        geo.attributes.iOffset.array,
+        geo.attributes.iPhase.array,
+        geo.attributes.iScale.array,
+        geo.attributes.iContent.array,
+        g.depthBias,
+        accepted,
+      );
+      geo.attributes.iOffset.needsUpdate = true;
+      geo.attributes.iScale.needsUpdate = true;
+      geo.attributes.iPhase.needsUpdate = true;
+    });
+  }
 
   return {
     backMesh: back.mesh,
@@ -258,6 +368,33 @@ export function createBubbles({ scene, camera }) {
     /** @deprecated use back/front materials via setEarthOrigin */
     material: front.material,
     count: counts.back + counts.front,
+    scaleLimits: {
+      diameterVwMin: DIAMETER_VW_MIN,
+      diameterVwMax: DIAMETER_VW_MAX,
+    },
+    getScaleStats() {
+      let min = Infinity;
+      let max = -Infinity;
+      let n = 0;
+      groups.forEach((g) => {
+        const arr = g.mesh.geometry.attributes.iScale?.array;
+        if (!arr) return;
+        for (let i = 0; i < arr.length; i += 1) {
+          const v = arr[i];
+          if (v < min) min = v;
+          if (v > max) max = v;
+          n += 1;
+        }
+      });
+      return {
+        min,
+        max,
+        n,
+        accepted: accepted.length,
+        diameterVwMin: DIAMETER_VW_MIN,
+        diameterVwMax: DIAMETER_VW_MAX,
+      };
+    },
     update(time, reducedMotion) {
       groups.forEach((g) => {
         g.material.uniforms.uTime.value = time;
@@ -265,7 +402,7 @@ export function createBubbles({ scene, camera }) {
       });
     },
     relayout(activeCamera) {
-      groups.forEach((g) => g.relayout(activeCamera));
+      relayoutAll(activeCamera);
     },
     setDiffuse(texture) {
       groups.forEach((g) => {
