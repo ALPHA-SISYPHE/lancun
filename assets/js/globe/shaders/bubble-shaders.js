@@ -49,7 +49,7 @@ float snoise(vec3 v) {
     + i.x + vec4(0.0, i1.x, i2.x, 1.0));
   float n_ = 1.0 / 7.0;
   vec3 ns = n_ * vec3(1.0, 0.5, 0.25);
-  vec3 j = p - 49.0 * floor(p * ns.z * ns.z);
+  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
   vec4 x_ = floor(j * ns.z) + 0.5;
   vec4 y_ = floor(j * ns.y) + 0.5;
   vec4 x = x_ * ns.x + 0.5;

@@ -78,54 +78,64 @@ export class GlobeScene {
   async init() {
     if (!this.renderer) return false;
 
-    const { group, disposeExtras } = await createEarth({ scene: this.scene, renderer: this.renderer });
-    this.earthGroup = group;
-    this.earthDisposeExtras = disposeExtras;
+    try {
+      const { group, disposeExtras } = await createEarth({ scene: this.scene, renderer: this.renderer });
+      this.earthGroup = group;
+      this.earthDisposeExtras = disposeExtras;
 
-    this.shelves = await createShelves(this.earthGroup);
-    this.bubbles = createBubbles(this.earthGroup);
+      this.shelves = await createShelves(this.earthGroup);
+      this.bubbles = createBubbles(this.earthGroup);
 
-    this.markers = createMarkers({
-      earthGroup: this.earthGroup,
-      canvasWrap: this.canvasWrap,
-      section: this.section,
-      oceans: this.oceans,
-    });
+      this.markers = createMarkers({
+        earthGroup: this.earthGroup,
+        canvasWrap: this.canvasWrap,
+        section: this.section,
+        oceans: this.oceans,
+      });
 
-    const size = this._getSize();
-    this.earthRT = new THREE.WebGLRenderTarget(size.w, size.h, {
-      minFilter: THREE.LinearFilter,
-      magFilter: THREE.LinearFilter,
-    });
-    this.compositeRT = new THREE.WebGLRenderTarget(size.w, size.h, {
-      minFilter: THREE.LinearFilter,
-      magFilter: THREE.LinearFilter,
-    });
+      const size = this._getSize();
+      this.earthRT = new THREE.WebGLRenderTarget(size.w, size.h, {
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+      });
+      this.compositeRT = new THREE.WebGLRenderTarget(size.w, size.h, {
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+      });
 
-    this.controls = new OrbitControls(this.camera, this.canvas);
-    this.controls.enablePan = false;
-    this.controls.enableZoom = false;
-    this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.06;
-    this.controls.minPolarAngle = Math.PI * 0.28;
-    this.controls.maxPolarAngle = Math.PI * 0.72;
-    this.controls.autoRotate = !motionReduced();
-    this.controls.autoRotateSpeed = 0.35;
+      this.controls = new OrbitControls(this.camera, this.canvas);
+      this.controls.enablePan = false;
+      this.controls.enableZoom = false;
+      this.controls.enableDamping = true;
+      this.controls.dampingFactor = 0.06;
+      this.controls.minPolarAngle = Math.PI * 0.28;
+      this.controls.maxPolarAngle = Math.PI * 0.72;
+      this.controls.autoRotate = !motionReduced();
+      this.controls.autoRotateSpeed = 0.35;
 
-    this.controls.addEventListener('start', () => {
-      this.controls.autoRotate = false;
-      clearTimeout(this.idleTimer);
-    });
-    this.controls.addEventListener('end', () => this._resumeAutoRotate());
+      this.controls.addEventListener('start', () => {
+        this.controls.autoRotate = false;
+        clearTimeout(this.idleTimer);
+      });
+      this.controls.addEventListener('end', () => this._resumeAutoRotate());
 
-    this._bindShelvesToggle();
-    this._bindObservers();
-    this.resize();
-    this.applyMotion();
+      this._bindShelvesToggle();
+      this._bindObservers();
+      this.resize();
+      this.applyMotion();
 
-    if (this.visible) this.start();
-    this.onReady?.();
-    return true;
+      if (this.visible) this.start();
+      this.onReady?.();
+      return true;
+    } catch (err) {
+      console.error('GlobeScene.init failed', err);
+      showGlobeStatus(
+        '地球 3D 初始化失败（' +
+          (err?.message || err) +
+          '）。请确认 WebGL 可用，并查看控制台 Network 是否有 404。',
+      );
+      return false;
+    }
   }
 
   _bindShelvesToggle() {

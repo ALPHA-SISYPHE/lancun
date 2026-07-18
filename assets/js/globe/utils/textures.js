@@ -18,9 +18,48 @@ const CONTINENTS = [
   { lon: 0, lat: -76, rx: 55, ry: 12 },
 ];
 
-function loadTexture(url) {
+const TEXTURE_TIMEOUT_MS = 8000;
+const localAssetExists = new Map();
+
+async function hasLocalAsset(url) {
+  if (!url.startsWith('assets/')) return true;
+  if (localAssetExists.has(url)) return localAssetExists.get(url);
+  let ok = false;
+  try {
+    const res = await fetch(url, { method: 'HEAD', cache: 'force-cache' });
+    ok = res.ok;
+  } catch {
+    ok = false;
+  }
+  localAssetExists.set(url, ok);
+  return ok;
+}
+
+function loadTexture(url, timeoutMs = TEXTURE_TIMEOUT_MS) {
   return new Promise((resolve, reject) => {
-    new THREE.TextureLoader().load(url, resolve, undefined, reject);
+    let settled = false;
+    const timer = window.setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      reject(new Error(`Texture load timeout: ${url}`));
+    }, timeoutMs);
+
+    new THREE.TextureLoader().load(
+      url,
+      (texture) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timer);
+        resolve(texture);
+      },
+      undefined,
+      (err) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timer);
+        reject(err instanceof Error ? err : new Error(`Texture load failed: ${url}`));
+      },
+    );
   });
 }
 
@@ -98,30 +137,40 @@ function createProceduralShelvesMask(size = 1024) {
 }
 
 export async function loadEarthTexture() {
-  try {
-    return await loadTexture(EARTH_LOCAL);
-  } catch {
-    return loadTexture(EARTH_REMOTE);
+  if (await hasLocalAsset(EARTH_LOCAL)) {
+    try {
+      return await loadTexture(EARTH_LOCAL);
+    } catch (err) {
+      console.warn('Local earth texture unavailable, using remote fallback', err);
+    }
   }
+  return loadTexture(EARTH_REMOTE);
 }
 
 export async function loadCloudTexture() {
-  try {
-    return await loadTexture(CLOUDS_LOCAL);
-  } catch {
-    return loadTexture(CLOUDS_REMOTE);
+  if (await hasLocalAsset(CLOUDS_LOCAL)) {
+    try {
+      return await loadTexture(CLOUDS_LOCAL);
+    } catch (err) {
+      console.warn('Local cloud texture unavailable, using remote fallback', err);
+    }
   }
+  return loadTexture(CLOUDS_REMOTE);
 }
 
 export async function loadEarthNormalTexture() {
-  try {
-    return await loadTexture(EARTH_NORMAL_LOCAL);
-  } catch {
+  if (await hasLocalAsset(EARTH_NORMAL_LOCAL)) {
     try {
-      return await loadTexture(EARTH_NORMAL_REMOTE);
-    } catch {
-      return createProceduralEarthNormal();
+      return await loadTexture(EARTH_NORMAL_LOCAL);
+    } catch (err) {
+      console.warn('Local earth normal map unavailable, trying remote fallback', err);
     }
+  }
+  try {
+    return await loadTexture(EARTH_NORMAL_REMOTE);
+  } catch (err) {
+    console.warn('Remote earth normal map unavailable, using procedural fallback', err);
+    return createProceduralEarthNormal();
   }
 }
 
@@ -161,13 +210,16 @@ function createProceduralEarthNormal() {
  * Continental-shelf mask (R channel). Prefers local PNG; falls back to procedural coastline bands.
  */
 export async function loadShelvesMaskTexture() {
-  try {
-    const tex = await loadTexture(SHELVES_LOCAL);
-    tex.colorSpace = THREE.NoColorSpace;
-    return tex;
-  } catch {
-    return createProceduralShelvesMask();
+  if (await hasLocalAsset(SHELVES_LOCAL)) {
+    try {
+      const tex = await loadTexture(SHELVES_LOCAL);
+      tex.colorSpace = THREE.NoColorSpace;
+      return tex;
+    } catch (err) {
+      console.warn('Local shelves mask unavailable, using procedural fallback', err);
+    }
   }
+  return createProceduralShelvesMask();
 }
 
 /** Soft marine motif for ~15% of bubble instances (iContent). */

@@ -3,6 +3,19 @@ import { bindGlobeScroll } from './scroll-bindings.js';
 
 export { motionReduced, showGlobeStatus };
 
+const GLOBE_INIT_TIMEOUT_MS = 25000;
+
+function withTimeout(promise, label, timeoutMs = GLOBE_INIT_TIMEOUT_MS) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      window.setTimeout(() => {
+        reject(new Error(`${label} timed out after ${Math.round(timeoutMs / 1000)}s`));
+      }, timeoutMs);
+    }),
+  ]);
+}
+
 async function initHomeGlobe() {
   const section = document.querySelector('[data-ocean-explore]');
   const canvas = document.querySelector('[data-globe-canvas]');
@@ -24,7 +37,7 @@ async function initHomeGlobe() {
     },
   });
 
-  const ok = await scene.init();
+  const ok = await withTimeout(scene.init(), 'Globe scene init');
   if (!ok) {
     window.LANCUN_globeInitState = 'failed';
     return null;
@@ -75,8 +88,10 @@ function bootGlobeModule() {
   bootHomeGlobe();
 }
 
-// Dynamic import() in index.html does not block DOMContentLoaded; on slow networks
-// this module may evaluate after the event has already fired.
+// Mark booting as soon as the module graph evaluates so the HTML watchdog
+// does not treat a slow WebGL init as a missing script.
+window.LANCUN_globeInitState = 'booting';
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', bootGlobeModule);
 } else {

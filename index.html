@@ -16,14 +16,16 @@
     <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
     <script type="module" src="assets/js/globe/index.js"></script>
     <script>
+      window.LANCUN_globeInitState = 'pending';
       document.addEventListener('DOMContentLoaded', function () {
         if (document.body.dataset.page !== 'home') return;
         window.setTimeout(function () {
+          var state = window.LANCUN_globeInitState;
           if (
             window.LANCUN_homeGlobe ||
-            window.LANCUN_globeInitState === 'ready' ||
-            window.LANCUN_globeInitState === 'failed' ||
-            window.LANCUN_globeInitState === 'booting'
+            state === 'ready' ||
+            state === 'failed' ||
+            state === 'booting'
           ) {
             return;
           }
@@ -33,6 +35,9 @@
           if (location.protocol === 'file:') {
             status.textContent =
               '地球 3D 未能加载：file:// 协议会拦截 ES 模块。请运行 python -m http.server 8080 后打开 http://127.0.0.1:8080/index.html';
+          } else if (state === 'pending') {
+            status.textContent =
+              '地球 3D 脚本未加载。请打开开发者工具 → Network，检查 assets/js/globe 是否有 404；Vercel 等静态托管可直接访问，勿用 file://。';
           } else {
             status.textContent =
               '地球 3D 初始化超时。请确认浏览器支持 WebGL，打开控制台查看报错后刷新；若 Network 有 404 多为脚本路径错误。';

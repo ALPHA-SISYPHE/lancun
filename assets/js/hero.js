@@ -52,8 +52,8 @@ async function applyHeroMedia() {
   const posterImg = hero.querySelector('.hero-poster');
   const fallback = hero.querySelector('.video-fallback');
 
-  const posterLocal = resolveMediaPath(LANCUN_HERO_POSTER_LOCAL);
-  const posterSrc = (await probeMedia(posterLocal)) ? posterLocal : LANCUN_HERO_POSTER_REMOTE;
+  // Local hero-poster.jpg is optional; remote avoids 404 when the file is not deployed.
+  const posterSrc = LANCUN_HERO_POSTER_REMOTE;
 
   if (posterImg) {
     posterImg.src = posterSrc;
