@@ -173,15 +173,23 @@ class OceanBubbles {
     this.bubbles?.setDiffuse(this.diffuseRT.texture);
     this.bubbles?.relayout(this.camera);
 
-    if (typeof window !== 'undefined') {
-      window.__globeDebug = {
-        module: 'ocean-bubbles@v27',
-        earthRemoved: true,
-        darkInterim: true,
-        bubbles: true,
-        camPos: this.camera.position.toArray(),
-      };
-    }
+    this._syncDebug();
+  }
+
+  _syncDebug() {
+    if (typeof window === 'undefined') return;
+    const uTime = this.bubbles?.frontMesh?.material?.uniforms?.uTime?.value ?? null;
+    window.__globeDebug = {
+      module: 'ocean-bubbles@v28',
+      earthRemoved: true,
+      darkInterim: true,
+      bubbles: true,
+      running: this.running,
+      visible: this.visible,
+      uTime,
+      reduced: motionReduced(),
+      camPos: this.camera?.position?.toArray?.() ?? null,
+    };
   }
 
   _scheduleResize() {
@@ -236,7 +244,8 @@ class OceanBubbles {
   _renderFrame() {
     if (!this.renderer || !this.bubbles) return;
     const reduced = motionReduced();
-    const t = this.clock.elapsedTime;
+    // Must call getElapsedTime() — reading .elapsedTime alone never advances the clock.
+    const t = this.clock.getElapsedTime();
     this.bubbles.update(t, reduced);
 
     const size = this.renderer.getSize(new THREE.Vector2());
@@ -271,6 +280,7 @@ class OceanBubbles {
     this.camera.layers.disableAll();
     this.camera.layers.enable(LAYER_BUBBLE_BACK);
     this.camera.layers.enable(LAYER_BUBBLE_FRONT);
+    this._syncDebug();
   }
 
   _tick = () => {
