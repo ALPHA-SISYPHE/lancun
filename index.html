@@ -9,13 +9,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/base.css?v=77" />
-    <link rel="stylesheet" href="assets/css/home.css?v=78" />
+    <link rel="stylesheet" href="assets/css/home.css?v=80" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./assets/js/vendor/three.module.min.js"
+        }
+      }
+    </script>
     <script src="assets/js/hero.js" defer></script>
     <script src="assets/js/ocean-explore-bg.js" defer></script>
     <script src="assets/js/mock-data.js" defer></script>
     <script src="assets/js/vendor/gsap.min.js" defer></script>
     <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
-    <script type="module" src="assets/js/ocean-bubbles.js?v=78"></script>
+    <script type="module" src="assets/js/globe/index.js?v=3"></script>
     <script>
       window.LANCUN_globeInitState = 'pending';
       document.addEventListener('DOMContentLoaded', function () {
@@ -35,13 +42,13 @@
           status.hidden = false;
           if (location.protocol === 'file:') {
             status.textContent =
-              '场景未能加载：file:// 协议会拦截 ES 模块。请运行 python -m http.server 8080 后打开 http://127.0.0.1:8080/index.html';
+              '3D 地球未能加载：file:// 协议会拦截 ES 模块。请运行 serve.ps1 后打开 http://127.0.0.1:8080/index.html';
           } else if (state === 'pending') {
             status.textContent =
-              '海洋气泡脚本未加载。请打开开发者工具 → Network，检查 assets/js/ocean-bubbles.js 是否有 404；Vercel 等静态托管可直接访问，勿用 file://。';
+              '地球脚本未加载。请打开开发者工具 → Network，检查 assets/js/globe/index.js 是否有 404。';
           } else {
             status.textContent =
-              '场景初始化超时。请确认浏览器支持 WebGL，打开控制台查看报错后刷新；若 Network 有 404 多为脚本路径错误。';
+              '地球初始化超时。请确认浏览器支持 WebGL，打开控制台查看报错后刷新。';
           }
         }, 12000);
       });
@@ -85,10 +92,10 @@
         ></video>
         <div class="ocean-explore__bg-shade" aria-hidden="true"></div>
         <div class="ocean-explore__canvas-host" data-globe-scene data-globe-canvas-wrap>
-          <canvas data-globe-canvas aria-label="海洋探索地球场景"></canvas>
+          <canvas data-globe-canvas aria-label="可拖转的地球"></canvas>
           <p class="globe-status" data-globe-status hidden role="status">
-            海洋场景未能加载。请确认浏览器支持 WebGL；若仍空白，可在项目文件夹运行本地服务器后打开
-            <code>http://127.0.0.1:8080/index.html</code>（见根目录 <code>serve.ps1</code>）。
+            3D 地球未能加载。请确认浏览器支持 WebGL；若仍空白，请运行根目录 serve.ps1 后打开
+            <code>http://127.0.0.1:8080/index.html</code>。
           </p>
         </div>
         <div class="ocean-explore__overlay">
@@ -106,28 +113,8 @@
               </div>
               <div class="ocean-explore__stage" aria-hidden="true"></div>
             </div>
-            <div class="ocean-explore__footer">
-              <button
-                type="button"
-                class="shelves-toggle"
-                data-shelves-toggle
-                data-state="off"
-                aria-pressed="false"
-                aria-label="大陆架分布开关（占位）"
-              >
-                <span class="shelves-toggle__pill" aria-hidden="true">
-                  <span class="shelves-toggle__state" data-shelves-state>Off</span>
-                  <span class="shelves-toggle__knob"></span>
-                </span>
-                <span class="shelves-toggle__caption">Continental Shelves</span>
-              </button>
-            </div>
           </div>
-          <aside class="ocean-explore__fab-rail" aria-hidden="true">
-            <span class="ocean-fab" aria-hidden="true"></span>
-            <span class="ocean-fab" aria-hidden="true"></span>
-            <span class="ocean-fab ocean-fab--accent" aria-hidden="true"></span>
-          </aside>
+          <p class="globe-scene-hint">拖动旋转 · 滚轮缩放 · 点击 + 探索</p>
         </div>
       </section>
     </main>

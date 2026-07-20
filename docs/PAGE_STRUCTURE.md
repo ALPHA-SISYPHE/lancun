@@ -58,7 +58,7 @@
 
 已实现：`pages/ocean.html` 三节骨架 + `ocean-dashboard.js`（v1.3 框架稿）。
 
-首页 `#ocean-explore` 的 3D 地球属于首页模块，不在本页删除范围内。
+首页 `#ocean-explore`：**背景视频 + 左栏文案 + 右侧 WebGL 3D 地球**（`assets/js/globe/`）；五大洋 `+` 标记点击跳转 `pages/ocean.html?ocean=id#five-oceans`。气泡未接入 v2。
 
 ### 3. 海在呼救（已锁定方向，见 RESCUE_PAGE.md）
 
@@ -111,7 +111,7 @@
 - [ ] 行动表单提交后产生什么结果。
 - [ ] 是否需要中英文切换、主题切换或搜索。
 - [x] 已选择方案 A：五页平衡型。
-- [x] 地图采用重点海域地图，而非全球实时地图。（首页地球保留；`ocean.html` 本页地球按 `OCEAN_PAGE.md` 移除）
+- [x] 地图采用重点海域地图，而非全球实时地图。（首页 3D 地球已推倒；`ocean.html` 本页地球按 `OCEAN_PAGE.md` 移除）
 - [x] 行动页采用匿名表单 + localStorage，不制作真实账号注册。
 - [x] 「我们的海洋」三节结构与附录 A.1–A.3 已写入 `docs/OCEAN_PAGE.md` v1.3。
 - [x] 「我们的海洋」§0 用户需求摘要（v1.2）。

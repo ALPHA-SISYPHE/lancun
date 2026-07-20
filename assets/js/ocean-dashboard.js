@@ -337,11 +337,24 @@ const finishDashboardLoad = () => {
   });
 };
 
+const highlightOceanFromQuery = () => {
+  const oceanId = new URLSearchParams(window.location.search).get('ocean');
+  if (!oceanId) return;
+  const target = document.getElementById(`ocean-${oceanId}`);
+  if (!target) return;
+  target.classList.add('is-highlighted');
+  const reduceMotion =
+    document.documentElement.dataset.reducedMotion === 'true'
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+};
+
 const initOceanPage = () => {
   if (document.body.dataset.page !== 'ocean') return;
   renderDashboardCards();
   renderOceanRole();
   renderFiveOceans();
+  highlightOceanFromQuery();
   Promise.all([loadCoralDashboard(), loadNoaaDashboard()]).finally(finishDashboardLoad);
 };
 

@@ -1,11 +1,15 @@
 # 澜存 `#ocean-explore` · Convex 复刻总任务书
 
+> ## 状态：已废止 / 推倒（2026-07-20）
+>
+> 首页 3D 地球与气泡已拆除；本任务书不再驱动实现。现行 `#ocean-explore` = 背景视频 + 文案。是否重开待定。
+
 ## 文档状态
 
 | 项 | 内容 |
 |---|---|
-| 版本 | 1.1 |
-| 状态 | Phase A MVP 视觉已修复（2026-07-18）；Composer 全量后处理暂跳过，待 earth pass 稳定后接回 |
+| 版本 | 1.1（已废止） |
+| 状态 | **已推倒**（2026-07-20）；历史：Phase A MVP 等 |
 | 创建日期 | 2026-07-18 |
 | 关联页面 | `index.html#ocean-explore` |
 | 参考来源 | [Convex Seascape Survey](https://convexseascapesurvey.com/)「Where we are working」区块（只借交互结构与氛围，不复制品牌与文案） |

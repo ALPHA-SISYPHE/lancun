@@ -1,17 +1,27 @@
 # `#ocean-explore` 视觉 / 布局宪法（Binding Law）
 
+> ## 状态：已废止 / 推倒（2026-07-20）
+>
+> 用户决定**暂停**首页 3D 地球与气泡；不再以本文件为实现依据。  
+> 当前页面降级为：**背景视频 + 文案 CTA**（`ocean-explore-bg.js` + `home.css`）。  
+> 是否重开 3D 待定；重开前须另立新宪法，**不得**直接复活本文旧条文。
+>
+> 下文保留作历史档案，**勿再按条文改代码**。
+
 | 项 | 内容 |
 |---|---|
-| 版本 | **1.9.6 interim** |
-| 地位 | `#ocean-explore` **绑定视觉与布局法**；条文内部冲突以较新 § 为准 |
+| 版本 | **1.9.6 interim（已废止）** |
+| 地位 | ~~`#ocean-explore` 绑定视觉与布局法~~ → **历史档案** |
 | 创建 | 2026-07-18 |
-| 修订 | 2026-07-20 — **v1.9.6 interim**：**地球座位世界坐标钉死** + 右半黄金区正中（窄屏整段居中）；废止 copyH×1.12 / 文案 Y 同心 / Fit 左移缩小主路径。前次 v1.9.5：金标参考图优先 |
-| 前版 | v1.9.5 interim |
-| 参考 | Convex「Where we are working」金标截图：`references/bubble-gold-depth/ref-1.png` … `ref-3.png`；色/质默认跟 `DESIGN.md` v4，**与金标画面冲突时以金标为准** |
-| 本地验收 | `http://127.0.0.1:8080/index.html#ocean-explore` |
-| 关联 | `docs/OCEAN_EXPLORE_CONVEX_PLAN.md`（任务书）、根目录 `DESIGN.md`（全站色/质） |
+| 修订 | 2026-07-20 — **推倒**：拆除 WebGL 地球/气泡运行时；页面仅视频+文案。前次 v1.9.6 座位钉死 |
+| 前版 | v1.9.6 interim |
+| 参考 | Convex「Where we are working」金标截图：`references/bubble-gold-depth/ref-1.png` … `ref-3.png`（历史参考，非现行验收） |
+| 本地验收 | `http://127.0.0.1:8080/index.html#ocean-explore`（现行：视频+文案，无 canvas） |
+| 关联 | `docs/OCEAN_EXPLORE_CONVEX_PLAN.md`（任务书，同步废止）、根目录 `DESIGN.md`（全站色/质仍有效） |
 
 ### 验收优先级（Binding · 用户 2026-07-19）
+
+> **废止说明：** 金标对齐与地球/气泡验收已随推倒取消。现行只验收「视频可播、文案可读、无 WebGL 报错」。
 
 完成宪法指标**不够**；还必须**严格对齐金标参考图画面效果**才算达标。冲突时：
 
@@ -25,6 +35,8 @@
 ---
 
 ## 0. 何时生效
+
+> **已废止。** 下列「必须先读本文件」要求不再适用。
 
 任何对 `#ocean-explore` 的 HTML / CSS / `assets/js/globe/**` / `ocean-bubbles.js` 改动，**必须先读本文件**，再按 §6 自检仪式执行；目视对照以金标图为准。  
 未通过自检，不得进入下一阶段。

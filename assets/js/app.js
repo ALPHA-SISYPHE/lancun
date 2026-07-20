@@ -148,7 +148,12 @@ function setupDisplayPrefs() {
       reduceMotion: motionInput?.checked ?? false,
     });
     if (typeof window.LANCUN_applyHeroPrefs === 'function') window.LANCUN_applyHeroPrefs();
-    window.LANCUN_homeGlobe?.applyMotion?.();
+    if (typeof window.LANCUN_applyOceanExploreVideo === 'function') {
+      window.LANCUN_applyOceanExploreVideo();
+    }
+    if (typeof window.LANCUN_homeGlobe?.applyMotion === 'function') {
+      window.LANCUN_homeGlobe.applyMotion();
+    }
     const status = form.querySelector('[data-display-prefs-status]');
     if (status) {
       status.textContent = '偏好已保存，返回首页即可看到效果。';
@@ -366,18 +371,6 @@ function setupAuth() {
   });
 }
 
-function setupGlobe() {
-  const globe = document.querySelector('[data-globe]'); if (!globe) return;
-  let startX = 0; let rotation = 0;
-  globe.addEventListener('pointerdown', (event) => { startX = event.clientX; globe.setPointerCapture(event.pointerId); });
-  globe.addEventListener('pointermove', (event) => { if (!globe.hasPointerCapture(event.pointerId)) return; rotation += (event.clientX - startX) * .35; startX = event.clientX; globe.style.setProperty('--globe-rotate', `${rotation}deg`); });
-  document.querySelectorAll('[data-map-pin]').forEach((button) => button.addEventListener('click', () => {
-    const story = window.LANCUN_DATA.oceanStories[button.dataset.mapPin]; const panel = document.querySelector('[data-map-detail]');
-    if (story && panel) panel.innerHTML = `<h2>${story.title}</h2><p>${story.text}</p>`;
-    document.querySelectorAll('[data-map-pin]').forEach((item) => item.classList.toggle('is-active', item.dataset.mapPin === button.dataset.mapPin));
-  }));
-}
-
 function setupDashboard() {
   const chart = document.querySelector('[data-pollution-chart]'); if (!chart) return;
   const drawChart = (rows) => { chart.innerHTML = rows.map((row) => `<div class="chart-row"><span>${row.label}</span><div class="chart-track"><div class="chart-fill" style="width:${row.value}%"></div></div><strong>${row.value}%</strong></div>`).join(''); };
@@ -443,14 +436,10 @@ document.addEventListener('DOMContentLoaded', () => {
   setupHomeHeader();
   setupDisplayPrefs();
   setupPageBgVideo();
-  window.addEventListener('lancun-home-globe-ready', () => {
-    window.LANCUN_homeGlobe?.applyMotion?.();
-  });
   setupUserMenu();
   setupAuth();
   renderProfile();
   setupProfileDashboard();
-  setupGlobe();
   setupDashboard();
 });
 

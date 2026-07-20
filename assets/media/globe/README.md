@@ -1,16 +1,13 @@
-# Globe media assets
+# 地球纹理
 
-## shelves-mask.png
-
-| 字段 | 内容 |
+| 文件 | 用途 |
 |---|---|
-| **用途** | `#ocean-explore` 大陆架分布 shader overlay（R 通道 mask） |
-| **尺寸** | 1024×1024 equirectangular |
-| **来源** | Phase B 程序化占位：简化大陆轮廓 + 近岸架带（`scripts/generate-shelves-mask.mjs`） |
-| **重新生成** | `node scripts/generate-shelves-mask.mjs` |
-| **替换** | 待 Natural Earth / bathymetry 数据验证后可换真实遮罩 |
-| **运行时回退** | 若 PNG 404，`assets/js/globe/utils/textures.js` 使用程序化 Canvas mask（地球暂移除，本 mask 暂未挂载） |
+| `earth.jpg` | 地球表面贴图 |
+| `earth-clouds.png` | 云层透明贴图 |
 
-## bubble-content（运行时）
+来源：Three.js 官方示例（与 [webgl_geometry_earth](https://threejs.org/examples/#webgl_geometry_earth) 同源）。
 
-个别气泡实例（约 15%）在 fragment shader 中采样 `createBubbleContentTexture()` 生成的 Canvas 贴图，非独立文件。
+- `earth_atmos_2048.jpg`
+- `earth_clouds_1024.png`
+
+许可：随 Three.js 示例分发；课程项目注明出处。

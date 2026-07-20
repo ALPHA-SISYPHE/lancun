@@ -126,18 +126,19 @@
 | 来源 | 本对话中由 OpenAI 图像生成工具生成，2026-07-17 |
 | 使用说明 | 仅作为课程网站装饰主视觉；不作为真实海洋纪录照片、科学数据或新闻证据使用。 |
 
-## 地球纹理（首页 Three.js 3D 地球）
+## 地球纹理（首页 Three.js 3D 地球 · globe v2）
 
 | 字段 | 内容 |
 |---|---|
+| 状态 | **2026-07-20 恢复**（globe v2 从头重做） |
 | 用途 | 首页 `#ocean-explore` WebGL 地球与云层 |
 | 描述 | 等距圆柱投影地球影像 + 云层透明贴图 |
-| 本地文件 | `assets/media/earth.jpg`、`assets/media/earth-clouds.png` |
+| 本地文件 | `assets/media/globe/earth.jpg`、`assets/media/globe/earth-clouds.png` |
 | 来源 | Three.js 官方示例纹理（与 mrdoob/three.js examples 同源） |
 | 页面链接 | https://threejs.org/examples/#webgl_geometry_earth |
 | 直接 URL（备份） | `earth_atmos_2048.jpg`、`earth_clouds_1024.png`（threejs.org/examples/textures/planets/） |
 | 许可 | 随 Three.js 示例分发，课程项目注明出处；可替换为 NASA Visible Earth 等自有授权素材 |
-| 获取日期 | 2026-07-17 |
+| 获取日期 | 2026-07-17（初）；2026-07-20（v2 重新入库） |
 
 ## 全站海纹背景（v2.0）
 
@@ -264,41 +265,48 @@
 
 v2.3 光池/caustics 已废弃，不再作为装饰规范。
 
-## 第三方库（首页 3D 地球）
+## 第三方库（首页 · 现行）
 
 | 库 | 版本 | 许可 | 用途 |
 |---|---|---|---|
-| Three.js | r170 (npm) | MIT | WebGL 球体、光照、CSS2D 标记、RenderTarget 气泡折射 |
-| GSAP | 3.12.5 | Standard (free) | 大陆架 `uOffset` 切换动画（1.2s） |
-| ScrollTrigger | 3.12.5 | Standard (free) | GSAP 插件；Phase A 注册备用，Phase B+ 滚动驱动 |
-| EffectComposer / RenderPass / ShaderPass / FXAAShader | three@0.170 examples | MIT | 本地 vendor；Phase B 后处理（暗角 + 轻 grain + FXAA） |
-| 文件位置 | `assets/js/vendor/` | 见 `assets/js/vendor/README.md` | 首页 `#ocean-explore` 模块化 globe |
+| GSAP | 3.12.5 | Standard (free) | 滚动 / 动效 |
+| ScrollTrigger | 3.12.5 | Standard (free) | GSAP 插件 |
+| Three.js | r170 (0.170.0) | MIT | `#ocean-explore` WebGL 地球 |
+| OrbitControls / CSS2DRenderer | r170 examples/jsm | MIT | 地球交互与五大洋标记 |
+| 文件位置 | `assets/js/vendor/` | 见 `assets/js/vendor/README.md` | GSAP + Three.js 本地化 |
 
-## 大陆架占位遮罩（Phase A）
+## Globe 模块（globe v2 · 2026-07-20）
 
 | 字段 | 内容 |
 |---|---|
-| 用途 | `#ocean-explore` 大陆架分布 shader overlay（`uMask` / `uOffset`） |
-| 本地文件 | `assets/media/globe/shelves-mask.png` |
-| 当前实现 | Phase B：程序化海岸线架带占位（`scripts/generate-shelves-mask.mjs` + `textures.js` 同算法回退） |
-| 替换说明 | 待 bathymetry / Natural Earth 数据验证后可换真实 equirectangular 遮罩 |
+| 入口 | `assets/js/globe/index.js` |
+| 模块 | `earth.js`、`markers.js`、`controls.js`、`utils/latlon.js`、`utils/textures.js` |
+| 全局 API | `window.LANCUN_homeGlobe.applyMotion()`、`window.LANCUN_globeInitState` |
+| 数据 | `LANCUN_DATA.fiveOceans`（`assets/js/mock-data.js`） |
+| 标记跳转 | `pages/ocean.html?ocean={id}#five-oceans` |
+
+## 第三方库（首页 3D 地球 · 历史气泡管线，未接入 v2）
+
+| 库 | 版本 | 许可 | 用途 |
+|---|---|---|---|
+| EffectComposer / RenderPass / ShaderPass / FXAAShader | three@0.170 examples | MIT | 历史 vendor；气泡/后处理未接入 globe v2 |
+| 状态 | 2026-07-20 | — | 文件仍可能在 vendor；globe v2 未引用 |
+
+## 大陆架占位遮罩（Phase A · 已推倒）
+
+| 字段 | 内容 |
+|---|---|
+| 状态 | **已推倒**：`assets/media/globe/` 已删除 |
+| 用途 | ~~`#ocean-explore` 大陆架分布 shader overlay~~ |
+| 本地文件 | ~~`assets/media/globe/shelves-mask.png`~~ |
 | 获取日期 | 2026-07-18 |
 
-## Globe 模块（Phase A）
+## Globe 模块（Phase A · 已推倒）
 
 | 模块 | 路径 | 说明 |
 |---|---|---|
-| 入口 | `assets/js/globe/index.js` | 替换 `home-globe.js`；暴露 `window.LANCUN_homeGlobe` |
-| 场景 | `GlobeScene.js` | IntersectionObserver rAF、ResizeObserver、DPR cap、WebGL 降级 |
-| 地球 | `earth.js` | HemisphereLight、ACESFilmic exposure 1.25、emissive、云层/大气 |
-| 大陆架 | `shelves.js` | GSAP `uOffset` 0↔1 |
-| 气泡 | `bubbles.js` + `shaders/` | 双 pass：earth RT + InstancedMesh 折射 |
-| 标记 | `markers.js` | CSS2DRenderer + 五大洋 modal |
-| 后处理 | `composer.js` | Phase B：TextureInput → Vignette → Grain → FXAA；移动/低 tier 直出 |
-| 地球贴图 | `assets/media/earth.jpg` | 本地优先；远程 fallback three.js examples |
-| 地球法线 | `assets/media/earth-normal.jpg`（可选） | 本地 → three.js `earth_normal_2048.jpg` → 程序化噪声 |
-| 环境反射 | `earth.js` PMREM | Canvas 海洋渐变 equirect → PMREM envMap（无 HDR 依赖） |
-| 备份 | `assets/js/home-globe.js` | 未加载；仅作 Phase A 前参考 |
+| 状态 | 2026-07-20 v2 | 入口 `assets/js/globe/index.js`；见上节「Globe 模块（globe v2）」 |
+| 历史入口 | ~~`ocean-bubbles.js` / 旧 `home-globe.js`~~ | v1 已推倒 |
 
 ## 设计参考记录
 
