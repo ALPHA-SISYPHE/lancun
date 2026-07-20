@@ -6,7 +6,13 @@ import { CSS2DRenderer } from '../vendor/CSS2DRenderer.js';
 import { createEarthGroup } from './earth.js';
 import { createGlobeControls } from './controls.js';
 import { createOceanMarkers } from './markers.js';
-import { getProjectedFraction } from './utils/framing.js';
+import {
+  EARTH_SCREEN_FILL,
+  EARTH_VISUAL_RADIUS,
+  getProjectedFraction,
+  getProjectedSphereFill,
+  solveCameraDistanceForFill,
+} from './utils/framing.js';
 
 const NARROW_MQ = '(max-width: 58rem)';
 
@@ -57,6 +63,8 @@ async function initGlobe() {
   camera.position.set(0, 0.12, 2.75);
   camera.lookAt(0, 0, 0);
 
+  const CAMERA_Y = 0.12;
+
   scene.add(new THREE.AmbientLight(0x6a9cb8, 0.65));
   const keyLight = new THREE.DirectionalLight(0xffffff, 1.55);
   keyLight.position.set(-3, 2, 4);
@@ -89,16 +97,30 @@ async function initGlobe() {
 
   const applySeat = () => {
     earthGroup.position.set(0, 0, 0);
-    syncTarget();
+    camera.updateProjectionMatrix();
+
+    const z = solveCameraDistanceForFill(
+      camera,
+      EARTH_VISUAL_RADIUS,
+      EARTH_SCREEN_FILL,
+      camera.aspect,
+      CAMERA_Y,
+    );
+    camera.position.set(0, CAMERA_Y, z);
+    camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld(true);
+    syncTarget();
 
     const projected = getProjectedFraction(camera, earthGroup.position);
+    const fill = getProjectedSphereFill(camera, EARTH_VISUAL_RADIUS, camera.aspect);
     window.__globeDebug = {
-      module: 'globe@v4',
+      module: 'globe@v5',
+      earthScreenFill: fill,
       earthScreenFracX: projected.x,
       earthScreenFracY: projected.y,
       earthPos: earthGroup.position.toArray(),
+      cameraZ: camera.position.z,
       isNarrow: isNarrowViewport(),
     };
   };

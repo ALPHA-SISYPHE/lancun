@@ -189,6 +189,7 @@
 - [x] 标记点击 → `pages/ocean.html?ocean=id#five-oceans` + 目标页高亮
 - [x] OrbitControls：滚轮缩放；**自转轴修正** — `earthGroup.rotation.y` 铅垂 Y 轴自转 + 水平 yaw 拖拽（OrbitControls 禁用 rotate/autoRotate）
 - [x] **球心 canvas 中心** — canvas 限右黄金区 0.618 列；`earthGroup` 固定原点 (0,0,0)，投影 ≈ (0.5, 0.5)；移除全屏投影二分求解
+- [x] **1.25 放大 + 地球 0.9 锁尺寸** — 文案/stage ×1.25；地球本体直径 = canvas 短边 ×0.9；禁用滚轮缩放
 - [x] 文档：`DATA_SOURCES.md`、`TASKS.md`、`PAGE_STRUCTURE.md`
 - [x] 本地 HTTP 验收：关键资源 200；import map 配置
 - [ ] 用户目视验收（桌面 / 移动 / reduced-motion）

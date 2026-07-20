@@ -16,6 +16,60 @@ export function getTargetScreenFraction(isNarrow) {
     : { x: GOLDEN_RIGHT_CENTER_X, y: 0.5 };
 }
 
+/** Earth mesh radius (earth.js); atmosphere excluded from fill math. */
+export const EARTH_VISUAL_RADIUS = 1;
+
+/** Target diameter as a fraction of the canvas shorter side. */
+export const EARTH_SCREEN_FILL = 0.9;
+
+const probeA = new THREE.Vector3();
+const probeB = new THREE.Vector3();
+
+export function getProjectedSphereFill(camera, radius, aspect) {
+  camera.updateMatrixWorld(true);
+
+  probeA.set(-radius, 0, 0);
+  probeB.set(radius, 0, 0);
+  probeA.project(camera);
+  probeB.project(camera);
+  const horizontalSpan = Math.abs((probeB.x + 1) * 0.5 - (probeA.x + 1) * 0.5);
+
+  probeA.set(0, -radius, 0);
+  probeB.set(0, radius, 0);
+  probeA.project(camera);
+  probeB.project(camera);
+  const verticalSpan = Math.abs((1 - probeB.y) * 0.5 - (1 - probeA.y) * 0.5);
+
+  return aspect >= 1 ? verticalSpan : horizontalSpan;
+}
+
+/**
+ * Binary-search camera Z so the earth sphere fill matches the target on the canvas short side.
+ * @param {THREE.PerspectiveCamera} camera
+ * @param {number} radius
+ * @param {number} fill
+ * @param {number} aspect
+ * @param {number} [cameraY=0.12]
+ */
+export function solveCameraDistanceForFill(camera, radius, fill, aspect, cameraY = 0.12) {
+  let lo = 0.5;
+  let hi = 24;
+
+  for (let i = 0; i < 32; i += 1) {
+    const z = (lo + hi) * 0.5;
+    camera.position.set(0, cameraY, z);
+    camera.aspect = aspect;
+    camera.updateProjectionMatrix();
+    camera.updateMatrixWorld(true);
+
+    const currentFill = getProjectedSphereFill(camera, radius, aspect);
+    if (currentFill < fill) hi = z;
+    else lo = z;
+  }
+
+  return (lo + hi) * 0.5;
+}
+
 export function getProjectedFraction(camera, position) {
   probe.copy(position);
   probe.project(camera);

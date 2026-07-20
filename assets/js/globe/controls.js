@@ -16,7 +16,7 @@ export function createGlobeControls(camera, canvas, earthGroup, { motionReduced 
   const controls = new OrbitControls(camera, canvas);
   controls.enableRotate = false;
   controls.enablePan = false;
-  controls.enableZoom = true;
+  controls.enableZoom = false;
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
   controls.minDistance = 1.8;

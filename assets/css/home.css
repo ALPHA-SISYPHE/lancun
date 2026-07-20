@@ -24,6 +24,7 @@
 
 /* —— Ocean explore: video + WebGL globe —— */
 .ocean-explore {
+  --oe-scale: 1.25;
   position: relative;
   isolation: isolate;
   min-height: 100svh;
@@ -68,7 +69,7 @@
 .ocean-explore__stage {
   position: relative;
   width: 100%;
-  min-height: min(52vh, 28rem);
+  min-height: min(65vh, 35rem);
   pointer-events: auto;
   overflow: hidden;
 }
@@ -94,7 +95,7 @@
   border-radius: var(--radius);
   background: rgba(15, 23, 42, 0.88);
   color: rgba(255, 255, 255, 0.92);
-  font-size: 0.875rem;
+  font-size: 1.09375rem;
   line-height: 1.5;
   text-align: center;
 }
@@ -115,8 +116,8 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 2.35rem;
-  height: 2.35rem;
+  width: 2.94rem;
+  height: 2.94rem;
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.78);
   border-radius: 50%;
@@ -134,7 +135,7 @@
 }
 
 .globe-pin__plus {
-  font-size: 1.25rem;
+  font-size: 1.5625rem;
   font-weight: 300;
 }
 
@@ -213,7 +214,7 @@ html[data-reduced-motion="true"] .globe-pin,
   position: relative;
   width: min(calc(100% - 4rem), var(--page-width));
   margin-inline: auto;
-  min-height: min(70vh, 36rem);
+  min-height: min(87.5vh, 45rem);
   display: flex;
   align-items: center;
 }
@@ -234,7 +235,7 @@ html[data-reduced-motion="true"] .globe-pin,
   margin: 0;
   pointer-events: none;
   color: rgba(226, 232, 240, 0.55);
-  font-size: 0.75rem;
+  font-size: 0.9375rem;
   letter-spacing: 0.08em;
 }
 
@@ -251,7 +252,7 @@ html[data-reduced-motion="true"] .globe-pin,
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  max-width: 22rem;
+  max-width: 27.5rem;
 }
 
 .ocean-explore--dark-interim .ocean-explore__eyebrow {
@@ -263,17 +264,17 @@ html[data-reduced-motion="true"] .globe-pin,
   font-weight: 200 !important;
   letter-spacing: 0.16em;
   line-height: 1.5;
-  font-size: clamp(1.85rem, 3.6vw, 2.7rem);
+  font-size: clamp(2.3125rem, 4.5vw, 3.375rem);
 }
 
 .ocean-explore--dark-interim .ocean-explore__lede,
 .ocean-explore--dark-interim .ocean-explore__copy p {
   color: rgba(226, 232, 240, 0.5);
   font-weight: 300;
-  font-size: 0.84rem;
+  font-size: 1.05rem;
   line-height: 2;
   letter-spacing: 0.03em;
-  max-width: 20rem;
+  max-width: 25rem;
 }
 
 .ocean-explore__eyebrow {
@@ -315,7 +316,7 @@ html[data-reduced-motion="true"] .globe-pin,
   box-shadow: none;
   font-weight: 300;
   letter-spacing: 0.16em;
-  padding: 0.82rem 2.1rem;
+  padding: 1.025rem 2.625rem;
   border-radius: 999px;
   text-transform: none;
 }
@@ -339,7 +340,7 @@ html[data-reduced-motion="true"] .globe-pin,
   }
 
   .ocean-explore__stage {
-    min-height: min(48vh, 20rem);
+    min-height: min(60vh, 25rem);
   }
 
   .globe-scene-hint {
