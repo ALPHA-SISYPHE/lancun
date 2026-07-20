@@ -6,11 +6,7 @@ import { CSS2DRenderer } from '../vendor/CSS2DRenderer.js';
 import { createEarthGroup } from './earth.js';
 import { createGlobeControls } from './controls.js';
 import { createOceanMarkers } from './markers.js';
-import {
-  getProjectedFraction,
-  getTargetScreenFraction,
-  solveEarthPosition,
-} from './utils/framing.js';
+import { getProjectedFraction } from './utils/framing.js';
 
 const NARROW_MQ = '(max-width: 58rem)';
 
@@ -92,19 +88,14 @@ async function initGlobe() {
   const clock = new THREE.Clock();
 
   const applySeat = () => {
+    earthGroup.position.set(0, 0, 0);
+    syncTarget();
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld(true);
 
-    const target = getTargetScreenFraction(isNarrowViewport());
-    const seat = solveEarthPosition(camera, target);
-    earthGroup.position.set(seat.x, seat.y, seat.z);
-    syncTarget();
-
     const projected = getProjectedFraction(camera, earthGroup.position);
     window.__globeDebug = {
-      module: 'globe@v3',
-      targetFracX: target.x,
-      targetFracY: target.y,
+      module: 'globe@v4',
       earthScreenFracX: projected.x,
       earthScreenFracY: projected.y,
       earthPos: earthGroup.position.toArray(),

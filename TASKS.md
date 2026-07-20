@@ -184,11 +184,11 @@
 - [x] 恢复 Three.js r170 + OrbitControls + CSS2DRenderer（vendor 本地化）
 - [x] 地球贴图入库 `assets/media/globe/`
 - [x] 新建 `assets/js/globe/` 模块（earth / markers / controls / utils）
-- [x] `index.html` canvas-host + 左文右球 layout + 降级脚本
-- [x] `home.css` globe-pin / canvas / hint 样式
+- [x] `index.html` canvas 移入 `.ocean-explore__stage`（右 0.618 列）+ 左文右球 layout + 降级脚本
+- [x] `home.css` globe-pin / stage canvas / hint 样式（移除全屏 canvas-host）
 - [x] 标记点击 → `pages/ocean.html?ocean=id#five-oceans` + 目标页高亮
 - [x] OrbitControls：滚轮缩放；**自转轴修正** — `earthGroup.rotation.y` 铅垂 Y 轴自转 + 水平 yaw 拖拽（OrbitControls 禁用 rotate/autoRotate）
-- [x] **球心屏幕锚点** — 右黄金区中心 X≈0.691 / 窄屏 0.5；`utils/framing.js` 投影二分求解（移除 lookAt 球心）
+- [x] **球心 canvas 中心** — canvas 限右黄金区 0.618 列；`earthGroup` 固定原点 (0,0,0)，投影 ≈ (0.5, 0.5)；移除全屏投影二分求解
 - [x] 文档：`DATA_SOURCES.md`、`TASKS.md`、`PAGE_STRUCTURE.md`
 - [x] 本地 HTTP 验收：关键资源 200；import map 配置
 - [ ] 用户目视验收（桌面 / 移动 / reduced-motion）

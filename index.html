@@ -22,7 +22,7 @@
     <script src="assets/js/mock-data.js" defer></script>
     <script src="assets/js/vendor/gsap.min.js" defer></script>
     <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
-    <script type="module" src="assets/js/globe/index.js?v=3"></script>
+    <script type="module" src="assets/js/globe/index.js?v=4"></script>
     <script>
       window.LANCUN_globeInitState = 'pending';
       document.addEventListener('DOMContentLoaded', function () {
@@ -91,13 +91,6 @@
           data-ocean-explore-video
         ></video>
         <div class="ocean-explore__bg-shade" aria-hidden="true"></div>
-        <div class="ocean-explore__canvas-host" data-globe-scene data-globe-canvas-wrap>
-          <canvas data-globe-canvas aria-label="可拖转的地球"></canvas>
-          <p class="globe-status" data-globe-status hidden role="status">
-            3D 地球未能加载。请确认浏览器支持 WebGL；若仍空白，请运行根目录 serve.ps1 后打开
-            <code>http://127.0.0.1:8080/index.html</code>。
-          </p>
-        </div>
         <div class="ocean-explore__overlay">
           <div class="ocean-explore__inner">
             <div class="ocean-explore__layout">
@@ -111,7 +104,13 @@
                   </div>
                 </div>
               </div>
-              <div class="ocean-explore__stage" aria-hidden="true"></div>
+              <div class="ocean-explore__stage" data-globe-scene data-globe-canvas-wrap>
+                <canvas data-globe-canvas aria-label="可拖转的地球"></canvas>
+                <p class="globe-status" data-globe-status hidden role="status">
+                  3D 地球未能加载。请确认浏览器支持 WebGL；若仍空白，请运行根目录 serve.ps1 后打开
+                  <code>http://127.0.0.1:8080/index.html</code>。
+                </p>
+              </div>
             </div>
           </div>
           <p class="globe-scene-hint">拖动旋转 · 滚轮缩放 · 点击 + 探索</p>

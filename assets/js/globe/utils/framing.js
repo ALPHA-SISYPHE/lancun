@@ -1,6 +1,11 @@
+/**
+ * Screen projection helpers for globe debug.
+ * Earth sits at world origin; canvas is confined to the right 0.618 column,
+ * so the visual center target is (0.5, 0.5) relative to the stage canvas.
+ */
 import * as THREE from '../../vendor/three.module.min.js';
 
-/** Right golden zone center: 0.382 + 0.618 / 2 */
+/** @deprecated Legacy golden-zone constant; canvas layout now handles horizontal placement. */
 export const GOLDEN_RIGHT_CENTER_X = 0.382 + 0.618 / 2;
 
 const probe = new THREE.Vector3();
