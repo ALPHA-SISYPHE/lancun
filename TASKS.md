@@ -158,6 +158,19 @@
 - [x] WebGL 默认静止地球 only；气泡 opt-in（`?bubbles=1` / `localStorage.lancun.oceanBubbles=1`）；代码保留
 - [ ] 用户目视验收：hero 与 explore 视频不串源；默认无气泡；字可读
 
+### ocean-explore 地球座位宪法 v1.9.6（2026-07-20）
+
+- [x] 用户确认 **1B / 2B**：世界坐标钉死；桌面球心 (0.69, 0.50)；窄屏 (0.50, 0.50)
+- [x] `docs/OCEAN_EXPLORE_CONSTITUTION.md` → **v1.9.6**：废止 copyH×1.12 / 文案 Y 同心 / Fit 左移缩小主路径
+- [x] **MVP 1A/2A**（`ocean-bubbles.js?v=78`）：v1.9.6 座位 unproject；`earthGroup.rotation.y` 自转 + canvas 拖拽；可见时 rAF（无气泡也转）；减动效停自转仍可拖
+
+### ocean-explore 可拖拽地球 MVP（2026-07-20）
+
+- [x] 座位：桌面 (0.69,0.50) / 窄屏 (0.50,0.50)；mesh 局部原点 + `earthGroup.position`
+- [x] yaw 自转 + pointer 拖拽；松手 ~1.4s 恢复自转
+- [x] 气泡默认关；`+` 装饰；货架 toggle UI-only
+- [ ] 用户目视：座位/拖拽/减动效
+
 ### Phase D — Convex 分阶段修复（2026-07-18）
 
 - [x] **D0** 不透明 `setClearColor(0x0f172a, 1)`；禁用 alpha=0 清屏；气泡默认关直至地球验收

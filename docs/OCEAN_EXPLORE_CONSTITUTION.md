@@ -2,11 +2,11 @@
 
 | 项 | 内容 |
 |---|---|
-| 版本 | **1.9.5 interim** |
+| 版本 | **1.9.6 interim** |
 | 地位 | `#ocean-explore` **绑定视觉与布局法**；条文内部冲突以较新 § 为准 |
 | 创建 | 2026-07-18 |
-| 修订 | 2026-07-19 — **v1.9.5 interim**：**金标参考图优先**（见下表「验收优先级」）。前次 v1.9.4：§10 远-中-近分层量化；§1–§9 历史条款不删 |
-| 前版 | v1.9.4 interim |
+| 修订 | 2026-07-20 — **v1.9.6 interim**：**地球座位世界坐标钉死** + 右半黄金区正中（窄屏整段居中）；废止 copyH×1.12 / 文案 Y 同心 / Fit 左移缩小主路径。前次 v1.9.5：金标参考图优先 |
+| 前版 | v1.9.5 interim |
 | 参考 | Convex「Where we are working」金标截图：`references/bubble-gold-depth/ref-1.png` … `ref-3.png`；色/质默认跟 `DESIGN.md` v4，**与金标画面冲突时以金标为准** |
 | 本地验收 | `http://127.0.0.1:8080/index.html#ocean-explore` |
 | 关联 | `docs/OCEAN_EXPLORE_CONVEX_PLAN.md`（任务书）、根目录 `DESIGN.md`（全站色/质） |
@@ -31,23 +31,30 @@
 
 ---
 
-## 1. Layout law（黄金比例水平分割）
+## 1. Layout law（黄金比例水平分割 · v1.9.6 座位）
 
 | 规则 | 要求 |
 |---|---|
-| 分割比 | 桌面端水平 **左 ≈ 38% / 右 ≈ 62%**（φ 近似：`1 : 1.618` → `38.2% : 61.8%`） |
-| 左栏（小） | **白内容岛**承载文案 + CTA；不抢地球主体 |
+| 分割比 | 桌面端水平 **左 ≈ 38% / 右 ≈ 62%**（φ 近似：`1 : 1.618` → `38.2% : 61.8%`）— **仅 CSS 文案/取景区**，不驱动地球直径 |
+| 左栏（小） | 文案 + CTA（现可为深色 interim 叠层）；不抢地球主体 |
 | 右栏（大） | **地球作为可交互浮空物体的取景区**；不得把地球当全屏壁纸 |
-| **右区中央（硬性 · v1.4）** | 「右半区」= **整屏 / section canvas 全宽** 上 `x ∈ [0.38, 1.0]`；球心投影目标 **`x = 0.69`**（`0.38 + 0.62/2`）。**禁止**以 `.ocean-explore__stage` / `page-width` 内栏中心作为球心锚点（stage 仅 CSS 占位） |
-| **统一绑定锚点（硬性 · v1.7）** | 锚点：`[data-ocean-panel]` 相对 canvas-host 同帧 rect；比例常数 diameter:copyHeight=1.12（像素每帧实测，随 zoom 同步） |
-| **双栏（几何判定 · v1.7）** | copy 与 stage 左右并排：球心 X=69%、Y=copyCenterY |
-| **单列** | stacked：Y=canvas 50%；min(copyH×1.12, bounds-fit) |
-| **Containment（硬性 · v1.8）** | 投影整球 bounds 在 **Visible Safe Rect** 内（`visualViewport ∩ canvas-host − fixed header`，≥2% 边距）；左缘 ≥ copy 右缘 + gap；**100% 浏览器 zoom 下整球必可见** |
-| **Fit 优先级（v1.8）** | ① 不出画（强制）→ ② 双栏 Y 同心 → ③ 直径 copyH×1.12（尽力） |
-| **X 回退（v1.8）** | 69% 放不下时，球心 X 可左移（最小：clear copy 右缘 + gap），Y 不变 |
-| 实现 | 单文件 `ocean-globe.js`：`_visibleSafeRect` + `_resolveFraming`（二分 / X-nudge / forced-shrink）→ `earthGroup.position` + `camera.z`；visualViewport + RO + rAF |
-| 废止 v1.9 | `assets/js/globe/**` 整栈、`setViewOffset` 构图、ScrollTrigger dolly、solver 失败仍出画 |
-| 决策 | 1.12 / 锚点 A / 双栏 Y / dolly off — 2026-07-18 |
+| **锚点矩形（硬性 · v1.9.6）** | `#ocean-explore` 的 **canvas-host**（与背景视频同框）。**禁止**以 `[data-ocean-panel]` / `.ocean-explore__stage` / `page-width` 内栏中心作为球心或直径锚点 |
+| **桌面球心（硬性 · v1.9.6）** | 投影目标 **(X, Y) ≈ (0.69, 0.50)** — 右半黄金区正中（`0.38 + 0.62/2`，垂直居中）。容差 ±2% |
+| **窄屏球心（硬性 · v1.9.6）** | 断点与现站一致（`max-width: 58rem`）：投影目标 **(X, Y) ≈ (0.50, 0.50)** — 整段水平居中、垂直居中 |
+| **世界坐标钉死（硬性 · v1.9.6 · 用户 1B）** | `EARTH_RADIUS`、`camera.position.z`、世界座位为**常量**；**不为构图**随 resize / 文案高度改直径或改 camera.z。窗口变化时屏幕像素大小可变，世界量不变。仅在「桌面 ↔ 窄屏」断点切换时改世界 `EARTH_POS.x`（或等价一次映射）以命中上表屏占比 |
+| **边界（硬性）** | 整球投影不得跑出 canvas-host / 背景视频可见边界；靠固定世界座 + 初始相机构图保证。**禁止**再以「跟 copy 拟合缩小」为主策略 |
+| CSS 列 | `grid-template-columns: minmax(0, 0.382fr) minmax(0, 0.618fr)` 可保留作文案排版 |
+
+### 废止（v1.9.6 · 与上表冲突的旧布局法）
+
+| 废止项 | 原条款 |
+|---|---|
+| ~~直径 = copy 高度 × 1.12~~ | v1.7「统一绑定锚点」 |
+| ~~双栏球心 Y = 文案块垂直中心~~ | v1.7「双栏几何」 |
+| ~~单列 diameter = min(copyH×1.12, bounds-fit)~~ | v1.7「单列」 |
+| ~~Fit：不出画 → Y 同心 → copyH×1.12；放不下 X 左移 / forced-shrink~~ | v1.8 |
+| ~~每帧用 copy/stage ResizeObserver 重算 earthGroup.position + camera.z 的 reframing 主路径~~ | v1.7–1.8 实现描述 |
+| ~~决策「1.12 / 锚点 A / 双栏 Y」~~ | 2026-07-18 旧决策 |
 
 **Earth is NOT background wallpaper; it is a discrete floating interactive 3D object inserted into the page.**
 
@@ -97,24 +104,25 @@
 
 ---
 
-## 3. Earth law（地球 · v1.3 独立自转）
+## 3. Earth law（地球 · v1.3 独立自转 + v1.9.6 座位）
 
 | 规则 | 要求 |
 |---|---|
-| 尺度 | **比例律**：目标 `copyHeight × 1.12`；经 **bounds-fit 闭环** 求解 z + `setViewOffset`；可缩小至 containment，不可裁切 |
-| 球心 X | 双栏：整屏 **69%**（v1.4）；单列：canvas 50% 或 fit 中心 |
-| **球心 Y** | 双栏：白岛 **垂直中心**（±2%）；单列：canvas **50%** |
-| 稳定性 | `resize` + `visualViewport.resize` + `ResizeObserver`（copy/layout/host）；rAF 合并；**禁止** scroll dolly 改 z |
-| 形态 | 清晰球体轮廓；双栏时与白岛 **同一高度线**；**整球始终在 Visible Safe Rect 内**（非仅 canvas 数学框） |
+| **尺度（v1.9.6）** | **世界坐标钉死**：固定 `EARTH_RADIUS` 与 `camera.position.z`；**禁止**为构图随 resize / 文案高度缩放直径；**禁止** copyH×1.12 |
+| **球心 X（v1.9.6）** | 桌面：canvas-host 宽 **69% ±2%**；窄屏：**50% ±2%** |
+| **球心 Y（v1.9.6）** | 桌面与窄屏均为 canvas-host 高 **50% ±2%**（**废止**「双栏 Y = 文案垂直中心」） |
+| 稳定性 | 世界常量；断点切换时可改 `EARTH_POS.x` 一次。**禁止** scroll dolly 改 z；**禁止**每帧 reframing 主路径 |
+| 形态 | 清晰球体轮廓；**整球在 canvas-host / 背景视频可见边界内** |
 | **独立自转（硬性）** | 自动旋转 = 每帧递增 **`earthGroup.rotation.y`**（绕世界 / 铅垂 Y）；拖动 = 绕同一轴改 `rotation.y` |
 | 自转轴 | **仅绕竖直 / 铅垂轴（世界 Y）**；**禁止**翻滚（tumble / 乱极角） |
-| 相机 | 相机 **固定正对球心**（可微调 z）；**禁止**用 `OrbitControls.autoRotate` 或绕球转相机伪装自转 |
+| 相机 | 相机 **固定正对球心**（z 为常量，不为构图微调）；**禁止**用 `OrbitControls.autoRotate` 或绕球转相机伪装自转 |
 | 拖拽 | 自定义 pointer 拖 yaw（真正拖地球）；松手后延迟恢复自转；`prefers-reduced-motion` 时停自转，仍可拖 |
 | 允许 | `+` 标记、云层、大气 rim、大陆架 mask（挂在 earthGroup，随球转） |
-| 亮度 | 海洋/陆地在浅底上可读；适度提高曝光/灯光，**禁止**洗成死白 |
-| 清屏 | 始终不透明浅海雾色（与语义 L0 一致），alpha `1` |
+| 亮度 | 海洋/陆地可读；适度提高曝光/灯光，**禁止**洗成死白 |
+| 清屏 | 视频背景阶段允许透明清屏透出视频；无视频 fallback 时用不透明底（与 section 一致），alpha `1` |
 
-**废止（v1.3）：** 用 `OrbitControls.autoRotate` / polar lock 绕目标转相机充当「地球自转」。
+**废止（v1.3）：** 用 `OrbitControls.autoRotate` / polar lock 绕目标转相机充当「地球自转」。  
+**废止（v1.9.6）：** 尺度「copyHeight×1.12 / bounds-fit / setViewOffset 构图」；球心 Y「白岛垂直中心」。
 
 ---
 
@@ -170,29 +178,28 @@ BEFORE
 [ ] 已对照参考，记下失败项
 
 AFTER — Layout
-[ ] 桌面约 38/62，左文右球
-[ ] 左栏为白内容岛（深墨字）
+[ ] 桌面约 38/62，左文右球（CSS 文案区）
 [ ] 地球是离散球体，非全屏壁纸
-[ ] 球心屏幕 x ≈ 整屏 69% ±2%（非内栏 stage 中心）
-[ ] 双栏：球心 screenY ≈ copyPanelCenterY ±0.02；containmentOk = true
-[ ] 整球 bounds 在 Visible Safe Rect 内（≥2% 边距）；`clipRight/clipBottom ≤ 0`；未压住左白岛
+[ ] 桌面：球心 ≈ canvas-host (0.69, 0.50) ±2%（非 stage / 非文案中心）
+[ ] 窄屏：球心 ≈ canvas-host (0.50, 0.50) ±2%
+[ ] 世界半径 / camera.z 为常量（无 copyH×1.12；无每帧 reframing）
+[ ] 整球在 canvas-host / 背景视频可见边界内
 [ ] 无 scroll dolly 改 z
 
 AFTER — Z-layer / Three.js layers
-[ ] 通透海水蓝浅底可见且无白屏
-[ ] 可见球后气泡
+[ ] 背景（视频或浅底）可见且无白屏
+[ ] 可见球后气泡（若气泡开启）
 [ ] 地球在中层（视觉）
-[ ] 可见球前气泡
+[ ] 可见球前气泡（若气泡开启）
 [ ] 地球 mesh 仅 layer 0；球后气泡仅 layer 1；球前气泡仅 layer 2（互不共享 mask）
 [ ] 球后气泡被地球遮挡视觉正确（多 pass / depth，非同层糊弄）
 [ ] UI 在最上层且可点区域正确
 
 AFTER — Earth
-[ ] 球心 ≈ 视口宽 0.69（整屏右黄金区中心）
-[ ] 双栏：earthScreenFracY ≈ copyPanelCenterFracY ±0.02
-[ ] containmentOk；ratioActual ≤ 1.12 + 0.03
-[ ] 白岛锚点：`[data-ocean-panel]`（不含 footer）
-[ ] 整球入画；窗口/browser zoom 后仍可见
+[ ] 桌面球心 ≈ (0.69, 0.50)；窄屏 ≈ (0.50, 0.50)
+[ ] 无 ratioActual / copyH×1.12 构图依赖
+[ ] 锚点为 canvas-host（非 `[data-ocean-panel]` 定直径/Y）
+[ ] 整球入画；断点切换后仍命中上表屏占比
 [ ] 球体轮廓清晰、浮空、离散
 [ ] 可拖拽改 earthGroup.rotation.y（非绕球转相机）
 [ ] 低速绕竖直轴自转（earthGroup.rotation.y；无 tumble）
@@ -252,20 +259,19 @@ AFTER — Gap closure (no earth) · 见 §10
 
 | 锚点 | 建议起点（可微调，须过目视） |
 |---|---|
-| CSS 列比 | `grid-template-columns: minmax(0, 0.382fr) minmax(0, 0.618fr)` |
-| Section 底 | `linear-gradient` 用 `--mist-from` / `--mist-to`（或等价浅海雾） |
-| 左栏 | `.page-island` 或同 token 白岛：`--surface-elevated` + `--shadow-island` + `--ink` |
-| Framing solver | `ocean-globe.js`：measure → binary maxD → X-nudge → forced-shrink → **earthGroup.position + camera.z**（无 setViewOffset） |
-| Entry (interim) | `assets/js/ocean-bubbles.js`；**`?v=` 与 debug module 以 `index.html` 实际值为准**（勿在宪法写死旧版号）；深底 interim；**无地球 mesh** |
-| 无地球 interim 视觉目标 | **见 §10**（对标差距与待优化法；本阶段优化优先对照 §10） |
-| Bubble motion | 自下而上 wrap rise；近圆球 + 可读液态微形变（surface noise）；**禁止**尺寸脉冲 / 明显轴向 squash（见既有气泡迭代结论 + §10.2） |
-| Debug | `__globeDebug`：`darkInterim: true`；`earthRemoved: true`；`module` 字符串与入口版本一致 |
-| 白岛锚 | `[data-ocean-panel]`；双栏 = copy/stage 几何并排 |
-| 事件 | resize + visualViewport.resize + ResizeObserver；rAF debounce |
+| CSS 列比 | `grid-template-columns: minmax(0, 0.382fr) minmax(0, 0.618fr)`（文案区；不驱动地球直径） |
+| Section 底 | 视频背景 interim：`ocean-explore-bg.mp4` + 淡罩；无视频时径向/雾底 fallback |
+| 左栏 | 文案叠层；深色 interim 可用浅色字 |
+| Framing（v1.9.6） | **世界钉死**：常量 `EARTH_POS` / `EARTH_RADIUS` / `camera.z`；桌面屏占比 (0.69, 0.50)，窄屏 (0.50, 0.50)；断点切换改世界 x |
+| Entry (interim) | `assets/js/ocean-bubbles.js`；**`?v=` 与 debug module 以 `index.html` 实际值为准** |
+| Bubble motion | 自下而上 wrap rise；近圆球 + 可读液态微形变；**禁止**尺寸脉冲（气泡默认关，opt-in） |
+| Debug | `__globeDebug`：`earthStaticPlaceholder` / `bubblesOn` / `videoBg`；`module` 与入口版本一致 |
+| 座位锚 | canvas-host（与背景视频同框）；**非** `[data-ocean-panel]` 定直径/Y |
+| 事件 | 断点 media query / resize 仅用于桌面↔窄屏座位切换；**禁止** copy RO 每帧 reframing |
 | 自转 | `earthGroup.rotation.y` 低速自转 + pointer 拖 yaw；**禁止** OrbitControls.autoRotate |
 | Three.js layers | Earth = **0**；back bubbles = **1**；front bubbles = **2**；多 pass + shared depth |
-| Bubbles | 全视口 frustum 采样；`uSectionBgColor` 对齐浅底；强度克制 |
-| Clear | `0xe0f2fe`（`--mist-to`），alpha `1`（或与 section 实测一致的浅色） |
+| Bubbles | 全视口 frustum 采样；默认关闭（`?bubbles=1`） |
+| Clear | 视频阶段透明清屏；fallback 不透明底与 section 一致 |
 | Composer | **OFF** 直至用户要求 |
 
 目视与截图优先于上表数字。
@@ -276,11 +282,11 @@ AFTER — Gap closure (no earth) · 见 §10
 
 **效力**：后续任何对 `#ocean-explore` 的视觉 / 布局 / 气泡 / 文案样式改动，**必须**对照本节，并以 `references/bubble-gold-depth/` **金标截图目视验收**。未消除差距前，**不得**宣称「已对齐」。
 
-**范围**：本阶段允许**完全静止占位地球**（无自转/拖拽；markers/大陆架数据精修另议），但占位球的**大小、位置、亮度、大气边缘**须尽量贴近金标构图。背景、远-中-近气泡、文案、按钮、左下开关必须按金标画面验收。
+**范围**：座位与大小服从 **§1 / §3 v1.9.6**。**交互 MVP（1A/2A）已落地**：`earthGroup.rotation.y` 慢速自转 + canvas yaw 拖拽；减动效停自转仍可拖；气泡默认关；`+` 装饰、货架 toggle UI-only。markers/大陆架数据精修另议。亮度、大气边缘仍尽量贴近金标。
 
-**参考**：金标 `references/bubble-gold-depth/ref-1.png`…`ref-3.png`。条文量化服务于复现金标；**条文与金标画面冲突时，以金标画面为准**（v1.9.5）。
+**参考**：金标 `references/bubble-gold-depth/ref-1.png`…`ref-3.png`。条文量化服务于复现金标；**条文与金标画面冲突时，以金标画面为准**（v1.9.5）；**座位条款与旧 §1 Fit 冲突时，以 v1.9.6 为准**。
 
-**与 §1–§9 冲突时**：本阶段以金标 + 本节为准；§1–§9 不删除；完整地球法（旋转/拖拽/markers）待后续阶段。
+**与 §1–§9 冲突时**：座位/尺度以 **v1.9.6** 为准；金标材质/气泡以金标 + §10 为准；自转/拖拽已按 §3 MVP 落地；markers 详情等仍待后续。
 
 ---
 

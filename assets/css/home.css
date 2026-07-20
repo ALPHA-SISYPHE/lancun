@@ -471,6 +471,11 @@
   height: 100%;
   touch-action: none;
   background: transparent;
+  cursor: grab;
+}
+
+.ocean-explore__canvas-host canvas.is-dragging {
+  cursor: grabbing;
 }
 
 .globe-label-layer {

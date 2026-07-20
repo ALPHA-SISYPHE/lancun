@@ -1,11 +1,11 @@
 /**
- * #ocean-explore — video-bg + earth-default (v76)
- * Default: static Earth over CSS/video bg; bubbles off unless ?bubbles=1 or localStorage.
- * Bubble stack code retained for opt-in.
+ * #ocean-explore — video-bg + interactive Earth (v78)
+ * Constitution v1.9.6: world-pinned seat; yaw spin + drag.
+ * Bubbles off unless ?bubbles=1 or localStorage.
  */
 import * as THREE from './vendor/three.module.min.js';
-import { createBubbles } from './globe/bubbles.js?v=76';
-import { loadEarthTexture, loadCloudTexture } from './globe/utils/textures.js?v=76';
+import { createBubbles } from './globe/bubbles.js?v=78';
+import { loadEarthTexture, loadCloudTexture } from './globe/utils/textures.js?v=78';
 
 /** Fallback clear when no video / IOR RT sample. */
 const SECTION_CLEAR = 0x050a14;
@@ -23,14 +23,20 @@ function bubblesEnabled() {
   }
 }
 const CAMERA_FOV = 34;
+const CAMERA_Z = 5.2;
 const MAX_DPR = 2;
 const LAYER_EARTH = 0;
 const LAYER_BUBBLE_BACK = 1;
 const LAYER_BUBBLE_FRONT = 2;
 
-/** Right-zone mass: NDC x≈0.69 → world ~+1.05 at z=0 with current FOV/cam. */
-const EARTH_POS = new THREE.Vector3(0.98, -0.02, 0);
+/** World-pinned radius (v1.9.6 — not scaled by copy height). */
 const EARTH_RADIUS = 1.18;
+/** Slow yaw spin (rad/s). */
+const EARTH_SPIN_SPEED = 0.055;
+/** Pause auto-spin after drag release. */
+const SPIN_RESUME_MS = 1400;
+const DRAG_YAW_PER_PX = 0.0055;
+const MQ_NARROW = '(max-width: 58rem)';
 
 function motionReduced() {
   if (document.documentElement.dataset.reducedMotion === 'true') return true;
@@ -38,6 +44,10 @@ function motionReduced() {
     return true;
   }
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function isNarrowLayout() {
+  return window.matchMedia(MQ_NARROW).matches;
 }
 
 function showStatus(message) {
@@ -57,7 +67,6 @@ function createDarkGradientTexture() {
   ctx.fillStyle = '#02060e';
   ctx.fillRect(0, 0, 512, 512);
 
-  // Cobalt seat — tight to Earth; left/top stay near-black (ban cyan wash)
   const spot = ctx.createRadialGradient(385, 255, 2, 365, 258, 200);
   spot.addColorStop(0, '#3a88c8');
   spot.addColorStop(0.12, '#2868a8');
@@ -76,7 +85,6 @@ function createDarkGradientTexture() {
   ctx.fillStyle = leftShade;
   ctx.fillRect(0, 0, 512, 512);
 
-  // Kill upper-left cyan wash
   const topLeft = ctx.createRadialGradient(80, 60, 10, 140, 120, 220);
   topLeft.addColorStop(0, 'rgba(1, 4, 12, 0.55)');
   topLeft.addColorStop(1, 'rgba(1, 4, 12, 0)');
@@ -90,7 +98,6 @@ function createDarkGradientTexture() {
   ctx.fillStyle = vig;
   ctx.fillRect(0, 0, 512, 512);
 
-  // Very faint deep-field dust (not bright bokeh wash)
   for (let i = 0; i < 16; i++) {
     const x = Math.random() * 512;
     const y = Math.random() * 512;
@@ -139,7 +146,7 @@ class OceanBubbles {
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(CAMERA_FOV, 1, 0.1, 100);
-    this.camera.position.set(0, 0, 5.2);
+    this.camera.position.set(0, 0, CAMERA_Z);
     this.camera.lookAt(0, 0, 0);
     this.camera.layers.enable(LAYER_EARTH);
     this.camera.layers.enable(LAYER_BUBBLE_BACK);
@@ -166,6 +173,13 @@ class OceanBubbles {
     this._unsubs = [];
     this.bubblesOn = false;
     this.useVideoClear = true;
+    this._dragging = false;
+    this._spinPaused = false;
+    this._spinResumeTimer = null;
+    this._lastPointerX = 0;
+    this._earthWorldPos = new THREE.Vector3(0.98, 0, 0);
+    this._seatScratchNear = new THREE.Vector3();
+    this._seatScratchFar = new THREE.Vector3();
   }
 
   init() {
@@ -192,7 +206,6 @@ class OceanBubbles {
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
 
-    // Radial canvas BG only when bubbles need IOR sample (video shows through otherwise)
     if (this.bubblesOn) {
       this.bgTexture = createDarkGradientTexture();
       this.bgScene = new THREE.Scene();
@@ -205,22 +218,23 @@ class OceanBubbles {
     }
 
     this._addLights();
-    this._addStaticEarthPlaceholder();
+    this._addEarth();
 
     if (this.bubblesOn) {
       this.bubbles = createBubbles({ scene: this.scene, camera: this.camera });
-      this.bubbles.setEarthOrigin?.(EARTH_POS.clone());
+      this.bubbles.setEarthOrigin?.(this._earthWorldPos.clone());
     } else {
       this.bubbles = null;
     }
 
     this._bindShelvesToggle();
+    this._bindEarthPointer();
     this._bindObservers();
     this._syncVisible();
     this.resize();
     this.applyMotion();
 
-    if (this.visible && !motionReduced() && this.bubblesOn) this.start();
+    if (this.visible && !motionReduced()) this.start();
     else this._renderFrame();
 
     this._loadEarthTextureAsync();
@@ -230,7 +244,6 @@ class OceanBubbles {
   }
 
   _addLights() {
-    // Gold: strong day limb + deep night side (lower fill than earlier bright wash)
     const key = new THREE.DirectionalLight(0xfff6e8, 2.55);
     key.position.set(-2.2, 3.6, 2.8);
     key.layers.enable(LAYER_EARTH);
@@ -250,8 +263,11 @@ class OceanBubbles {
     this.scene.add(rim);
   }
 
-  /** Fully static placeholder — match gold size/seat/brightness; no spin/drag. */
-  _addStaticEarthPlaceholder() {
+  /**
+   * Interactive Earth — meshes at local origin; seat via earthGroup.position.
+   * Yaw spin/drag only on earthGroup.rotation.y.
+   */
+  _addEarth() {
     const geo = new THREE.SphereGeometry(EARTH_RADIUS, 64, 64);
     const mat = new THREE.MeshStandardMaterial({
       color: 0xffffff,
@@ -264,11 +280,9 @@ class OceanBubbles {
     this.earthMesh = new THREE.Mesh(geo, mat);
     this.earthMesh.layers.set(LAYER_EARTH);
     this.earthMesh.renderOrder = 0;
-    this.earthMesh.position.copy(EARTH_POS);
-    // Fixed orientation — Americas-facing like gold refs
+    this.earthMesh.position.set(0, 0, 0);
     this.earthMesh.rotation.set(0.22, -0.82, 0.04);
 
-    // Static cloud shell (no spin) — gold day look
     const cloudGeo = new THREE.SphereGeometry(EARTH_RADIUS * 1.012, 48, 48);
     const cloudMat = new THREE.MeshStandardMaterial({
       color: 0xffffff,
@@ -281,10 +295,9 @@ class OceanBubbles {
     this.earthClouds = new THREE.Mesh(cloudGeo, cloudMat);
     this.earthClouds.layers.set(LAYER_EARTH);
     this.earthClouds.renderOrder = 1;
-    this.earthClouds.position.copy(EARTH_POS);
+    this.earthClouds.position.set(0, 0, 0);
     this.earthClouds.rotation.copy(this.earthMesh.rotation);
 
-    // Gold: hairline soft limb — NOT a neon HUD ring (iter notes P0)
     const atmoGeo = new THREE.SphereGeometry(EARTH_RADIUS * 1.018, 64, 64);
     const atmoMat = new THREE.ShaderMaterial({
       transparent: true,
@@ -310,7 +323,6 @@ class OceanBubbles {
         varying vec3 vView;
         void main() {
           float ndv = max(dot(normalize(vNormal), normalize(vView)), 0.0);
-          // Sharp falloff → thin rim only
           float fresnel = pow(1.0 - ndv, 5.5);
           float band = smoothstep(0.55, 0.92, fresnel) * (1.0 - smoothstep(0.92, 1.0, fresnel));
           float a = band * 0.045;
@@ -322,7 +334,7 @@ class OceanBubbles {
     this.earthAtmo = new THREE.Mesh(atmoGeo, atmoMat);
     this.earthAtmo.layers.set(LAYER_EARTH);
     this.earthAtmo.renderOrder = -1;
-    this.earthAtmo.position.copy(EARTH_POS);
+    this.earthAtmo.position.set(0, 0, 0);
 
     this.earthGroup = new THREE.Group();
     this.earthGroup.add(this.earthAtmo);
@@ -333,7 +345,7 @@ class OceanBubbles {
     this.scene.add(this.earthGroup);
   }
 
-  /** Decorative + markers (static composition — gold P5). */
+  /** Decorative + markers (parented to earthMesh — follow tilt + group yaw). */
   _addStaticPlusMarkers() {
     const mk = (lat, lon) => {
       const canvas = document.createElement('canvas');
@@ -372,10 +384,37 @@ class OceanBubbles {
       sprite.layers.set(LAYER_EARTH);
       this.earthMesh.add(sprite);
     };
-    // Americas-facing seats (approx)
     mk(25, -70);
     mk(-10, -40);
     mk(40, -100);
+  }
+
+  /**
+   * v1.9.6 seat: desktop (0.69, 0.50) / narrow (0.50, 0.50) of canvas-host.
+   * Unproject screen frac → z=0 plane; pin earthGroup.position.
+   */
+  _applyEarthSeat() {
+    if (!this.earthGroup || !this.camera) return;
+
+    const fx = isNarrowLayout() ? 0.5 : 0.69;
+    const fy = 0.5;
+    const ndcX = fx * 2 - 1;
+    const ndcY = -(fy * 2 - 1);
+
+    this.camera.updateMatrixWorld(true);
+    const near = this._seatScratchNear.set(ndcX, ndcY, -1).unproject(this.camera);
+    const far = this._seatScratchFar.set(ndcX, ndcY, 1).unproject(this.camera);
+    const dirX = far.x - near.x;
+    const dirY = far.y - near.y;
+    const dirZ = far.z - near.z;
+    if (Math.abs(dirZ) < 1e-8) return;
+    const t = -near.z / dirZ;
+    const x = near.x + dirX * t;
+    const y = near.y + dirY * t;
+
+    this.earthGroup.position.set(x, y, 0);
+    this._earthWorldPos.set(x, y, 0);
+    this.bubbles?.setEarthOrigin?.(this._earthWorldPos.clone());
   }
 
   async _loadEarthTextureAsync() {
@@ -389,7 +428,7 @@ class OceanBubbles {
       prev?.dispose?.();
       this._renderFrame();
     } catch (err) {
-      console.warn('Static earth texture fallback retained', err);
+      console.warn('Earth texture fallback retained', err);
     }
   }
 
@@ -408,7 +447,6 @@ class OceanBubbles {
     } catch (err) {
       console.warn('Cloud texture unavailable — soft procedural veil', err);
       if (!this.earthClouds) return;
-      // Soft white noise veil so day look still has cloud mass
       const c = document.createElement('canvas');
       c.width = 256;
       c.height = 128;
@@ -448,6 +486,69 @@ class OceanBubbles {
     this._unsubs.push(() => btn.removeEventListener('click', onClick));
   }
 
+  /** 2A: full canvas hit target for yaw drag. */
+  _bindEarthPointer() {
+    const el = this.canvas;
+    if (!el) return;
+    el.style.cursor = 'grab';
+    el.setAttribute('aria-label', '拖动旋转地球');
+
+    const onDown = (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      this._dragging = true;
+      this._spinPaused = true;
+      this._lastPointerX = e.clientX;
+      clearTimeout(this._spinResumeTimer);
+      try {
+        el.setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+      el.classList.add('is-dragging');
+      el.style.cursor = 'grabbing';
+      e.preventDefault();
+    };
+
+    const onMove = (e) => {
+      if (!this._dragging || !this.earthGroup) return;
+      const dx = e.clientX - this._lastPointerX;
+      this._lastPointerX = e.clientX;
+      this.earthGroup.rotation.y += dx * DRAG_YAW_PER_PX;
+      if (!this.running) this._renderFrame();
+    };
+
+    const endDrag = (e) => {
+      if (!this._dragging) return;
+      this._dragging = false;
+      el.classList.remove('is-dragging');
+      el.style.cursor = 'grab';
+      try {
+        if (e?.pointerId != null) el.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+      clearTimeout(this._spinResumeTimer);
+      this._spinResumeTimer = setTimeout(() => {
+        this._spinPaused = false;
+      }, SPIN_RESUME_MS);
+    };
+
+    el.addEventListener('pointerdown', onDown);
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerup', endDrag);
+    el.addEventListener('pointercancel', endDrag);
+    el.addEventListener('lostpointercapture', endDrag);
+
+    this._unsubs.push(() => {
+      el.removeEventListener('pointerdown', onDown);
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerup', endDrag);
+      el.removeEventListener('pointercancel', endDrag);
+      el.removeEventListener('lostpointercapture', endDrag);
+      clearTimeout(this._spinResumeTimer);
+    });
+  }
+
   _getSize() {
     const host = this.canvasWrap || this.section;
     return {
@@ -477,6 +578,8 @@ class OceanBubbles {
       this.diffuseRT.setSize(w * dpr, h * dpr);
     }
 
+    this._applyEarthSeat();
+
     if (this.bubbles) {
       this.bubbles.setSize(w * dpr, h * dpr);
       this.bubbles.setPixelRatio?.(dpr);
@@ -491,28 +594,33 @@ class OceanBubbles {
     if (typeof window === 'undefined') return;
     const uTime = this.bubbles?.frontMesh?.material?.uniforms?.uTime?.value ?? null;
     const earthNdc = (() => {
-      if (!this.earthMesh) return null;
-      const v = this.earthMesh.position.clone().project(this.camera);
+      if (!this.earthGroup) return null;
+      const v = this.earthGroup.position.clone().project(this.camera);
       return { x: (v.x + 1) * 0.5, y: (1 - v.y) * 0.5 };
     })();
     window.__globeDebug = {
-      module: 'ocean-bubbles@v76',
+      module: 'ocean-bubbles@v78',
       earthClouds: !!this.earthClouds,
       earthRemoved: false,
-      earthStaticPlaceholder: true,
+      earthStaticPlaceholder: false,
+      earthInteractive: true,
       darkInterim: true,
       videoBg: this.useVideoClear,
       bubblesOn: this.bubblesOn,
       bubbles: !!this.bubbles,
       running: this.running,
       visible: this.visible,
+      dragging: this._dragging,
+      spinPaused: this._spinPaused,
       uTime,
       reduced: motionReduced(),
       bubbleCount: this.bubbles?.count ?? null,
       scaleStats: this.bubbles?.getScaleStats?.() ?? null,
       camPos: this.camera?.position?.toArray?.() ?? null,
-      earthPos: this.earthMesh?.position?.toArray?.() ?? null,
+      earthPos: this.earthGroup?.position?.toArray?.() ?? null,
+      earthYaw: this.earthGroup?.rotation?.y ?? null,
       earthNdc,
+      seatTarget: isNarrowLayout() ? [0.5, 0.5] : [0.69, 0.5],
     };
   }
 
@@ -522,6 +630,7 @@ class OceanBubbles {
     requestAnimationFrame(() => {
       this.resizePending = false;
       this.resize();
+      if (this.visible && !this.running) this._renderFrame();
     });
   }
 
@@ -542,6 +651,15 @@ class OceanBubbles {
       () => window.visualViewport?.removeEventListener('resize', onResize),
     );
 
+    const mq = window.matchMedia(MQ_NARROW);
+    const onMq = () => this._scheduleResize();
+    if (mq.addEventListener) mq.addEventListener('change', onMq);
+    else mq.addListener?.(onMq);
+    this._unsubs.push(() => {
+      if (mq.removeEventListener) mq.removeEventListener('change', onMq);
+      else mq.removeListener?.(onMq);
+    });
+
     if (typeof ResizeObserver !== 'undefined') {
       this.resizeObserver = new ResizeObserver(() => this._scheduleResize());
       this.resizeObserver.observe(this.section);
@@ -553,7 +671,7 @@ class OceanBubbles {
         (entries) => {
           entries.forEach((entry) => {
             this.visible = entry.isIntersecting;
-            if (this.visible && !motionReduced() && this.bubblesOn) this.start();
+            if (this.visible && !motionReduced()) this.start();
             else {
               this.stop();
               if (this.visible) this._renderFrame();
@@ -571,15 +689,18 @@ class OceanBubbles {
   _renderFrame() {
     if (!this.renderer) return;
     const reduced = motionReduced();
-    const t = this.clock.getElapsedTime();
+    const dt = this.clock.getDelta();
+    const t = this.clock.elapsedTime;
     this.bubbles?.update(t, reduced);
-    // Earth stays frozen — no rotation
+
+    if (this.earthGroup && !reduced && !this._spinPaused && !this._dragging) {
+      this.earthGroup.rotation.y += EARTH_SPIN_SPEED * Math.min(dt, 0.05);
+    }
 
     const size = this.renderer.getSize(new THREE.Vector2());
     const dpr = this.renderer.getPixelRatio();
 
     if (this.bubbles && this.diffuseRT) {
-      // Dark radial into RT for IOR sampling (+ earth silhouette for refraction)
       this.renderer.setRenderTarget(this.diffuseRT);
       this.renderer.setClearColor(SECTION_CLEAR, 1);
       this.renderer.clear(true, true, true);
@@ -595,7 +716,6 @@ class OceanBubbles {
     }
 
     this.renderer.setViewport(0, 0, size.x * dpr, size.y * dpr);
-    // Transparent clear so ocean-explore-bg.mp4 shows through
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.clear(true, true, true);
 
@@ -648,7 +768,7 @@ class OceanBubbles {
   applyMotion() {
     const reduced = motionReduced();
     this.section.classList.toggle('ocean-explore--static', reduced);
-    if (reduced || !this.bubblesOn) {
+    if (reduced) {
       this.stop();
       this._renderFrame();
     } else if (this.visible && !this.running) {
@@ -658,6 +778,7 @@ class OceanBubbles {
 
   dispose() {
     this.stop();
+    clearTimeout(this._spinResumeTimer);
     this.resizeObserver?.disconnect();
     this.intersectionObserver?.disconnect();
     this._unsubs.forEach((fn) => fn());
