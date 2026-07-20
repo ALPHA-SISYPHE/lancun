@@ -397,6 +397,41 @@
 }
 
 /* —— 识别区 —— */
+.species-quota {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.species-quota__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.species-quota__bar {
+  overflow: hidden;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--hairline);
+}
+
+.species-quota__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent, #38bdf8));
+  transition: width var(--duration-ui) var(--ease-ui);
+}
+
 .species-recognizer {
   display: grid;
   grid-template-columns: 45fr 55fr;
@@ -438,6 +473,18 @@
   place-content: center;
   justify-items: center;
   text-align: center;
+}
+
+.species-upload-zone__placeholder[hidden],
+.species-upload-zone__preview[hidden],
+.species-upload-zone__loading[hidden],
+.species-result[hidden] {
+  display: none !important;
+}
+
+.species-result--unknown {
+  border-left: 3px solid var(--brand-primary);
+  padding-left: var(--space-2);
 }
 
 .species-upload-zone__icon {
@@ -675,6 +722,10 @@
   .species-spinner {
     animation: none;
     border-top-color: var(--brand-primary);
+  }
+
+  .species-quota__fill {
+    transition: none;
   }
 }
 

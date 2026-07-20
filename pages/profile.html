@@ -7,19 +7,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/base.css?v=77" />
     <link rel="stylesheet" href="../assets/css/modules.css" />
-    <link rel="stylesheet" href="../assets/css/profile-dashboard.css" />
+    <link rel="stylesheet" href="../assets/css/profile-dashboard.css?v=77" />
     <script src="../assets/js/hero.js" defer></script>
     <script src="../assets/js/mock-data.js" defer></script>
     <script src="../assets/js/user-menu-html.js" defer></script>
     <script src="../assets/js/app.js" defer></script>
     <script src="../assets/js/action-page.js" defer></script>
   </head>
-  <body data-page="profile">
+  <body class="has-page-bg-video" data-page="profile">
+    <div class="page-bg-video" aria-hidden="true">
+      <video class="page-bg-video__media" autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video>
+      <div class="page-bg-video__shade"></div>
+    </div>
     <a class="skip-link" href="#main-content">跳到主要内容</a>
     <header class="site-header site-header--overlay">
-      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a>
+      <a class="brand" href="../index.html"><img class="brand-mark" src="../assets/media/lancun-dolphin-logo.png" alt="" /><span>澜存</span></a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button>
       <nav id="primary-navigation" class="primary-navigation" aria-label="主导航"><a href="../index.html">首页</a><a href="ocean.html">我们的海洋</a><a href="rescue.html">海在呼救</a><a href="species.html">生物档案</a><a href="action.html">行动中心</a></nav>
       <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>

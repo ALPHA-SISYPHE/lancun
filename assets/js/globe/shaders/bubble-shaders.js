@@ -161,8 +161,8 @@ void main() {
 
   float halfY = max(uBounds.y * 0.5, 0.01);
   float boundsFade = 1.0 - smoothstep(halfY * 0.86, halfY, abs(centerPos.y));
-  // Glass lens body — keep some fill, prefer transparency over opaque blob
-  vAlpha = (0.16 + bubbleRadius * 0.22) * boundsFade;
+  // Glass lens body — readable water volume on dark navy (constitution §10.2.B)
+  vAlpha = (0.22 + bubbleRadius * 0.28) * boundsFade;
 
   gl_Position = projectionMatrix * mvPosition;
 }
@@ -218,48 +218,48 @@ void main() {
   float bgPresence = max(bgCenter.a, bgOuter.a);
   refracted = mix(uSectionBgColor, refracted, max(bgPresence, 0.65));
 
-  // Glass lens on dark navy — mostly refracted bg (gold F), light body tint
-  vec3 glassBody = mix(uSectionBgColor, vec3(0.4, 0.58, 0.88), 0.18);
-  refracted = mix(glassBody, refracted, 0.88);
+  // Gold glass volume: cyan tinted shell + IOR; ban empty white ring
+  vec3 glassBody = mix(uSectionBgColor, vec3(0.55, 0.78, 0.96), 0.58);
+  refracted = mix(glassBody, refracted, 0.62);
 
   vec3 lightDir = normalize(uLightPos - vWorldPos);
   float ndotl = max(dot(n, lightDir), 0.0);
-  // Soft volume shade
-  float shade = mix(0.62, 1.0, ndotl);
+  float shade = mix(0.85, 1.0, ndotl);
   float opposite = 1.0 - ndotl;
   vec3 halfDir = normalize(lightDir + viewDir);
   float ndoth = max(dot(n, halfDir), 0.0);
   vec3 diffuse = ndotl * uLightColor * uDiffuseStrength;
   vec3 spec = pow(ndoth, uShininess) * uLightColor * uSpecularStrength;
-  // Soft upper glint only — no opposite-side white crescent stroke
-  vec3 specTight = pow(ndoth, uShininess * 12.0) * vec3(0.82, 0.9, 1.0) * (uSpecularStrength * 0.09);
-  vec3 specBloom = pow(ndoth, uShininess * 2.8) * uLightColor * (uSpecularStrength * 0.035);
+  // Soft upper glint — gold F
+  vec3 specTight = pow(ndoth, uShininess * 9.0) * vec3(0.94, 0.97, 1.0) * (uSpecularStrength * 0.34);
+  vec3 specBloom = pow(ndoth, uShininess * 2.0) * uLightColor * (uSpecularStrength * 0.12);
 
-  vec3 rimTint = mix(vec3(0.58, 0.74, 0.92), uFresnelColor, 0.55);
-  // Drop opposite-side softRim (was reading as severe bottom crescents)
+  vec3 rimTint = mix(vec3(0.7, 0.84, 0.98), uFresnelColor, 0.55);
 
   vec3 color = refracted * (vec3(uAmbientStrength) * shade + diffuse) + spec + specTight + specBloom;
-  color *= mix(1.0, 0.88, opposite * 0.3);
-  color -= vec3(0.018, 0.028, 0.05) * opposite * 0.22;
+  color *= mix(1.0, 0.96, opposite * 0.18);
 
   float fresnel = pow(1.0 - max(dot(viewDir, n), 0.0), uColorFresnelPower);
-  float rimMix = mix(0.75, 0.55, smoothstep(0.0, max(uNoiseAmplitude * 2.5, 0.001), vDisplacement));
-  // Lit-side edge only, keep soft
-  float litEdge = fresnel * smoothstep(0.15, 0.85, ndotl);
-  color += rimTint * litEdge * rimMix * 0.06;
-  color += vec3(0.85, 0.92, 1.0) * pow(litEdge, 2.2) * 0.03;
-  color += glassBody * (1.0 - fresnel) * 0.025;
-  color = clamp(color, 0.0, 0.98);
+  float rimMix = mix(0.75, 0.5, smoothstep(0.0, max(uNoiseAmplitude * 2.5, 0.001), vDisplacement));
+  float litEdge = fresnel * smoothstep(0.1, 0.92, ndotl);
+  // Soft glass lip + specular crescent (gold mid)
+  color += rimTint * litEdge * rimMix * 0.26;
+  color += vec3(0.96, 0.98, 1.0) * pow(litEdge, 2.1) * 0.12;
+  color += glassBody * (1.0 - fresnel) * 0.12;
+  color = clamp(color, 0.0, 1.0);
 
   if (vContentMix > 0.5) {
     vec2 contentUv = vUv * 0.82 + 0.09;
     vec3 content = texture2D(tContent, contentUv).rgb;
-    color = mix(color, content, 0.05 * (1.0 - fresnel * 0.7));
+    color = mix(color, content, 0.04 * (1.0 - fresnel * 0.7));
   }
 
+  // Filled glass volume + thin rim (ban hollow HUD ring)
   float facing = max(dot(viewDir, n), 0.0);
-  float alpha = (vAlpha * (0.36 + facing * 0.34) + fresnel * 0.09 + ndoth * 0.03) * uAlphaBoost;
-  alpha = clamp(alpha, 0.05, 0.4);
+  float alpha = mix(0.22, 0.42, fresnel) * uAlphaBoost;
+  alpha += vAlpha * facing * 0.08;
+  alpha += ndoth * 0.02 * uAlphaBoost;
+  alpha = clamp(alpha, 0.12, 0.52);
 
   gl_FragColor = vec4(color, alpha);
 }

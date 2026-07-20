@@ -5,6 +5,12 @@ const NOAA_DOCS = 'https://api.tidesandcurrents.noaa.gov/api/prod';
 const CORAL_DOCS = 'https://api.coral.tsr.lol/';
 const FETCH_TIMEOUT_MS = 8000;
 
+function resolveMediaPath(path) {
+  if (!path) return '';
+  if (path.startsWith('http') || path.startsWith('../')) return path;
+  return `../${path}`;
+}
+
 const STRESS_LABELS = {
   0: '无显著热应力',
   1: 'Watch',
@@ -300,9 +306,17 @@ const renderFiveOceans = () => {
           <strong>${display}${unit}</strong>
         </div>`;
       };
+      const imagePath = resolveMediaPath(ocean.image);
+      const visualClass = imagePath
+        ? 'ocean-ocean-block__visual'
+        : `ocean-ocean-block__visual ocean-ocean-block__visual--${ocean.id}`;
+      const visualContent = imagePath
+        ? `<img class="ocean-ocean-block__photo" src="${imagePath}" alt="" loading="lazy" />`
+        : '';
+      const visualLabel = imagePath ? `${ocean.name} 实景` : `${ocean.name} 占位视觉`;
       return `
       <article class="ocean-ocean-block" id="ocean-${ocean.id}">
-        <div class="ocean-ocean-block__visual ocean-ocean-block__visual--${ocean.id}" role="img" aria-label="${ocean.name} 占位视觉"></div>
+        <div class="${visualClass}" role="img" aria-label="${visualLabel}">${visualContent}</div>
         <div class="ocean-ocean-block__body">
           <h3>${ocean.title}</h3>
           <p>${ocean.text}</p>

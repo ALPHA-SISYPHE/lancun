@@ -24,7 +24,7 @@
 | 检索区 | 页面级独立大搜索框（圆角透明玻璃）+ 6 个快捷分类标签；搜索词与标签 **AND** 联动过滤 |
 | 看板 | 4 张正面科普 metric 卡（120+ / 18 / 36 / 12）；**禁止**污染类指标 |
 | 物种列表 | 响应式网格 + 统一卡片 + **详情弹窗**（不跳新页） |
-| AI 识别 | **Phase A 锁定**：前端 mock（1.5s 模拟加载）；Phase B 百度动物识别 API 仅写入附录 G，**不纳入首轮 DoD** |
+| AI 识别 | **Phase B 已接入**：ECNU `ecnu-plus` + 本地代理；失败降级 mock | 附录 G.2 |
 | 数据策略 | 当前全部来自 `mock-data.js`；真实检索与 AI 通过附录 G 接口契约后续替换 |
 | 视觉 | 深海玻璃拟态 + 澜存通透蓝调；**服从根目录 `DESIGN.md`**；先框架稿，未经确认不做最终美化 |
 | 仍待你确认 | 物种实景图最终素材；附录 A 统计数字正式出处（实现轮可先用占位 + source-note） |
@@ -55,7 +55,7 @@
 | 删除项 | 现有 `app.js` 内联 `setupSpecies()` 大段 DOM 拼接逻辑 → 迁至独立模块（附录 F） |
 | 检索 | 页面级 `#species-search`；不挤占全站 nav |
 | 详情 | 原生 `<dialog>` 或等价 accessible modal；含完整档案字段（附录 D） |
-| 识别 | Phase A mock；支持拖放 / 点击 / 移动端 `capture="environment"` |
+| 识别 | ECNU ecnu-plus 真实识别 + mock 降级；拖放 / 点击 / 移动端 `capture="environment"` |
 | 图片 | 优先 `assets/media/species/{id}.jpg`；缺失时用渐变占位 + 物种名 |
 
 ---
@@ -82,7 +82,7 @@
 **DOM / 数据属性**：
 
 - `input[data-species-search]`、`button[data-species-search-submit]`、`button[data-species-search-clear]`
-- `[data-species-tag]`，`data-species-tag="all|mammal|reptile|coral|fish|seabird"`
+- `[data-species-tag]`，`data-species-tag="all|mammal|reptile|coral|fish"`
 - `[data-species-suggest]`（可选 ul）
 
 **交互 / 视觉**：
@@ -154,9 +154,9 @@
 | 数据 | 来源 | 说明 |
 |------|------|------|
 | 看板 4 指标 | `LANCUN_DATA.speciesMetrics` | 附录 A；页内须 `source-note` |
-| 物种列表 | `LANCUN_DATA.speciesArchive[]` | 附录 B schema + 预设 ≥15 种 |
+| 物种列表 | `LANCUN_DATA.speciesArchive[]` | 附录 B schema + 预设 12 种 |
 | 检索 / 标签 | 前端 filter | 不请求网络 |
-| AI 识别 | `recognizeSpeciesMock()` | 附录 G.2 Phase A |
+| AI 识别 | `recognizeSpecies()` / `recognizeSpeciesMock()` | 附录 G.2 |
 
 - 现有 `LANCUN_DATA.species`（4 条旧数据）在实现轮**迁移合并**入 `speciesArchive`，避免双份数据源。
 - 图片路径：`assets/media/species/{id}.jpg`（可选 png）；git 可后续按需加入 `.gitignore` 大文件策略。
@@ -260,10 +260,9 @@ speciesMetrics: [
 | 哺乳动物 | 中华白海豚、蓝鲸、抹香鲸、斑海豹 |
 | 海龟与爬行动物 | 绿海龟、玳瑁、棱皮龟 |
 | 珊瑚与腔肠动物 | 鹿角珊瑚、脑珊瑚、红珊瑚 |
-| 鱼类 | 中华鲟、大黄鱼、翻车鱼 |
-| 海鸟 | 黑脚信天翁、褐鲣鸟 |
+| 鱼类 | 中华鲟、大黄鱼 |
 
-（共 **15** 种；可增不可减至低于 12，以保证网格演示效果。）
+（共 **12** 种；可增不可减至低于 12，以保证网格演示效果。）
 
 ---
 
@@ -276,7 +275,6 @@ speciesMetrics: [
 | 海龟与爬行动物 | `reptile` | `海龟与爬行动物` |
 | 珊瑚与腔肠动物 | `coral` | `珊瑚与腔肠动物` |
 | 鱼类 | `fish` | `鱼类` |
-| 海鸟 | `seabird` | `海鸟` |
 
 ---
 
@@ -368,25 +366,34 @@ async function searchSpecies({ query, category }) { /* Phase A: 本地 filter；
  * 延迟 1500ms；confidence 60–98 随机；speciesId 从 speciesArchive 选取
  *
  * Phase B — recognizeSpecies(file: File): Promise<...>
- * 对接百度智能云动物识别等国内服务；须代理或后端转发；密钥禁止入库
+ * 前端 Canvas 压缩 → POST http://127.0.0.1:8787/api/recognize-species
+ * 后端转发 ECNU ecnu-plus（json_schema 结构化输出）；密钥在 .env
+ * API/代理失败时 fallback mock，UI 标注 demoMode
  */
 ```
 
+**Phase B 实现（2026-07-20）**
+
+- 模型：`ecnu-plus` @ `https://chat.ecnu.edu.cn/open/api/v1/chat/completions`
+- 代理：`server/ecnu-proxy.mjs`；物种目录：`server/species-catalog.json`
+- 额度：`.quota-usage.json` 本地统计 + 页面进度条
+- 出处：`docs/DATA_SOURCES.md`「AI 物种识别」节
+
 ### G.3 Phase B 参考（非承诺）
 
-- 百度智能云 · 动物识别 API（免费额度、国内可用）
-- 前端通过开发代理或课程允许的后端转发；失败时降级 Phase A mock 并提示
+- ~~百度智能云 · 动物识别 API~~（已由 ECNU ecnu-plus 替代）
+- 前端通过本地代理转发；失败时降级 Phase A mock 并提示
 
 ---
 
 ## 附录 H — 验收清单（实现轮）
 
 - [ ] 三节顺序与锚点 `#species-search` / `#species-archive` / `#species-recognizer` 存在。
-- [ ] 6 标签 + 搜索 AND 过滤；空状态与重置可用。
+- [ ] 5 标签 + 搜索 AND 过滤；空状态与重置可用。
 - [ ] 4 看板卡 + 滚动计数（reduced-motion 降级）。
-- [ ] 网格 4/2/1 列响应式；≥15 物种 mock 数据。
+- [ ] 网格 4/2/1 列响应式；12 物种 mock 数据。
 - [ ] 详情 dialog 键盘可操作；含附录 D 全部字段。
-- [ ] 识别：拖放/点击/拍照 UI；Phase A mock 1.5s；不上传服务器。
+- [ ] 识别：拖放/点击/拍照 UI；**Phase B ECNU 识别 + mock 降级**；额度进度条。
 - [ ] 无横向溢出；样式 token 仅来自 DESIGN / base.css。
 - [ ] 控制台无阻塞错误；导航与用户菜单正常。
 

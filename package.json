@@ -1,0 +1,9 @@
+{
+  "name": "lancun-ocean-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "api": "node server/ecnu-proxy.mjs",
+    "serve": "npx serve . -p 5500"
+  }
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "chinese-white-dolphin",
+    "name": "中华白海豚",
+    "aliases": ["白海豚", "粉红海豚"],
+    "level": "国家一级保护",
+    "summary": "近岸河口与海湾的旗舰物种，对水质与航运噪声极为敏感。"
+  },
+  {
+    "id": "blue-whale",
+    "name": "蓝鲸",
+    "aliases": ["蓝鲸"],
+    "level": "濒危 EN",
+    "summary": "地球上体型最大的动物，远洋生态系统的重要指示种。"
+  },
+  {
+    "id": "sperm-whale",
+    "name": "抹香鲸",
+    "aliases": ["抹香鲸"],
+    "level": "易危 VU",
+    "summary": "深潜能力突出的齿鲸，对海洋食物网有重要调节作用。"
+  },
+  {
+    "id": "spotted-seal",
+    "name": "斑海豹",
+    "aliases": ["斑海豹"],
+    "level": "国家一级保护",
+    "summary": "我国渤海、黄海代表性鳍足类，依赖海冰与近岸礁滩。"
+  },
+  {
+    "id": "green-turtle",
+    "name": "绿海龟",
+    "aliases": ["海龟", "绿龟"],
+    "level": "国家一级保护",
+    "summary": "以海草床为重要觅食地的海龟，是近岸生态健康的标志。"
+  },
+  {
+    "id": "hawksbill-turtle",
+    "name": "玳瑁",
+    "aliases": ["玳瑁龟"],
+    "level": "极危 CR",
+    "summary": "与珊瑚礁关系密切的海龟，对礁体健康有生态贡献。"
+  },
+  {
+    "id": "leatherback-turtle",
+    "name": "棱皮龟",
+    "aliases": ["棱皮龟"],
+    "level": "濒危 EN",
+    "summary": "体型最大的海龟，广域洄游，以水母为主要食物。"
+  },
+  {
+    "id": "staghorn-coral",
+    "name": "鹿角珊瑚",
+    "aliases": ["鹿角珊瑚"],
+    "level": "易危 VU",
+    "summary": "礁体建造者，对海温上升与酸化极为敏感。"
+  },
+  {
+    "id": "brain-coral",
+    "name": "脑珊瑚",
+    "aliases": ["脑珊瑚"],
+    "level": "近危 NT",
+    "summary": "生长缓慢的大型石珊瑚，记录长期环境变化。"
+  },
+  {
+    "id": "red-coral",
+    "name": "红珊瑚",
+    "aliases": ["红珊瑚"],
+    "level": "濒危 EN",
+    "summary": "生长极慢的树状珊瑚，对过度采集敏感。"
+  },
+  {
+    "id": "chinese-sturgeon",
+    "name": "中华鲟",
+    "aliases": ["鲟鱼", "中华鲟"],
+    "level": "极危 CR",
+    "summary": "长江与近海洄游性古老鱼类，河流连通性对其至关重要。"
+  },
+  {
+    "id": "large-yellow-croaker",
+    "name": "大黄鱼",
+    "aliases": ["大黄鱼", "黄鱼"],
+    "level": "濒危 EN",
+    "summary": "我国传统重要经济鱼类，近海种群曾大幅波动。"
+  }
+]

@@ -16,6 +16,18 @@ references/
 assets/media/hero.original.mp4
 assets/media/*.original.*
 
+# Bubble iteration capture artifacts (workspace root; H: archive is fine)
+bubble-loop-iter-*/
+bubble-loop-iter-*.png
+bubble-loop-iter-*.json
+*-smoke.png
+
+# Local deps
+node_modules/
+
 # Local env / secrets (if added later)
 .env
 .env.*
+!.env.example
+APIkey.md
+.quota-usage.json

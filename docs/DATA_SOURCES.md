@@ -58,8 +58,10 @@
 | 海洋主视觉 | 首页 Hero poster | Pexels（见下表） | 临时使用中 |
 | 海洋主视觉视频 | 首页 Hero（0.6 倍速静音循环） | 用户提供的本地视频 | 使用中 |
 | 全站深色海纹底图 | body 固定背景 | Pexels（见下表） | 本地 `assets/media/ocean-bg.jpg` 可选 |
-| 污染对比图片 | 科普页 | 待选择 | 待收集 |
-| 海洋生物图片 | 档案页 | 待选择 | 待收集 |
+| 污染对比图片 | 呼救页 §3.3 污染源侧栏 | Pexels（见下表） | 使用中 |
+| 五大洋区块图片 | 海洋页 §3.3 五大洋左侧视觉 | Pexels（见下表） | 使用中 |
+| 海洋生物图片 | 档案页物种卡片与详情弹窗 | Pexels（见下表） | 使用中 |
+| 保护行动封面 | 行动页志愿项目与往期成果卡片 | Pexels（见下表） | 使用中 |
 | 图标 | 导航与功能 | 待选择 | 待收集 |
 | 环境音/海洋视频 | 首页氛围或科普 | 待选择 | 待收集 |
 
@@ -84,6 +86,27 @@
 | 原始文件 | `references/video/workspace/15558437_3840_2160_30fps.mp4` |
 | 运行文件 | `assets/media/hero.mp4` |
 | 来源 | 用户提供，2026-07-17 |
+
+## 澜存导航海豚标志
+
+| 字段 | 内容 |
+|---|---|
+| 用途 | 所有页面顶栏品牌图标 |
+| 本地文件 | `assets/media/lancun-dolphin-logo.png` |
+| 来源 | 本对话中由 OpenAI 图像生成工具生成后抠除黑色背景，2026-07-19 |
+| 使用说明 | 纯白海豚与海浪扁平标志；透明 PNG，不作为外部品牌标志使用。 |
+
+## `#ocean-explore` 背景视频（与 Hero 分离）
+
+| 字段 | 内容 |
+|---|---|
+| 用途 | 首页 `#ocean-explore` 区块循环背景（静音、进视口播放）；**不**用于 Hero |
+| 原始文件 | `Downloads/4611894-uhd_3840_2160_30fps.mp4`（用户提供） |
+| 运行文件 | `assets/media/ocean-explore-bg.mp4`（原样拷贝，约 27.8MB，3840×2160） |
+| 来源 | Pexels 视频 id `4611894`（需保留出处） |
+| 页面链接 | https://www.pexels.com/video/4611894/ |
+| 脚本 | `assets/js/ocean-explore-bg.js`（与 `hero.js` / `hero.mp4` 完全分离） |
+| 获取日期 | 2026-07-19 |
 
 ## 首页蓝调日出装饰图
 
@@ -127,6 +150,105 @@
 | 页面链接 | https://www.pexels.com/photo/photo-of-ocean-892824/ |
 | 直接 URL（自行下载入库） | `https://images.pexels.com/photos/892824/pexels-photo-892824.jpeg?auto=compress&cs=tinysrgb&w=1920` |
 | 获取日期 | 2026-07-17 |
+
+## 生物档案页物种图片（Pexels）
+
+| 本地文件 | 物种 | 摄影师 | Pexels 页面 | 使用位置 | 备注 |
+|---|---|---|---|---|---|
+| `chinese-white-dolphin.jpg` | 中华白海豚 | Daniel Torobekov | https://www.pexels.com/photo/dolphins-swimming-5679552/ | `pages/species.html` 卡片/弹窗 | 海洋海豚展示图 |
+| `blue-whale.jpg` | 蓝鲸 | Arthouse Studio | https://www.pexels.com/photo/beautiful-large-whale-swimming-on-sea-surface-4338161/ | 同上 | 原图标注为座头鲸，作大型鲸类展示 |
+| `sperm-whale.jpg` | 抹香鲸 | Gerard Whelan | https://www.pexels.com/photo/humpback-whale-tail-swimming-underwater-of-sea-4609907/ | 同上 | 原图标注为座头鲸，作大型鲸类展示 |
+| `spotted-seal.jpg` | 斑海豹 | Chris Spain | https://www.pexels.com/photo/harbor-seal-28224568/ | 同上 | 原图为港海豹，作鳍足类展示 |
+| `green-turtle.jpg` | 绿海龟 | David Willis | https://www.pexels.com/photo/turtle-swimming-underwater-4767915/ | 同上 | — |
+| `hawksbill-turtle.jpg` | 玳瑁 | Zack Gilbert | https://www.pexels.com/photo/hawksbill-sea-turtle-swimming-in-caribbean-waters-36132584/ | 同上 | — |
+| `leatherback-turtle.jpg` | 棱皮龟 | Marcus Lange | https://www.pexels.com/photo/close-up-of-a-leatherback-sea-turtle-on-sandy-beach-35686479/ | 同上 | — |
+| `staghorn-coral.jpg` | 鹿角珊瑚 | Francesco Ungaro | https://www.pexels.com/photo/view-of-coral-reef-underwater-17984373/ | 同上 | 热带珊瑚礁展示图 |
+| `brain-coral.jpg` | 脑珊瑚 | Jonathan Borba | https://www.pexels.com/photo/close-up-of-vibrant-coral-reef-in-bahia-36367642/ | 同上 | 礁区纹理展示图 |
+| `red-coral.jpg` | 红珊瑚 | Rachel Claire | https://www.pexels.com/photo/a-close-up-shot-of-a-coral-underwater-6123091/ | 同上 | 原图为橙色珊瑚，作红珊瑚色系展示 |
+| `chinese-sturgeon.jpg` | 中华鲟 | Parviz Hajizada | https://www.pexels.com/photo/close-up-of-a-sturgeon-swimming-underwater-29452932/ | 同上 | 鲟科鱼类展示图 |
+| `large-yellow-croaker.jpg` | 大黄鱼 | Magda Ehlers | https://www.pexels.com/photo/close-up-of-fish-in-underwater-ocean-scene-32693336/ | 同上 | 条纹海水鱼，作近海鱼类展示 |
+
+- 授权：Pexels License — 免费使用，需保留摄影师与 Pexels 出处。
+- 获取日期：2026-07-19
+- 本地路径：`assets/media/species/`（宽 1600px 压缩 JPEG）
+
+## 呼救页污染源侧栏图（Pexels）
+
+| 本地文件 | 主题 | 摄影师 | Pexels 页面 | 使用位置 |
+|---|---|---|---|---|
+| `pollution-plastic.jpg` | 塑料垃圾污染 | 志愿者海岸清洁 | https://www.pexels.com/photo/people-collecting-plastic-trash-on-a-sandy-beach-9034660/ | `pages/rescue.html` §3.3 侧栏 tab |
+| `pollution-nutrient.jpg` | 营养盐污水污染 | Elina Volkova | https://www.pexels.com/photo/polluted-river-in-summer-scenery-16558792/ | 同上 |
+| `pollution-fishery-shipping.jpg` | 渔业航运污染 | Pok Rie | https://www.pexels.com/photo/aerial-view-of-fishing-boat-with-large-net-at-sea-37290258/ | 同上 |
+| `pollution-acidification.jpg` | 气候酸化危害 | Oscar Trisley | https://www.pexels.com/photo/bleached-coral-reefs-at-byron-bay-australia-33496012/ | 同上 |
+
+- 授权：Pexels License — 免费使用，需保留摄影师与 Pexels 出处。
+- 获取日期：2026-07-19
+- 本地路径：`assets/media/rescue/`（宽 1600px 压缩 JPEG）
+
+## 五大洋区块图（Pexels）
+
+| 本地文件 | 大洋 | 摄影师 | Pexels 页面 | 使用位置 |
+|---|---|---|---|---|
+| `pacific.jpg` | 太平洋 | Josh Withers | https://www.pexels.com/photo/top-view-of-clear-turquoise-water-16598750/ | `pages/ocean.html` §3.3 左侧视觉 |
+| `atlantic.jpg` | 大西洋 | ArtHouse Studio | https://www.pexels.com/photo/humpback-whale-tail-above-surface-of-sea-4347287/ | 同上 |
+| `indian.jpg` | 印度洋 | J Kainth | https://www.pexels.com/photo/breathtaking-aerial-view-of-seychelles-coastline-29420016/ | 同上 |
+| `southern.jpg` | 南大洋 | Nacho Canepa | https://www.pexels.com/photo/a-penguin-diving-over-the-sea-4637339/ | 同上 |
+| `arctic.jpg` | 北冰洋 | Francesco Ungaro | https://www.pexels.com/photo/majestic-arctic-iceberg-landscape-at-sea-30429917/ | 同上 |
+
+- 授权：Pexels License — 免费使用，需保留摄影师与 Pexels 出处。
+- 获取日期：2026-07-19
+- 本地路径：`assets/media/ocean/`（宽 1600px 压缩 JPEG）
+- 备注：大西洋原图为座头鲸，作大型鲸类展示；太平洋为夏威夷珊瑚礁俯拍；印度洋为塞舌尔海岸线浅海航拍。
+
+## 保护行动中心 · 志愿项目封面（Pexels）
+
+| 本地文件 | 项目 | 摄影师 | Pexels 页面 | 使用位置 |
+|---|---|---|---|---|
+| `volunteer-coast-clean.jpg` | 海岸垃圾清洁行动 | 志愿者海滩清洁 | https://www.pexels.com/photo/people-collecting-plastic-trash-on-a-sandy-beach-9034660/ | `pages/action.html` §3.2 志愿卡封面 |
+| `volunteer-mangrove.jpg` | 红树林种植志愿活动 | one second before sunset | https://www.pexels.com/photo/scenic-mangrove-trees-at-low-tide-in-indonesia-31996018/ | 同上 |
+| `volunteer-school-outreach.jpg` | 海洋科普进校园志愿 | Thang Nguyen | https://www.pexels.com/photo/teacher-engaging-with-students-in-classroom-setting-36859101/ | 同上 |
+| `volunteer-coral-monitor.jpg` | 珊瑚礁监测辅助项目 | Mido Makasardi | https://www.pexels.com/photo/scuba-diver-exploring-coral-reef-underwater-35159455/ | 同上 |
+
+- 授权：Pexels License — 免费使用，需保留摄影师与 Pexels 出处。
+- 获取日期：2026-07-20
+- 本地路径：`assets/media/action/`
+- 备注：进校园为通用课堂科普展示图，非专门海洋课程实拍。
+
+## 保护行动中心 · 往期成果封面（Pexels）
+
+| 本地文件 | 项目 | 摄影师 | Pexels 页面 | 使用位置 |
+|---|---|---|---|---|
+| `past-xisha-coral.jpg` | 西沙珊瑚礁修复计划 | Francesco Ungaro | https://www.pexels.com/photo/view-of-coral-reef-underwater-17984373/ | `pages/action.html` §3.3 往期成果卡封面 |
+| `past-bohai-clean.jpg` | 渤海湾海岸线清洁 | Karola G | https://www.pexels.com/photo/plastic-waste-on-beach-sand-4996765/ | 同上 |
+| `past-guangxi-mangrove.jpg` | 广西红树林种植行动 | Sachin Shettigar | https://www.pexels.com/photo/dense-mangrove-forest-in-honnavar-india-36584782/ | 同上 |
+| `past-dolphin-watch.jpg` | 中华白海豚观测保护 | Daniel Torobekov | https://www.pexels.com/photo/dolphins-swimming-5679552/ | 同上 |
+
+- 授权：Pexels License — 免费使用，需保留摄影师与 Pexels 出处。
+- 获取日期：2026-07-20
+- 本地路径：`assets/media/action/`
+- 备注：红树林为印度红树林生态展示图；白海豚为海洋海豚通用展示图。
+
+## 生物档案页 · AI 物种识别（ECNU ecnu-plus）
+
+| 项目 | 说明 |
+|---|---|
+| 服务 | [华东师范大学开发者平台 · 大模型能力](https://developer.ecnu.edu.cn/vitepress/llm/model.html) |
+| Base URL | `https://chat.ecnu.edu.cn/open/api/v1` |
+| 模型 | `ecnu-plus`（多模态图片理解；结构化 JSON 输出） |
+| 本地代理 | `server/ecnu-proxy.mjs`（密钥仅存 `.env`，禁止入库） |
+| 前端页面 | `pages/species.html` §3.3 识别器 |
+| 识别范围 | 优先匹配 `speciesArchive` 12 种；档案外显示「未收录」 |
+| 额度显示 | 本地 `.quota-usage.json` 统计 credits / 次数；精确余额见平台令牌管理 |
+| 失败降级 | API 或代理不可用时 fallback 前端 mock，UI 标注「演示模式」 |
+| 接入日期 | 2026-07-20 |
+
+**本地演示步骤：**
+
+1. 复制 `.env.example` 为 `.env` 并填入 `ECNU_API_KEY`
+2. 终端 A：`npm run api`
+3. 终端 B：`npm run serve` → 打开 `http://localhost:5500/pages/species.html`
+
+完整架构与作业说明见 [`docs/SPECIES_AI_LOCAL.md`](SPECIES_AI_LOCAL.md)。
 
 ## 澜存自定海洋蓝色板（v4.0 / 根目录 DESIGN.md）
 

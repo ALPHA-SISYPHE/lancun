@@ -3,6 +3,12 @@ const NOAA_DOCS = 'https://api.tidesandcurrents.noaa.gov/api/prod';
 const OPENAQ_DOCS = 'https://docs.openaq.org/';
 const FETCH_TIMEOUT_MS = 8000;
 
+function resolveMediaPath(path) {
+  if (!path) return '';
+  if (path.startsWith('http') || path.startsWith('../')) return path;
+  return `../${path}`;
+}
+
 const LIVE_CONFIG = [
   {
     id: 'A',
@@ -229,7 +235,8 @@ const buildLiveCardHtml = (point, config, live) => {
 
 let activeLiveId = 'A';
 
-const setActiveLivePoint = (id) => {
+const setActiveLivePoint = (id, options = {}) => {
+  const { scroll = true } = options;
   activeLiveId = id;
   document.querySelectorAll('[data-point-id]').forEach((el) => {
     el.classList.toggle('is-active', el.dataset.pointId === id);
@@ -237,6 +244,7 @@ const setActiveLivePoint = (id) => {
   document.querySelectorAll('[data-rescue-map-pins] .rescue-live__pin').forEach((pin) => {
     pin.classList.toggle('is-active', pin.dataset.pointId === id);
   });
+  if (scroll === false) return;
   const card = document.getElementById(`rescue-live-${id}`);
   card?.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
 };
@@ -292,7 +300,7 @@ const renderLiveShell = () => {
     });
   });
 
-  setActiveLivePoint('A');
+  setActiveLivePoint('A', { scroll: false });
 };
 
 const updateLiveCard = (id, point, config, live) => {
@@ -425,13 +433,20 @@ const initPollutionModule = () => {
 
   sidebar.innerHTML = panels
     .map(
-      (p, i) => `
+      (p, i) => {
+        const imagePath = resolveMediaPath(p.image);
+        const bgClass = imagePath
+          ? 'rescue-pollution-nav-card__bg'
+          : `rescue-pollution-nav-card__bg ${p.gradientClass}`;
+        const bgStyle = imagePath ? ` style="background-image:url('${imagePath}')"` : '';
+        return `
     <button type="button" class="rescue-pollution-nav-card" role="tab" id="rescue-tab-${p.id}"
       aria-selected="${i === 0}" aria-controls="rescue-panel-content" data-index="${i}">
-      <span class="rescue-pollution-nav-card__bg ${p.gradientClass}" aria-hidden="true"></span>
+      <span class="${bgClass}" aria-hidden="true"${bgStyle}></span>
       <span class="rescue-pollution-nav-card__overlay" aria-hidden="true"></span>
       <span class="rescue-pollution-nav-card__label">${p.title}</span>
-    </button>`
+    </button>`;
+      }
     )
     .join('');
 
@@ -529,6 +544,7 @@ const initPollutionModule = () => {
 
 const initRescuePage = () => {
   if (document.body.dataset.page !== 'rescue') return;
+  if (!location.hash) window.scrollTo(0, 0);
   renderRescueStatic();
   fetchRescueLive();
   initPollutionModule();

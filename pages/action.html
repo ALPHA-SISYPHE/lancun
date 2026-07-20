@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../assets/css/base.css" />
+    <link rel="stylesheet" href="../assets/css/base.css?v=77" />
     <link rel="stylesheet" href="../assets/css/modules.css" />
     <link rel="stylesheet" href="../assets/css/action-page.css" />
     <script src="../assets/js/mock-data.js" defer></script>
@@ -19,10 +19,14 @@
     <script src="../assets/js/app.js" defer></script>
     <script src="../assets/js/action-page.js" defer></script>
   </head>
-  <body data-page="action">
+  <body class="has-page-bg-video" data-page="action">
+    <div class="page-bg-video" aria-hidden="true">
+      <video class="page-bg-video__media" autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video>
+      <div class="page-bg-video__shade"></div>
+    </div>
     <a class="skip-link" href="#main-content">跳到主要内容</a>
     <header class="site-header site-header--overlay">
-      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a>
+      <a class="brand" href="../index.html"><img class="brand-mark" src="../assets/media/lancun-dolphin-logo.png" alt="" /><span>澜存</span></a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button>
       <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
         <a href="../index.html">首页</a>

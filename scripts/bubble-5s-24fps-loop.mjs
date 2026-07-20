@@ -1,16 +1,22 @@
 /**
  * Sample #ocean-explore for 5s at 24fps (120 frames) with GPU Chromium.
- * Env: BUBBLE_ITER (default 38), BUBBLE_SPAN_MS (5000), BUBBLE_FPS (24)
+ * Env:
+ *   BUBBLE_ITER / BUBBLE_ITER_5S — iteration id (default 38)
+ *   BUBBLE_OUT_BASE — output root (default H:\\lancun-ocean-explore\\bubble-loops)
  */
 import { chromium } from 'playwright';
 import { writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
 
 // Hard defaults for this protocol (ignore leftover shell env pollution).
 const ITER = Number(process.env.BUBBLE_ITER_5S || process.env.BUBBLE_ITER || '38');
 const FPS = 24;
 const SPAN_MS = 5000;
 const FRAMES = 120; // 5s * 24fps — fixed gate
-const OUT_DIR = `bubble-loop-iter-${ITER}-frames`;
+const OUT_BASE =
+  process.env.BUBBLE_OUT_BASE || 'H:\\lancun-ocean-explore\\bubble-loops';
+const OUT_DIR = join(OUT_BASE, `bubble-loop-iter-${ITER}-frames`);
+const REPORT_PATH = join(OUT_BASE, `bubble-loop-iter-${ITER}-5s24fps.json`);
 const INTERVAL = SPAN_MS / Math.max(FRAMES - 1, 1);
 
 mkdirSync(OUT_DIR, { recursive: true });
@@ -99,11 +105,13 @@ const report = {
   errors,
   keyFrames: [1, 24, 48, 72, 96, FRAMES].filter((n) => n <= FRAMES).map((n) => frames[n - 1]?.path),
 };
-writeFileSync(`bubble-loop-iter-${ITER}-5s24fps.json`, JSON.stringify(report, null, 2));
+writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
 console.log(
   JSON.stringify(
     {
       iter: ITER,
+      outDir: OUT_DIR,
+      report: REPORT_PATH,
       frames: frames.length,
       module: meta0.module,
       scaleLocked,

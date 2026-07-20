@@ -53,6 +53,7 @@
 
 - [x] 锁定三节结构：濒危物种检索 → 看板+物种网格 → AI 识别器
 - [x] 锁定 Phase A mock 识别（1.5s）；真实 API 写入附录 G，首轮不实现
+- [x] **Phase B（2026-07-20）**：ECNU `ecnu-plus` 识别 + 本地代理 + 额度进度条 + mock 降级
 - [x] 锁定 6 快捷标签、4 看板指标、15 种预设物种 schema
 - [x] 同步 `PAGE_STRUCTURE.md`、`AGENTS.md` 文档优先级
 - [x] 用户确认宪法后实现 `pages/species.html` 框架稿（P0–P5，见 SPECIES_PAGE §6）
@@ -149,6 +150,13 @@
 - [x] 地球不可见：`camera.layers.disableAll()` 双 pass 与 composer RT 路径导致 mesh 未写入帧缓冲；改为 bubble `visible` 切换 + 直接 screen pass
 - [x] 布局：`::before` 深底、`overlay` 左栏渐变可读、地球偏右 framing（`EARTH_OFFSET` / `CAMERA_HOME`）
 - [x] 本地 `#ocean-explore` 桌面/窄屏截图 + Console 0 blocking error
+
+### ocean-explore 视频背景降级（2026-07-19）
+
+- [x] 入库 `assets/media/ocean-explore-bg.mp4`（与 `hero.mp4` 分离）；`DATA_SOURCES.md` 登记
+- [x] `#ocean-explore` 循环背景视频 + 偏淡遮罩；`ocean-explore-bg.js` 进视口播放 / 减动效 fallback
+- [x] WebGL 默认静止地球 only；气泡 opt-in（`?bubbles=1` / `localStorage.lancun.oceanBubbles=1`）；代码保留
+- [ ] 用户目视验收：hero 与 explore 视频不串源；默认无气泡；字可读
 
 ### Phase D — Convex 分阶段修复（2026-07-18）
 

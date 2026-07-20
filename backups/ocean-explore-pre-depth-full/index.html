@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="澜存——以展示、科普与行动守护海洋生机。" />
+    <title>澜存｜同守澜海，生机永续</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/home.css" />
+    <script src="assets/js/hero.js" defer></script>
+    <script src="assets/js/mock-data.js" defer></script>
+    <script src="assets/js/vendor/gsap.min.js" defer></script>
+    <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
+    <script type="module" src="assets/js/ocean-bubbles.js?v=44"></script>
+    <script>
+      window.LANCUN_globeInitState = 'pending';
+      document.addEventListener('DOMContentLoaded', function () {
+        if (document.body.dataset.page !== 'home') return;
+        window.setTimeout(function () {
+          var state = window.LANCUN_globeInitState;
+          if (
+            window.LANCUN_homeGlobe ||
+            state === 'ready' ||
+            state === 'failed' ||
+            state === 'booting'
+          ) {
+            return;
+          }
+          var status = document.querySelector('[data-globe-status]');
+          if (!status || !status.hidden) return;
+          status.hidden = false;
+          if (location.protocol === 'file:') {
+            status.textContent =
+              '场景未能加载：file:// 协议会拦截 ES 模块。请运行 python -m http.server 8080 后打开 http://127.0.0.1:8080/index.html';
+          } else if (state === 'pending') {
+            status.textContent =
+              '海洋气泡脚本未加载。请打开开发者工具 → Network，检查 assets/js/ocean-bubbles.js 是否有 404；Vercel 等静态托管可直接访问，勿用 file://。';
+          } else {
+            status.textContent =
+              '场景初始化超时。请确认浏览器支持 WebGL，打开控制台查看报错后刷新；若 Network 有 404 多为脚本路径错误。';
+          }
+        }, 12000);
+      });
+    </script>
+    <script src="assets/js/user-menu-html.js" defer></script>
+    <script src="assets/js/app.js" defer></script>
+  </head>
+  <body class="home-page" data-page="home">
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <header class="site-header site-header--overlay" data-site-header>
+      <a class="brand" href="index.html" aria-label="澜存首页"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">打开导航菜单</span><span aria-hidden="true">菜单</span></button>
+      <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
+        <a class="is-active" href="index.html" aria-current="page">首页</a><a href="pages/ocean.html">我们的海洋</a><a href="pages/rescue.html">海在呼救</a><a href="pages/species.html">生物档案</a><a href="pages/action.html">行动中心</a>
+      </nav>
+      <div class="header-actions" data-user-menu-host data-profile-href="pages/profile.html"></div>
+    </header>
+    <main id="main-content">
+      <section class="video-hero" aria-labelledby="hero-title">
+        <img class="hero-poster" width="1920" height="1080" alt="" decoding="async" />
+        <video class="hero-video" autoplay muted loop playsinline aria-hidden="true" data-hero-video></video>
+        <div class="video-fallback" aria-hidden="true"></div>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-artwork">
+          <p class="hero-kicker">LANCUN OCEAN PROTECTION</p>
+          <h1 id="hero-title"><span>同守澜海</span><strong>生机永续</strong></h1>
+          <p class="hero-note">留住每一片浪潮，让海洋生生不息</p>
+          <a class="hero-enter" href="#ocean-explore">进入海洋世界 <span aria-hidden="true">↓</span></a>
+        </div>
+      </section>
+
+      <section id="ocean-explore" class="ocean-explore ocean-explore--dark-interim" aria-labelledby="ocean-explore-title" data-header-sentinel data-ocean-explore>
+        <div class="ocean-explore__canvas-host" data-globe-scene data-globe-canvas-wrap>
+          <canvas data-globe-canvas aria-label="海洋气泡场景"></canvas>
+          <p class="globe-status" data-globe-status hidden role="status">
+            海洋气泡场景未能加载。请确认浏览器支持 WebGL；若仍空白，可在项目文件夹运行本地服务器后打开
+            <code>http://127.0.0.1:8080/index.html</code>（见根目录 <code>serve.ps1</code>）。
+          </p>
+        </div>
+        <div class="ocean-explore__overlay">
+          <div class="ocean-explore__inner">
+            <div class="ocean-explore__layout">
+              <div class="ocean-explore__copy page-island" data-ocean-panel>
+                <div class="ocean-panel-intro" data-ocean-intro>
+                  <p class="eyebrow ocean-explore__eyebrow">五大洋</p>
+                  <h2 id="ocean-explore-title">我们在守护哪一片海？</h2>
+                  <p class="ocean-explore__lede">地球被一片相互联通的咸水覆盖。太平洋、大西洋、印度洋、南大洋与北冰洋共同调节气候、承载生命，也需要我们的理解与行动。</p>
+                  <div class="ocean-explore__actions">
+                    <a class="button button-secondary ocean-explore__link" href="pages/ocean.html#ocean-dashboard">探索我们的海洋</a>
+                  </div>
+                </div>
+              </div>
+              <div class="ocean-explore__stage" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><span>澜存</span><span>海洋保护展示与互动课程项目</span></footer>
+  </body>
+</html>

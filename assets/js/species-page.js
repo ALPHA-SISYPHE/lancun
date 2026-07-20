@@ -1,7 +1,9 @@
 /**
- * 生物档案页 · Phase A（mock 检索 + mock 识别）
+ * 生物档案页 · Phase B（ECNU ecnu-plus 识别 + mock 降级）
  * 宪法：docs/SPECIES_PAGE.md
  */
+
+const RECOGNIZER_API = 'http://127.0.0.1:8787';
 
 const CATEGORY_MAP = {
   all: null,
@@ -9,7 +11,6 @@ const CATEGORY_MAP = {
   reptile: '海龟与爬行动物',
   coral: '珊瑚与腔肠动物',
   fish: '鱼类',
-  seabird: '海鸟',
 };
 
 const METRIC_ICONS = {
@@ -103,6 +104,133 @@ async function recognizeSpeciesMock(file) {
     summary: species.summary,
     confidence,
   };
+}
+
+function compressImageFile(file, maxDim = 1024, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      const scale = Math.min(1, maxDim / Math.max(width, height));
+      width = Math.max(1, Math.round(width * scale));
+      height = Math.max(1, Math.round(height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        URL.revokeObjectURL(url);
+        reject(new Error('canvas unavailable'));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      URL.revokeObjectURL(url);
+      const mimeType = 'image/jpeg';
+      const dataUrl = canvas.toDataURL(mimeType, quality);
+      resolve({ base64: dataUrl.split(',')[1], mimeType });
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('image load failed'));
+    };
+    img.src = url;
+  });
+}
+
+async function fetchQuotaStatus(root = document) {
+  try {
+    const response = await fetch(`${RECOGNIZER_API}/api/quota-status`, {
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!response.ok) return null;
+    const payload = await response.json();
+    if (payload?.quota) renderQuotaBar(root, payload.quota);
+    return payload.quota ?? null;
+  } catch {
+    renderQuotaOffline(root);
+    return null;
+  }
+}
+
+function renderQuotaOffline(root = document) {
+  const meta = root.querySelector('[data-species-quota-meta]');
+  if (meta) {
+    meta.textContent = '本地识别服务未连接 · 识别将降级为演示模式';
+  }
+}
+
+function renderQuotaBar(root, quota) {
+  const bar = root.querySelector('[data-species-quota-bar]');
+  const fill = root.querySelector('[data-species-quota-fill]');
+  const meta = root.querySelector('[data-species-quota-meta]');
+  if (!bar || !fill || !meta || !quota) return;
+
+  const percent = Math.min(100, Math.max(0, quota.monthPercent ?? 0));
+  fill.style.width = `${percent}%`;
+  bar.setAttribute('aria-valuenow', String(Math.round(percent)));
+  bar.setAttribute('aria-valuemin', '0');
+  bar.setAttribute('aria-valuemax', '100');
+  bar.setAttribute('aria-label', `本月 credits 已用 ${percent}%`);
+
+  const monthUsed = quota.monthCreditsUsed ?? 0;
+  const monthLimit = quota.monthCreditsLimit ?? 0;
+  const dailyCount = quota.dailyRequestCount ?? 0;
+  const dailyLimit = quota.dailyRequestLimit ?? 0;
+  const lastTotal = quota.lastUsage?.total ?? 0;
+  const lastCredits = quota.lastUsage?.credits ?? 0;
+
+  meta.textContent = [
+    `本月 credits ${monthUsed}/${monthLimit}`,
+    `今日 ${dailyCount}/${dailyLimit} 次`,
+    lastTotal ? `本次约 ${lastTotal} tokens（≈${lastCredits} credits）` : '等待首次识别',
+    '精确余额见 ECNU 开发者平台',
+  ].join(' · ');
+}
+
+/**
+ * @param {File} file
+ */
+async function recognizeSpecies(file) {
+  try {
+    const compressed = await compressImageFile(file);
+    const response = await fetch(`${RECOGNIZER_API}/api/recognize-species`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imageBase64: compressed.base64,
+        mimeType: compressed.mimeType,
+      }),
+      signal: AbortSignal.timeout(65000),
+    });
+    const payload = await response.json();
+    if (payload?.quota) renderQuotaBar(document, payload.quota);
+
+    if (payload?.ok) {
+      if (payload.unknown) {
+        return {
+          ok: true,
+          unknown: true,
+          guessedName: payload.guessedName,
+          brief: payload.brief,
+          confidence: payload.confidence,
+        };
+      }
+      return {
+        ok: true,
+        speciesId: payload.speciesId,
+        name: payload.name,
+        level: payload.level,
+        summary: payload.summary,
+        confidence: payload.confidence,
+      };
+    }
+  } catch {
+    /* fall through to mock */
+  }
+
+  const mock = await recognizeSpeciesMock(file);
+  return { ...mock, demoMode: true };
 }
 
 function formatFileSize(bytes) {
@@ -395,11 +523,16 @@ function showUploadLoading(root) {
 function setRecognitionState(root, mode) {
   root.querySelector('[data-species-result-idle]')?.toggleAttribute('hidden', mode !== 'idle');
   root.querySelector('[data-species-result-success]')?.toggleAttribute('hidden', mode !== 'success');
+  root.querySelector('[data-species-result-unknown]')?.toggleAttribute('hidden', mode !== 'unknown');
   root.querySelector('[data-species-result-fail]')?.toggleAttribute('hidden', mode !== 'fail');
 }
 
 function renderRecognitionSuccess(root, result) {
   setRecognitionState(root, 'success');
+  const eyebrow = root.querySelector('[data-species-result-eyebrow]');
+  if (eyebrow) {
+    eyebrow.textContent = result.demoMode ? '演示模式 · 本地 mock' : 'AI 识别结果';
+  }
   root.querySelector('[data-species-result-name]').textContent = result.name;
   root.querySelector('[data-species-result-level]').textContent = result.level;
   root.querySelector('[data-species-result-summary]').textContent = result.summary;
@@ -418,6 +551,24 @@ function renderRecognitionSuccess(root, result) {
   root.querySelector('[data-species-result-view]')?.setAttribute('data-species-result-id', result.speciesId);
 }
 
+function renderRecognitionUnknown(root, result) {
+  setRecognitionState(root, 'unknown');
+  root.querySelector('[data-species-unknown-name]').textContent = result.guessedName || '未知物种';
+  root.querySelector('[data-species-unknown-brief]').textContent =
+    result.brief || '该物种暂未收录于澜存档案库。';
+
+  const fill = root.querySelector('[data-species-unknown-confidence-fill]');
+  const text = root.querySelector('[data-species-unknown-confidence-text]');
+  const bar = root.querySelector('[data-species-unknown-confidence]');
+
+  if (fill) fill.style.width = `${result.confidence}%`;
+  if (text) text.textContent = `${result.confidence}%`;
+  if (bar) {
+    bar.setAttribute('aria-valuenow', String(result.confidence));
+    bar.setAttribute('aria-label', `置信度 ${result.confidence}%`);
+  }
+}
+
 async function runRecognition(root, file) {
   if (!file) return;
 
@@ -425,7 +576,7 @@ async function runRecognition(root, file) {
   showUploadLoading(root);
   setRecognitionState(root, 'idle');
 
-  const result = await recognizeSpeciesMock(file);
+  const result = await recognizeSpecies(file);
 
   if (state.uploadFile !== file) return;
 
@@ -439,7 +590,12 @@ async function runRecognition(root, file) {
   }
 
   state.recognition = result;
+  if (result.unknown) {
+    renderRecognitionUnknown(root, result);
+    return;
+  }
   renderRecognitionSuccess(root, result);
+  fetchQuotaStatus(root);
 }
 
 function clearUpload(root) {
@@ -614,6 +770,7 @@ function setupRecognizer(root) {
     clearUpload(root);
     input.click();
   });
+  root.querySelector('[data-species-result-retry-unknown]')?.addEventListener('click', () => clearUpload(root));
 }
 
 function initSpeciesPage() {
@@ -628,6 +785,8 @@ function initSpeciesPage() {
   setupModal(root);
   setupRecognizer(root);
   refreshSpeciesList(root);
+  clearUpload(root);
+  fetchQuotaStatus(root);
 }
 
 if (document.readyState === 'loading') {
@@ -639,4 +798,5 @@ if (document.readyState === 'loading') {
 window.initSpeciesPage = initSpeciesPage;
 window.searchSpecies = searchSpecies;
 window.recognizeSpeciesMock = recognizeSpeciesMock;
+window.recognizeSpecies = recognizeSpecies;
 window.openSpeciesModal = (id) => openSpeciesModal(document, id);

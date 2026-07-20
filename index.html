@@ -7,14 +7,15 @@
     <title>澜存｜同守澜海，生机永续</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="assets/css/base.css" />
-    <link rel="stylesheet" href="assets/css/home.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/base.css?v=77" />
+    <link rel="stylesheet" href="assets/css/home.css?v=77" />
     <script src="assets/js/hero.js" defer></script>
+    <script src="assets/js/ocean-explore-bg.js" defer></script>
     <script src="assets/js/mock-data.js" defer></script>
     <script src="assets/js/vendor/gsap.min.js" defer></script>
     <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
-    <script type="module" src="assets/js/ocean-bubbles.js?v=44"></script>
+    <script type="module" src="assets/js/ocean-bubbles.js?v=76"></script>
     <script>
       window.LANCUN_globeInitState = 'pending';
       document.addEventListener('DOMContentLoaded', function () {
@@ -51,7 +52,7 @@
   <body class="home-page" data-page="home">
     <a class="skip-link" href="#main-content">跳到主要内容</a>
     <header class="site-header site-header--overlay" data-site-header>
-      <a class="brand" href="index.html" aria-label="澜存首页"><span class="brand-mark" aria-hidden="true">○</span><span>澜存</span></a>
+      <a class="brand" href="index.html" aria-label="澜存首页"><img class="brand-mark" src="assets/media/lancun-dolphin-logo.png" alt="" /><span>澜存</span></a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation"><span class="sr-only">打开导航菜单</span><span aria-hidden="true">菜单</span></button>
       <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
         <a class="is-active" href="index.html" aria-current="page">首页</a><a href="pages/ocean.html">我们的海洋</a><a href="pages/rescue.html">海在呼救</a><a href="pages/species.html">生物档案</a><a href="pages/action.html">行动中心</a>
@@ -72,11 +73,21 @@
         </div>
       </section>
 
-      <section id="ocean-explore" class="ocean-explore ocean-explore--dark-interim" aria-labelledby="ocean-explore-title" data-header-sentinel data-ocean-explore>
+      <section id="ocean-explore" class="ocean-explore ocean-explore--dark-interim ocean-explore--video-bg" aria-labelledby="ocean-explore-title" data-header-sentinel data-ocean-explore>
+        <video
+          class="ocean-explore__bg-video"
+          muted
+          loop
+          playsinline
+          autoplay
+          aria-hidden="true"
+          data-ocean-explore-video
+        ></video>
+        <div class="ocean-explore__bg-shade" aria-hidden="true"></div>
         <div class="ocean-explore__canvas-host" data-globe-scene data-globe-canvas-wrap>
-          <canvas data-globe-canvas aria-label="海洋气泡场景"></canvas>
+          <canvas data-globe-canvas aria-label="海洋探索地球场景"></canvas>
           <p class="globe-status" data-globe-status hidden role="status">
-            海洋气泡场景未能加载。请确认浏览器支持 WebGL；若仍空白，可在项目文件夹运行本地服务器后打开
+            海洋场景未能加载。请确认浏览器支持 WebGL；若仍空白，可在项目文件夹运行本地服务器后打开
             <code>http://127.0.0.1:8080/index.html</code>（见根目录 <code>serve.ps1</code>）。
           </p>
         </div>
@@ -95,7 +106,28 @@
               </div>
               <div class="ocean-explore__stage" aria-hidden="true"></div>
             </div>
+            <div class="ocean-explore__footer">
+              <button
+                type="button"
+                class="shelves-toggle"
+                data-shelves-toggle
+                data-state="off"
+                aria-pressed="false"
+                aria-label="大陆架分布开关（占位）"
+              >
+                <span class="shelves-toggle__pill" aria-hidden="true">
+                  <span class="shelves-toggle__state" data-shelves-state>Off</span>
+                  <span class="shelves-toggle__knob"></span>
+                </span>
+                <span class="shelves-toggle__caption">Continental Shelves</span>
+              </button>
+            </div>
           </div>
+          <aside class="ocean-explore__fab-rail" aria-hidden="true">
+            <span class="ocean-fab" aria-hidden="true"></span>
+            <span class="ocean-fab" aria-hidden="true"></span>
+            <span class="ocean-fab ocean-fab--accent" aria-hidden="true"></span>
+          </aside>
         </div>
       </section>
     </main>

@@ -15,3 +15,14 @@ Web 编程期末大作业：海洋保护展示与互动课程项目。
 ## 当前状态
 
 已完成仓库整理、独立页面导航和首页结构稿。滚动下潜开场效果暂未实现。
+
+## AI 物种识别（生物档案页）
+
+生物档案页第三节提供 **海洋动物 AI 识别器**（[`pages/species.html`](pages/species.html)），为本项目的加分互动项。
+
+- **作业定位**：站点主体为原生 HTML/CSS/JS；识图因 API Key 安全与浏览器 CORS，增加最小 Node 代理 [`server/ecnu-proxy.mjs`](server/ecnu-proxy.mjs)，未引入前端框架。
+- **技术路径**：前端 Canvas 压缩图片 → 本地 `POST /api/recognize-species` → 华东师范大学 ECNU [`ecnu-plus`](https://developer.ecnu.edu.cn/vitepress/llm/model.html) 多模态模型。
+- **降级策略**：代理未启动时自动 fallback 前端 mock，UI 标注「演示模式 · 本地 mock」。
+- **本地快速启动**：终端 A `npm run api`，终端 B `npm run serve`，打开 `http://localhost:5500/pages/species.html`。
+
+完整架构、文件说明与答辩用语见 **[`docs/SPECIES_AI_LOCAL.md`](docs/SPECIES_AI_LOCAL.md)**。

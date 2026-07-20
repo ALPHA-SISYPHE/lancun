@@ -434,6 +434,9 @@
 .rescue-pollution-nav-card__bg {
   position: absolute;
   inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .rescue-pollution-nav-card__overlay {

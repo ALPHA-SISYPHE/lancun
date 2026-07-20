@@ -405,11 +405,44 @@ function renderCalendar(...selectors) {
   });
 }
 
+function setupPageBgVideo() {
+  const wrap = document.querySelector('.page-bg-video');
+  const video = document.querySelector('.page-bg-video__media');
+  if (!wrap || !video) return;
+
+  const prefsReduce = typeof window.LANCUN_getPrefs === 'function' && Boolean(window.LANCUN_getPrefs().reduceMotion);
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    || document.documentElement.dataset.reducedMotion === 'true'
+    || prefsReduce;
+
+  if (reduceMotion) {
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+    video.hidden = true;
+    wrap.hidden = true;
+    document.body.classList.add('is-bg-video-failed');
+    return;
+  }
+
+  const fail = () => {
+    video.pause();
+    video.hidden = true;
+    wrap.classList.add('is-failed');
+    document.body.classList.add('is-bg-video-failed');
+  };
+
+  video.addEventListener('error', fail);
+  const playPromise = video.play();
+  if (playPromise?.catch) playPromise.catch(() => { /* autoplay blocked: muted loop usually ok */ });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   mountUserMenu();
   setupNavigation();
   setupHomeHeader();
   setupDisplayPrefs();
+  setupPageBgVideo();
   window.addEventListener('lancun-home-globe-ready', () => {
     window.LANCUN_homeGlobe?.applyMotion?.();
   });
