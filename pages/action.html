@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="澜存——保护行动中心：每日打卡、志愿报名与模拟捐款。" />
-    <title>保护行动中心｜澜存</title>
+    <meta name="description" content="澜存——海洋行动中心：每日打卡、志愿任务与公益支持。" />
+    <title>海洋行动中心｜澜存</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,15 +15,29 @@
     <link rel="stylesheet" href="../assets/css/modules.css" />
     <link rel="stylesheet" href="../assets/css/action-page.css" />
     <script src="../assets/js/mock-data.js" defer></script>
+    <script src="../assets/js/utils/authStorage.js" defer></script>
+    <script src="../assets/js/utils/accountMenuStats.js" defer></script>
     <script src="../assets/js/user-menu-html.js" defer></script>
     <script src="../assets/js/app.js" defer></script>
-    <script src="../assets/js/action-page.js" defer></script>
+    <script src="../assets/js/action/checkinStorage.js" defer></script>
+    <script src="../assets/js/action/checkinBadges.js" defer></script>
+    <script src="../assets/js/action/checkinUI.js" defer></script>
+    <script src="../data/volunteerActivities.js" defer></script>
+    <script src="../assets/js/action/volunteerStorage.js" defer></script>
+    <script src="../assets/js/action/volunteerUI.js" defer></script>
+    <script src="../data/donationProjects.js" defer></script>
+    <script src="../data/impactStories.js" defer></script>
+    <script src="../assets/js/action/donationStorage.js" defer></script>
+    <script src="../assets/js/action/donationUI.js" defer></script>
+    <script src="../assets/js/action/impactCarousel.js" defer></script>
+    <script src="../assets/js/action/archiveUI.js" defer></script>
   </head>
-  <body class="has-page-bg-video" data-page="action">
+  <body class="action-page has-page-bg-video" data-page="action">
     <div class="page-bg-video" aria-hidden="true">
       <video class="page-bg-video__media" autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video>
-      <div class="page-bg-video__shade"></div>
+      <div class="page-bg-video__shade page-bg-video__shade--action"></div>
     </div>
+
     <a class="skip-link" href="#main-content">跳到主要内容</a>
     <header class="site-header site-header--overlay">
       <a class="brand" href="../index.html"><img class="brand-mark" src="../assets/media/lancun-dolphin-logo.png" alt="" /><span>澜存</span></a>
@@ -38,257 +52,494 @@
       <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
     </header>
 
-    <main id="main-content" class="page-stage">
-      <section class="page-intro page-intro--dark">
-        <div>
-          <p class="eyebrow">04 / 保护行动中心</p>
-          <h1>把关心，变成一次可持续的行动。</h1>
-          <p class="lead">
-            打卡可积累积分；报名会保存在本机；捐款入口仅用于展示公益项目与用户意向，不接收真实资金。
-          </p>
+    <main id="main-content" class="page-stage action-main">
+      <!-- 1. ActionHero -->
+      <section class="action-hero" aria-labelledby="action-hero-title">
+        <div class="action-hero__scrim" aria-hidden="true"></div>
+        <div class="action-shell action-hero__inner">
+          <div class="action-hero__copy">
+            <p class="action-hero__eyebrow">04 / 行动中心</p>
+            <p class="action-hero__en">Ocean Action Center · 海洋行动中心</p>
+            <h1 id="action-hero-title">把关心，<br />变成一次可持续的行动。</h1>
+            <p class="action-hero__lead">
+              打卡每日环保行动，报名海洋志愿活动，支持长期公益项目；让每一次微小参与，都被记录、被看见、被延续。
+            </p>
+            <nav class="action-hero__anchors" aria-label="本页章节">
+              <a href="#daily-action-dock">每日打卡</a>
+              <a href="#volunteer-mission-board">志愿报名</a>
+              <a href="#support-harbor">公益支持</a>
+              <a href="#personal-action-archive">行动档案</a>
+            </nav>
+          </div>
+          <aside class="action-hero__aside action-panel--light" aria-label="今日状态摘要">
+            <p class="action-hero__aside-label">今日状态</p>
+            <ul class="action-hero__quick-list">
+              <li><span>环保打卡</span><em>1 次</em></li>
+              <li><span>志愿浏览</span><em>3 项</em></li>
+              <li><span>公益支持</span><em>模拟参与</em></li>
+            </ul>
+            <p class="action-hero__aside-note">本页为课程演示，数据保存在本机浏览器。</p>
+          </aside>
         </div>
-        <span class="tag">行动本地保存</span>
       </section>
 
-      <div class="page-island page-shell">
-        <nav class="action-page-nav" aria-label="本页章节">
-          <a href="#action-checkin">每日打卡</a>
-          <a href="#action-volunteer">志愿报名</a>
-          <a href="#action-donate">公益支持</a>
-        </nav>
+      <!-- 2. DailyActionDock -->
+      <section id="daily-action-dock" class="daily-action-dock" aria-labelledby="daily-action-title">
+        <div class="daily-action-dock__wrap">
+          <div class="daily-action-shell action-panel--deep">
+            <div class="daily-action-shell__form">
+              <header class="action-deck-head action-deck-head--checkin">
+                <span class="action-deck-head__mark" aria-hidden="true"></span>
+                <div>
+                  <h2 id="daily-action-title">今日环保打卡</h2>
+                  <p>记录今天为海洋做的一件小事。</p>
+                </div>
+              </header>
 
-        <!-- §3.1 每日打卡 -->
-        <section id="action-checkin" class="action-section" aria-labelledby="action-checkin-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">第一节</p>
-              <h2 id="action-checkin-title">每日环保打卡</h2>
-              <p class="lead">累计打卡，守护蔚蓝。</p>
+              <form class="daily-checkin-form" action="#" method="post" aria-label="今日环保打卡表单">
+                <div class="daily-checkin-form__core">
+                  <div class="field">
+                    <label for="checkin-action-type">今日行动类型</label>
+                    <select id="checkin-action-type" name="actionType">
+                      <option value="减少一次性塑料">减少一次性塑料</option>
+                      <option value="自带水杯">自带水杯</option>
+                      <option value="垃圾分类">垃圾分类</option>
+                      <option value="低碳出行">低碳出行</option>
+                      <option value="参与净滩">参与净滩</option>
+                      <option value="海洋知识学习">海洋知识学习</option>
+                      <option value="分享环保内容">分享环保内容</option>
+                      <option value="节约用水">节约用水</option>
+                      <option value="自定义行动">自定义行动</option>
+                    </select>
+                  </div>
+                  <div class="field" data-checkin-custom-type-wrap hidden>
+                    <label for="checkin-custom-action">自定义行动名称</label>
+                    <input id="checkin-custom-action" name="customActionType" type="text" placeholder="填写你的行动名称" />
+                    <p class="field-error" id="checkin-custom-action-error"></p>
+                  </div>
+                  <div class="field">
+                    <label for="checkin-action-desc">一句话行动记录</label>
+                    <textarea id="checkin-action-desc" name="description" rows="2" placeholder="今天为海洋做了什么？" required></textarea>
+                    <p class="field-error" id="checkin-action-desc-error"></p>
+                  </div>
+                </div>
+
+                <div class="daily-checkin-optional" id="checkin-optional-panel" data-checkin-optional hidden>
+                  <div class="field">
+                    <label for="checkin-duration-preset">行动时长（分钟）</label>
+                    <select id="checkin-duration-preset" name="durationPreset">
+                      <option value="5">5 分钟</option>
+                      <option value="10" selected>10 分钟</option>
+                      <option value="20">20 分钟</option>
+                      <option value="30">30 分钟</option>
+                      <option value="60">60 分钟</option>
+                      <option value="custom">自定义</option>
+                    </select>
+                    <p class="field-error" id="checkin-duration-preset-error"></p>
+                  </div>
+                  <div class="field" data-checkin-custom-duration-wrap hidden>
+                    <label for="checkin-duration-custom">自定义时长（分钟）</label>
+                    <input id="checkin-duration-custom" name="durationCustom" type="number" min="1" max="480" placeholder="请输入分钟数" />
+                    <p class="field-error" id="checkin-duration-custom-error"></p>
+                  </div>
+                  <div class="field">
+                    <label for="checkin-mood">行动心情</label>
+                    <select id="checkin-mood" name="mood">
+                      <option value="平静">平静</option>
+                      <option value="有成就感">有成就感</option>
+                      <option value="被鼓舞">被鼓舞</option>
+                      <option value="想坚持">想坚持</option>
+                      <option value="其他">其他</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="checkin-photo">行动图片（可选）</label>
+                    <div class="daily-upload-placeholder">
+                      <input id="checkin-photo" name="photo" type="file" accept="image/*" />
+                      <span>选择图片后本地预览，不会上传服务器</span>
+                    </div>
+                    <div class="checkin-preview" data-checkin-preview hidden></div>
+                  </div>
+                </div>
+
+                <div class="daily-checkin-actions" data-checkin-actions>
+                  <button class="button button-primary daily-checkin-submit" type="button" data-checkin-submit disabled>完成今日打卡</button>
+                  <button class="button" type="button" data-checkin-done hidden disabled>今日已打卡</button>
+                  <div class="daily-checkin-actions__secondary">
+                    <button class="button button-ghost" type="button" data-checkin-toggle-optional aria-expanded="false" aria-controls="checkin-optional-panel">补充记录</button>
+                    <button class="button button-ghost" type="button" data-checkin-history-open>查看历史</button>
+                    <button class="button button-ghost" type="button" data-checkin-view-cert hidden>查看证书</button>
+                    <button class="button button-ghost" type="button" data-checkin-edit hidden>修改今日打卡</button>
+                  </div>
+                </div>
+                <p class="action-checkin-hint" data-checkin-login-hint hidden>请先登录后打卡</p>
+                <p class="status-message" data-checkin-status aria-live="polite"></p>
+              </form>
             </div>
-          </div>
 
-          <div class="action-checkin-layout">
-            <div class="action-glass-card" data-action-checkin-summary>
-              <div class="action-metric-grid">
-                <article class="action-metric-card">
-                  <p class="action-metric-label">总积分</p>
-                  <p class="action-metric-value" data-action-points-total>0</p>
-                  <p class="action-metric-note">累计获得环保积分</p>
-                </article>
-                <article class="action-metric-card">
-                  <p class="action-metric-label">连续打卡</p>
-                  <p class="action-metric-value"><span data-action-streak>0</span> 天</p>
-                  <p class="action-metric-note">连续打卡天数</p>
-                </article>
-                <article class="action-metric-card">
-                  <p class="action-metric-label">今日状态</p>
-                  <p class="action-metric-value action-metric-value--status" data-action-today-status>今日未打卡</p>
-                  <p class="action-metric-note">每日首次打卡 +10 积分</p>
-                </article>
+            <div class="daily-action-shell__progress">
+              <div class="daily-streak-hero action-panel--light">
+                <p class="daily-streak-hero__label">当前连续打卡</p>
+                <p class="daily-streak-hero__value"><strong data-checkin-current-streak>0</strong> 天</p>
               </div>
-
-              <button class="button button-primary action-checkin-btn" type="button" data-action-checkin-btn>
-                立即打卡
-              </button>
-              <p class="action-checkin-hint" data-action-checkin-hint hidden>请先登录后打卡</p>
-              <p class="status-message" data-action-checkin-status aria-live="polite"></p>
-
-              <ul class="action-rules">
-                <li>每日首次打卡 +10 积分</li>
-                <li>连续打卡满 7 天额外 +30 积分（达成日一次性发放）</li>
-                <li>连续打卡满 30 天额外 +150 积分（达成日一次性发放）</li>
-                <li>积分仅保存在当前浏览器，用于课程互动反馈</li>
-              </ul>
-            </div>
-
-            <div class="action-glass-card" data-action-checkin-calendar>
-              <div class="action-cal-header">
-                <button class="action-cal-nav" type="button" data-action-cal-prev aria-label="上一月">‹</button>
-                <h3 class="action-cal-month" data-action-cal-month></h3>
-                <button class="action-cal-nav" type="button" data-action-cal-next aria-label="下一月">›</button>
+              <dl class="daily-stat-grid daily-stat-grid--compact">
+                <div>
+                  <dt>总打卡</dt>
+                  <dd><strong data-checkin-total-days>0</strong> 次</dd>
+                </div>
+                <div>
+                  <dt>总行动时长</dt>
+                  <dd><strong data-checkin-total-duration>0</strong> 分钟</dd>
+                </div>
+                <div>
+                  <dt>最长连续</dt>
+                  <dd><strong data-checkin-longest-streak>0</strong> 天</dd>
+                </div>
+              </dl>
+              <div class="daily-badge-strip" data-checkin-badge-strip aria-label="勋章进度"></div>
+              <div class="daily-medal-preview action-panel--light">
+                <p class="daily-medal-preview__label">下一枚勋章</p>
+                <p class="daily-medal-preview__value" data-checkin-next-badge>连续 <strong>3</strong> 天 · 潮汐初心者</p>
+                <div class="daily-medal-preview__bar" data-checkin-next-badge-bar role="presentation"><span style="width: 0%"></span></div>
               </div>
-              <div class="action-cal-weekdays" aria-hidden="true">
-                <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
-              </div>
-              <div class="action-cal-grid" data-action-cal-grid role="grid" aria-label="打卡日历"></div>
-              <div class="action-cal-stats">
-                <span>本月打卡 <strong data-action-cal-month-days>0</strong> 天</span>
-                <span>本月积分 <strong data-action-cal-month-points>0</strong></span>
+              <div class="daily-week-strip" aria-label="近 7 日打卡概览">
+                <p class="daily-week-strip__label">近 7 日记录</p>
+                <ol class="daily-week-strip__days" data-checkin-week-strip></ol>
               </div>
             </div>
-          </div>
-        </section>
-
-        <!-- §3.2 志愿报名 -->
-        <section id="action-volunteer" class="action-section" aria-labelledby="action-volunteer-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">第二节</p>
-              <h2 id="action-volunteer-title">志愿者报名</h2>
-              <p class="lead">选择项目提交意向，名额与记录保存在本机。</p>
-            </div>
-          </div>
-
-          <p class="action-disclaimer">本页面为课程作业模拟，不产生真实报名效力。</p>
-
-          <div class="action-tabs" role="tablist" aria-label="志愿报名视图">
-            <button
-              class="action-tab is-active"
-              type="button"
-              role="tab"
-              aria-selected="true"
-              data-action-volunteer-tab="browse"
-            >
-              可报名项目
-            </button>
-            <button
-              class="action-tab"
-              type="button"
-              role="tab"
-              aria-selected="false"
-              data-action-volunteer-tab="records"
-            >
-              我的报名记录
-            </button>
-          </div>
-
-          <div class="action-volunteer-panel" data-action-volunteer-panel>
-            <div class="action-volunteer-list" data-action-volunteer-list aria-live="polite"></div>
-            <div class="action-volunteer-records" data-action-volunteer-records hidden aria-live="polite"></div>
-          </div>
-          <p class="status-message" data-action-volunteer-status aria-live="polite"></p>
-        </section>
-
-        <!-- §3.3 捐款 + 往期成果 -->
-        <section id="action-donate" class="action-section" aria-labelledby="action-donate-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">第三节</p>
-              <h2 id="action-donate-title">公益支持与往期成果</h2>
-              <p class="lead">选择支持档位体验模拟流程，浏览往期保护项目成果。</p>
-            </div>
-          </div>
-
-          <div class="action-donate-layout">
-            <div class="action-glass-card" data-action-donate-form>
-              <h3>支持海洋保护</h3>
-              <p class="action-donate-lead">选择档位或自定义金额，确认后将写入本机演示记录。</p>
-
-              <div class="action-tier-grid" role="group" aria-label="捐款档位">
-                <!-- tiers rendered by JS -->
-              </div>
-
-              <div class="field action-custom-field" data-donation-custom-wrap hidden>
-                <label for="donation-custom-amount">自定义金额（元）</label>
-                <input
-                  id="donation-custom-amount"
-                  type="number"
-                  min="1"
-                  step="1"
-                  inputmode="numeric"
-                  data-donation-custom
-                  placeholder="请输入金额"
-                />
-                <p class="field-error" id="donation-custom-amount-error"></p>
-              </div>
-
-              <label class="action-anonymous">
-                <input type="checkbox" data-donation-anonymous />
-                匿名捐赠
-              </label>
-
-              <button class="button button-primary action-donate-submit" type="button" data-action-donate-submit>
-                确认支持
-              </button>
-              <p class="action-disclaimer action-disclaimer--compact">
-                本页面为课程作业模拟演示，不产生任何真实支付。
-              </p>
-            </div>
-
-            <div class="action-glass-card" data-action-fund-uses>
-              <h3>您的支持将用于</h3>
-              <ul class="action-fund-list"></ul>
-            </div>
-          </div>
-
-          <div class="action-past-heading">
-            <h3>往期保护项目成果</h3>
-            <p class="source-note">以下为 mock 演示数据，正式出处待补。</p>
-          </div>
-          <div class="action-past-grid" data-action-past-projects></div>
-          <p class="status-message" data-action-donate-status aria-live="polite"></p>
-        </section>
-      </div>
-    </main>
-
-    <footer class="site-footer">
-      <span>澜存</span>
-      <span>行动、报名与意向均为本地前端演示</span>
-    </footer>
-
-    <!-- 志愿报名弹窗 -->
-    <dialog class="action-dialog" data-action-volunteer-dialog aria-labelledby="volunteer-dialog-title">
-      <form class="action-dialog-form" data-action-volunteer-form method="dialog">
-        <header class="action-dialog-header">
-          <h2 id="volunteer-dialog-title">填写报名信息</h2>
-          <button class="action-dialog-close" type="button" data-action-volunteer-close aria-label="关闭">×</button>
-        </header>
-        <p class="action-dialog-project" data-action-volunteer-project-name></p>
-        <div class="form-grid">
-          <div class="field">
-            <label for="volunteer-dialog-name">姓名 <span aria-hidden="true">*</span></label>
-            <input id="volunteer-dialog-name" name="name" required autocomplete="name" />
-            <p class="field-error" id="volunteer-dialog-name-error"></p>
-          </div>
-          <div class="field">
-            <label for="volunteer-dialog-phone">联系电话 <span aria-hidden="true">*</span></label>
-            <input id="volunteer-dialog-phone" name="phone" type="tel" required autocomplete="tel" />
-            <p class="field-error" id="volunteer-dialog-phone-error"></p>
-          </div>
-          <div class="field">
-            <label for="volunteer-dialog-id">身份证号（可选）</label>
-            <input id="volunteer-dialog-id" name="idCard" autocomplete="off" />
-          </div>
-          <div class="field">
-            <label for="volunteer-dialog-session">参与场次</label>
-            <input id="volunteer-dialog-session" name="session" />
-          </div>
-          <div class="field field--full">
-            <label for="volunteer-dialog-note">备注</label>
-            <textarea id="volunteer-dialog-note" name="note" rows="3"></textarea>
           </div>
         </div>
+      </section>
+
+      <!-- 3–4. Mission & Support Grid -->
+      <section class="mission-support-grid" aria-label="志愿任务与公益支持">
+        <div class="action-shell mission-support-grid__inner">
+          <section id="volunteer-mission-board" class="action-module action-module--mission action-panel--deep volunteer-board" data-mission-board aria-labelledby="mission-board-title">
+            <header class="mission-board-head">
+              <div class="action-deck-head action-deck-head--mission">
+                <span class="action-deck-head__mark" aria-hidden="true"></span>
+                <div>
+                  <h2 id="mission-board-title">志愿任务板</h2>
+                  <p>每次展示 3 个精选海洋行动任务，支持换一批，也可以查看详情并报名。</p>
+                </div>
+              </div>
+              <div class="mission-board-tools">
+                <button class="button button-ghost" type="button" data-mission-refresh>换一批</button>
+                <span class="mission-board-tools__hint" data-mission-auto-hint>每 12 秒自动换新</span>
+              </div>
+            </header>
+            <p class="action-disclaimer">本页面为课程作业模拟，不产生真实报名效力。</p>
+            <p class="action-volunteer-hint" data-volunteer-login-hint hidden>请先登录后报名</p>
+            <p class="status-message" data-volunteer-status aria-live="polite"></p>
+
+            <div class="mission-card-grid" data-mission-card-grid aria-live="polite"></div>
+          </section>
+
+          <section id="support-harbor" class="action-module action-module--harbor action-panel--deep support-harbor-module" aria-labelledby="support-harbor-title">
+            <header class="action-deck-head action-deck-head--harbor">
+              <span class="action-deck-head__mark" aria-hidden="true"></span>
+              <div>
+                <h2 id="support-harbor-title">公益支持港</h2>
+                <p>选择支持项目与金额，了解资金去向；本流程为课程演示，不产生真实支付。</p>
+              </div>
+            </header>
+            <p class="action-disclaimer">本页面为课程作业模拟，不产生真实支付效力。</p>
+            <p class="action-donation-hint" data-donation-login-hint hidden>请先登录后再提交支持</p>
+            <p class="status-message" data-donation-status aria-live="polite"></p>
+
+            <div class="support-harbor-shell">
+              <div class="support-harbor-layout">
+                <div class="support-project-panel action-panel--light" data-donation-project-panel aria-live="polite"></div>
+
+                <form class="support-harbor-form" data-donation-form action="#" method="post" aria-label="公益支持表单">
+                <div class="field">
+                  <label for="donate-project">支持项目</label>
+                  <select id="donate-project" name="project" data-donation-project></select>
+                  <p class="field-error" id="donate-project-error"></p>
+                </div>
+                <fieldset class="support-amount-fieldset">
+                  <legend>捐款金额</legend>
+                  <div class="support-amount-pills" data-donation-amount-pills role="group" aria-label="快捷金额"></div>
+                </fieldset>
+                <div class="field" data-donation-custom-wrap hidden>
+                  <label for="donate-custom">自定义金额（元）</label>
+                  <input id="donate-custom" name="customAmount" type="number" min="1" data-donation-custom placeholder="请输入金额" />
+                  <p class="field-error" id="donate-custom-error"></p>
+                </div>
+                <div class="field">
+                  <label for="donate-name">姓名或昵称</label>
+                  <input id="donate-name" name="donorName" type="text" placeholder="用于感谢卡展示" autocomplete="name" />
+                  <p class="field-error" id="donate-name-error"></p>
+                </div>
+                <label class="support-anonymous">
+                  <input type="checkbox" name="anonymous" />
+                  匿名捐赠
+                </label>
+                <div class="field">
+                  <label for="donate-message">留言</label>
+                  <textarea id="donate-message" name="message" rows="2" placeholder="写下你的支持寄语…"></textarea>
+                </div>
+                <div class="field">
+                  <label for="donate-email">邮箱（可选）</label>
+                  <input id="donate-email" name="email" type="email" autocomplete="email" placeholder="用于演示联系记录" />
+                  <p class="field-error" id="donate-email-error"></p>
+                </div>
+                <button class="button button-primary support-submit" type="submit">确认支持</button>
+                </form>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- 5. ImpactStoryCarousel -->
+      <section id="impact-story-carousel" class="action-module action-module--impact" aria-labelledby="impact-story-title">
+        <div class="action-shell action-panel--deep">
+          <header class="impact-head">
+            <div>
+              <h2 id="impact-story-title">往期行动成果</h2>
+              <p class="impact-head__hint" data-impact-auto-hint>一次展示一条影响力故事 · 每 8 秒自动切换</p>
+            </div>
+            <p class="impact-carousel__counter" data-impact-counter aria-live="polite">01 / 09</p>
+          </header>
+
+          <div class="impact-carousel" data-impact-carousel>
+            <button class="impact-carousel__nav" type="button" data-impact-prev aria-label="上一条">‹</button>
+            <article class="impact-story-card" data-impact-card aria-live="polite"></article>
+            <button class="impact-carousel__nav" type="button" data-impact-next aria-label="下一条">›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. PersonalActionArchive -->
+      <section id="personal-action-archive" class="action-module action-module--archive" aria-labelledby="personal-archive-title">
+        <div class="personal-archive-strip">
+          <div class="archive-strip__intro">
+            <h2 id="personal-archive-title">个人行动档案</h2>
+            <p>你的打卡、证书、报名与公益支持记录会保存在本地设备。</p>
+          </div>
+          <nav class="archive-strip__entries" aria-label="个人行动档案入口">
+            <button class="archive-strip__entry" type="button" data-archive-history>
+              <span class="archive-strip__label">打卡记录</span>
+              <strong class="archive-strip__count" data-archive-stat-checkins>0 次</strong>
+            </button>
+            <button class="archive-strip__entry" type="button" data-archive-badges>
+              <span class="archive-strip__label">已获勋章</span>
+              <strong class="archive-strip__count" data-archive-stat-badges>0 枚</strong>
+            </button>
+            <button class="archive-strip__entry" type="button" data-archive-volunteer-records>
+              <span class="archive-strip__label">志愿报名</span>
+              <strong class="archive-strip__count" data-archive-stat-volunteer>0 次</strong>
+            </button>
+            <button class="archive-strip__entry" type="button" data-archive-donations>
+              <span class="archive-strip__label">公益支持</span>
+              <strong class="archive-strip__count" data-archive-stat-donations>0 次</strong>
+            </button>
+          </nav>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="action-dialog checkin-certificate-dialog" data-checkin-certificate-dialog aria-labelledby="checkin-cert-title">
+      <div class="checkin-certificate">
+        <header class="checkin-certificate__header">
+          <p class="checkin-certificate__eyebrow">Ocean Action Certificate</p>
+          <h2 id="checkin-cert-title">今日海洋行动证书</h2>
+        </header>
+        <div class="checkin-certificate__body">
+          <p class="checkin-certificate__grant">授予</p>
+          <p class="checkin-certificate__name" data-cert-recipient>蓝色行动者</p>
+          <p class="checkin-certificate__because">完成行动：</p>
+          <p class="checkin-certificate__action" data-cert-action>—</p>
+          <p class="checkin-certificate__date">行动日期：<span data-cert-date>—</span></p>
+          <blockquote class="checkin-certificate__quote">每一次微小行动，都会成为海洋恢复的一部分。</blockquote>
+          <dl class="checkin-certificate__stats">
+            <div><dt>当前连续</dt><dd><span data-cert-streak>0</span> 天</dd></div>
+            <div><dt>已解锁徽章</dt><dd data-cert-badges>暂无</dd></div>
+          </dl>
+        </div>
+        <footer class="action-dialog-footer checkin-certificate__footer">
+          <button class="button button-ghost" type="button" data-checkin-certificate-save>保存记录</button>
+          <button class="button button-ghost" type="button" data-checkin-certificate-badges>查看勋章</button>
+          <button class="button button-primary" type="button" data-checkin-certificate-close>关闭</button>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog class="action-dialog checkin-history-dialog" data-checkin-history-dialog aria-labelledby="checkin-history-title">
+      <header class="action-dialog-header">
+        <h2 id="checkin-history-title">打卡历史</h2>
+        <button class="action-dialog-close" type="button" data-checkin-history-close aria-label="关闭">×</button>
+      </header>
+      <p class="checkin-history-streak" data-checkin-history-streak aria-live="polite"></p>
+      <div class="checkin-history-layout">
+        <div class="checkin-history-list-wrap">
+          <h3>最近记录</h3>
+          <div class="checkin-history-list" data-checkin-history-list></div>
+        </div>
+        <aside class="checkin-mini-cal">
+          <div class="checkin-mini-cal__head">
+            <button class="checkin-mini-cal__nav" type="button" data-checkin-history-prev aria-label="上一月">‹</button>
+            <h3 data-checkin-history-cal-month></h3>
+            <button class="checkin-mini-cal__nav" type="button" data-checkin-history-next aria-label="下一月">›</button>
+          </div>
+          <div class="checkin-mini-cal__weekdays" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+          <div class="checkin-mini-cal__grid" data-checkin-history-cal-grid role="grid" aria-label="打卡月历小视图"></div>
+        </aside>
+      </div>
+    </dialog>
+
+    <dialog class="action-dialog checkin-badges-dialog" data-checkin-badges-dialog aria-labelledby="checkin-badges-title">
+      <header class="action-dialog-header">
+        <h2 id="checkin-badges-title">我的勋章</h2>
+        <button class="action-dialog-close" type="button" data-checkin-badges-close aria-label="关闭">×</button>
+      </header>
+      <div class="checkin-badge-grid" data-checkin-badges-grid></div>
+    </dialog>
+
+    <dialog class="action-dialog volunteer-detail-dialog volunteer-mission-dossier" data-volunteer-detail-dialog aria-labelledby="volunteer-detail-title">
+      <header class="action-dialog-header">
+        <h2 id="volunteer-detail-title" data-volunteer-detail-title>任务档案</h2>
+        <button class="action-dialog-close" type="button" data-volunteer-detail-close aria-label="关闭">×</button>
+      </header>
+      <div class="volunteer-detail-layout">
+        <div class="volunteer-detail-cover" data-volunteer-detail-cover role="img" aria-label="活动封面"></div>
+        <p class="volunteer-detail-eyebrow" data-volunteer-detail-eyebrow></p>
+        <div class="volunteer-detail-body">
+          <dl class="volunteer-detail-meta">
+            <div><dt>地点</dt><dd data-volunteer-detail-location></dd></div>
+            <div><dt>日期时间</dt><dd data-volunteer-detail-datetime></dd></div>
+            <div><dt>时长</dt><dd data-volunteer-detail-duration></dd></div>
+            <div><dt>组织方</dt><dd data-volunteer-detail-organizer></dd></div>
+            <div><dt>联系</dt><dd data-volunteer-detail-contact></dd></div>
+            <div><dt>名额</dt><dd data-volunteer-detail-slots></dd></div>
+          </dl>
+          <section class="volunteer-detail-block">
+            <h3>活动简介</h3>
+            <p data-volunteer-detail-summary></p>
+            <p class="volunteer-detail-desc" data-volunteer-detail-description></p>
+          </section>
+          <section class="volunteer-detail-block">
+            <h3>任务内容</h3>
+            <ul class="volunteer-detail-list" data-volunteer-detail-tasks></ul>
+          </section>
+          <section class="volunteer-detail-block">
+            <h3>参与要求</h3>
+            <ul class="volunteer-detail-list" data-volunteer-detail-requirements></ul>
+          </section>
+          <section class="volunteer-detail-block volunteer-detail-block--impact">
+            <h3>预计影响</h3>
+            <p class="volunteer-detail-impact-highlight" data-volunteer-detail-impact-highlight></p>
+            <p data-volunteer-detail-impact></p>
+          </section>
+        </div>
+      </div>
+      <footer class="action-dialog-footer">
+        <button class="button button-ghost" type="button" data-volunteer-detail-close-footer>关闭</button>
+        <button class="button button-primary" type="button" data-volunteer-detail-register>立即报名</button>
+      </footer>
+    </dialog>
+
+    <dialog class="action-dialog volunteer-register-dialog" data-volunteer-register-dialog aria-labelledby="volunteer-register-heading">
+      <header class="action-dialog-header">
+        <h2 id="volunteer-register-heading" data-volunteer-register-title>活动报名</h2>
+        <button class="action-dialog-close" type="button" data-volunteer-register-close aria-label="关闭">×</button>
+      </header>
+      <form class="volunteer-register-form" data-volunteer-register-form action="#" method="post">
+        <div class="field">
+          <label for="volunteer-reg-name">姓名</label>
+          <input id="volunteer-reg-name" name="name" type="text" required autocomplete="name" />
+          <p class="field-error" id="volunteer-reg-name-error"></p>
+        </div>
+        <div class="field">
+          <label for="volunteer-reg-phone">手机号</label>
+          <input id="volunteer-reg-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" />
+          <p class="field-error" id="volunteer-reg-phone-error"></p>
+        </div>
+        <div class="field">
+          <label for="volunteer-reg-email">邮箱</label>
+          <input id="volunteer-reg-email" name="email" type="email" autocomplete="email" />
+          <p class="field-error" id="volunteer-reg-email-error"></p>
+        </div>
+        <div class="field">
+          <label for="volunteer-reg-age">年龄</label>
+          <input id="volunteer-reg-age" name="age" type="number" min="1" max="120" />
+          <p class="field-error" id="volunteer-reg-age-error"></p>
+        </div>
+        <div class="field">
+          <label for="volunteer-reg-experience">是否有志愿经验</label>
+          <select id="volunteer-reg-experience" name="experience">
+            <option value="无">无</option>
+            <option value="有一些">有一些</option>
+            <option value="丰富">丰富</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="volunteer-reg-emergency">紧急联系人</label>
+          <input id="volunteer-reg-emergency" name="emergencyContact" type="text" autocomplete="off" />
+          <p class="field-error" id="volunteer-reg-emergency-error"></p>
+        </div>
+        <div class="field">
+          <label for="volunteer-reg-note">备注</label>
+          <textarea id="volunteer-reg-note" name="note" rows="2" placeholder="可选：饮食禁忌、交通方式等"></textarea>
+        </div>
         <footer class="action-dialog-footer">
-          <button class="button" type="button" data-action-volunteer-cancel>取消</button>
-          <button class="button button-primary" type="submit" data-action-volunteer-submit>提交报名</button>
+          <button class="button button-ghost" type="button" data-volunteer-register-cancel>取消</button>
+          <button class="button button-primary" type="submit">提交报名</button>
         </footer>
       </form>
     </dialog>
 
-    <!-- 捐款确认弹窗 -->
-    <dialog class="action-dialog" data-action-donate-dialog aria-labelledby="donate-dialog-title">
-      <div class="action-dialog-body" data-action-donate-dialog-body>
-        <header class="action-dialog-header">
-          <h2 id="donate-dialog-title">确认支持意向</h2>
-          <button class="action-dialog-close" type="button" data-action-donate-close aria-label="关闭">×</button>
-        </header>
-        <p class="action-donate-summary" data-action-donate-summary></p>
-        <p class="action-disclaimer action-disclaimer--compact">模拟支付流程，不会扣款或跳转第三方支付。</p>
+    <dialog class="action-dialog volunteer-success-dialog" data-volunteer-success-dialog aria-labelledby="volunteer-success-title">
+      <div class="volunteer-success-panel">
+        <h2 id="volunteer-success-title">报名成功！</h2>
+        <p>你已经加入本次海洋行动任务。</p>
         <footer class="action-dialog-footer">
-          <button class="button" type="button" data-action-donate-cancel>取消</button>
-          <button class="button button-primary" type="button" data-action-donate-confirm>确认支付</button>
-        </footer>
-      </div>
-      <div class="action-dialog-body" data-action-donate-thanks hidden>
-        <header class="action-dialog-header">
-          <h2>感谢你的支持</h2>
-          <button class="action-dialog-close" type="button" data-action-donate-thanks-close aria-label="关闭">×</button>
-        </header>
-        <p class="action-donate-thanks-text" data-action-donate-thanks-text></p>
-        <footer class="action-dialog-footer">
-          <button class="button button-primary" type="button" data-action-donate-done>完成</button>
+          <button class="button button-ghost" type="button" data-volunteer-success-records>查看我的报名记录</button>
+          <button class="button button-primary" type="button" data-volunteer-success-continue>继续浏览活动</button>
         </footer>
       </div>
     </dialog>
+
+    <dialog class="action-dialog volunteer-records-dialog" data-volunteer-records-dialog aria-labelledby="volunteer-records-title">
+      <header class="action-dialog-header">
+        <h2 id="volunteer-records-title">我的报名记录</h2>
+        <button class="action-dialog-close" type="button" data-volunteer-records-close aria-label="关闭">×</button>
+      </header>
+      <div class="volunteer-records-list" data-volunteer-records-list></div>
+    </dialog>
+
+    <dialog class="action-dialog donation-thanks-dialog" data-donation-thanks-dialog aria-labelledby="donation-thanks-title">
+      <div class="donation-thanks-card">
+        <p class="donation-thanks-card__eyebrow">Blue Action Receipt</p>
+        <h2 id="donation-thanks-title">感谢你的支持</h2>
+        <p class="donation-thanks-card__lead">这份善意将被记录为一次蓝色行动。</p>
+        <dl class="donation-thanks-card__details">
+          <div><dt>支持者</dt><dd data-thanks-name>—</dd></div>
+          <div><dt>支持项目</dt><dd data-thanks-project>—</dd></div>
+          <div><dt>金额</dt><dd data-thanks-amount>—</dd></div>
+          <div><dt>日期</dt><dd data-thanks-date>—</dd></div>
+        </dl>
+        <footer class="action-dialog-footer donation-thanks-card__footer">
+          <button class="button button-ghost" type="button" data-donation-thanks-records>查看支持记录</button>
+          <button class="button button-primary" type="button" data-donation-thanks-continue>继续支持</button>
+          <button class="button button-ghost" type="button" data-donation-thanks-close>关闭</button>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog class="action-dialog donation-records-dialog" data-donation-records-dialog aria-labelledby="donation-records-title">
+      <header class="action-dialog-header">
+        <h2 id="donation-records-title">我的支持记录</h2>
+        <button class="action-dialog-close" type="button" data-donation-records-close aria-label="关闭">×</button>
+      </header>
+      <div class="donation-records-list" data-donation-records-list></div>
+    </dialog>
+
+    <footer class="site-footer site-footer--action">
+      <span class="site-footer__brand">澜存</span>
+      <span class="site-footer__note">行动、报名与支持均为本地模拟演示</span>
+      <a class="site-footer__link" href="../docs/DATA_SOURCES.md">数据来源说明</a>
+    </footer>
   </body>
 </html>

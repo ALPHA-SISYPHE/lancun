@@ -2,118 +2,99 @@
 
 ## 文档状态
 
-- 版本：1.2
-- 状态：讨论中（附录 A/B/C/E 指标与 UI 已写入；**§3.2 动态 4 项已与 OCEAN_PAGE 去重重选**；**§3.3 UI 已锁定（附录 E）**；§3.3 文案为 mock 占位、待用户后续修改；**§3.1 折线图已锁定「中国近岸优良水质」**）
-- 最近更新：2026-07-18
+- 版本：1.9
+- 状态：讨论中（**v2.0 Phase 3 工作台**：左压力 + 右地图 + 底 Tab 图表；筛选 / dialog / 刷新）
+- 最近更新：2026-07-21
 - 适用范围：[`pages/rescue.html`](../pages/rescue.html) 及其脚本、样式、本页数据源
 - 数据参考清单：[`references/stastics_ref/rescue_sta.md`](../references/stastics_ref/rescue_sta.md)
-- 冲突优先级：用户当前对话明确要求 → `AGENTS.md` → **本文档** → `PAGE_STRUCTURE.md` → 其他专项文档
+- 视觉精修规则：[`RESCUE_OBSERVATORY_RULES.md`](RESCUE_OBSERVATORY_RULES.md) v1.0（气质 / Token / 排版 / 禁止项 / 分阶段执行）
+- 冲突优先级：用户当前对话明确要求 → `AGENTS.md` → [`RESCUE_OBSERVATORY_RULES.md`](RESCUE_OBSERVATORY_RULES.md)（气质 / 紧凑 / 禁止 / 分阶段）→ **本文档**（功能 / API / 数据）→ `PAGE_STRUCTURE.md` → 其他专项文档
 
-本文档是「海在呼救」板块的**唯一权威**计划兼实现宪法。未写入本文或仍标「待确认」的内容，不得当作最终决定去实现。
+本文档是「海在呼救」板块的**功能与数据宪法**（信息架构、API 去重、mock schema、附录）。视觉气质、Token、排版压缩与分阶段精修以 [`RESCUE_OBSERVATORY_RULES.md`](RESCUE_OBSERVATORY_RULES.md) 为准。未写入本文或仍标「待确认」的内容，不得当作最终决定去实现。
 
 ---
 
 ## 0. 用户需求摘要
 
-以下为你在全局架构与数据区讨论中已确认的要求；细则见 §2–§4 与附录 A–E。
-
 | 需求 | 你的决定 |
 |------|----------|
-| 改版优先级 | 除**首页**与**「我的」**外，各板块需大改；「海在呼救」在「我们的海洋」之后推进 |
-| 页面结构 | 单页纵向 **三节**：① 静态污染现状 ② 动态实时监测 ③ 污染源科普与解决方案（详见 §3） |
-| 叙事边界 | 解释污染现状与生态压力，informative 语气；**禁止**恐吓式堆叠；正面碳汇/海洋之美归 [`pages/ocean.html`](ocean.html) |
-| 上半区 | **6 张静态 metric 卡** + **饼图**（塑料占比）+ **柱状图**（污染源分类）+ **折线图**（时间序列）+ 文字科普，讲清「海洋面临什么问题」 |
-| 下半区 | **4 个核心监测点** + **简易地图** + 实时/近实时水质或预警读数，体现监测科技感 |
-| 动态数据 | 与 ocean 页去重后，按可实现性取前 **4** 个 API（附录 B）：NOAA 水质 DO/pH/盐度 + OpenAQ PM2.5；接口失败必须降级 mock |
-| 个人数据 | **禁止**在本页展示本机积分、行动次数等（归行动中心 / 我的） |
-| 视觉流程 | 先出结构框架稿；**未经你确认不做最终美化** |
-| §3.3 布局 | **左右分栏**：左 25% 竖向图片导航（**4 类**）+ 右 75% 主内容面板；下方 **4 行** HTML 表格（附录 C + E） |
-| 仍待你确认 | **无**（折线图已锁定选项 A，见附录 A.3） |
+| 页面身份 | **Ocean Pollution Observatory**（海洋污染观察与行动中心） |
+| 背景 | **必须保留** `pages-bg.mp4`；内容用半透明壳，section 间隙让视频透出 |
+| 禁止 | 浅灰后台 Dashboard；全宽实色盖视频；照搬 ocean 深蓝报告节奏；独立大表格；过重玻璃 |
+| 结构 | **Phase 1 紧凑 IA（v1.9）**：Compact Hero + Command Deck（压力+监测双栏）→ Source Workspace → Action CTA + Footer |
+| 污染源 | 5 类；左滚动卡 / 中图 / 右 Source·Impact·Solution·Personal Action |
+| 气质 | 监测、污染压力、溯源、行动；与 ocean「宏观平静认知」同品牌不同版式 |
 
 ---
 
 ## 1. 页面定位
 
-- 主题线：在理解海洋之美后，用**权威统计 + 实时监测**说明污染与生态压力，并给出可执行保护路径，服务叙事「理解现状 → 参与行动」。
-- **禁止**堆叠灾难画面或大段恐吓文案；数据应可读、有出处、可降级。
-- **禁止**在本页出现个人 localStorage 统计（积分、打卡次数等）。
-- 与 [`docs/OCEAN_PAGE.md`](OCEAN_PAGE.md) 边界：本页承载全部**污染类**指标与污染源科普；ocean 页禁止塑料/污染榜与恐吓式对比。
-- **§3.2 live 互斥**：不得复用 ocean 页已锁定的 Coral Watch 任意站、NOAA 站 `8518750`、以及潮位/水温/风压/珊瑚热应力/白化 live 指标（详见 §4.0）；静态区仍可引用 IPCC/NOAA 酸化、白化统计。
-- 技术：原生 HTML5 / CSS3 / JavaScript ES6+；本页不新增后端服务。
-- 视觉：服从根目录 `DESIGN.md`；实现前先出结构框架稿，未经用户确认不做最终美化。
-- **不改**：首页整体与「我的」界面（本宪法范围外）。
+- 主题线：压力观察 → 实时监测窗口 → 污染源档案 → 行动 CTA。
+- 视觉层级：`page-bg-video` → 深海 overlay → 透明 section → 半透明壳。
+- Live 互斥与 API：见 §4 / 附录 B（不变）。
+- 技术：经典 `defer` 脚本链，兼容 `file://`。
+- Nav「海在呼救」；Hero 眉标 `02 / 海在呼吸`。
 
 ---
 
-## 2. 已锁定产品决定
+## 2. 视觉系统（v1.8 基线；精修以 OBSERVATORY_RULES 为准）
+
+> **分工：** Token、透明度、间距压缩、禁止项与分阶段执行 → [`RESCUE_OBSERVATORY_RULES.md`](RESCUE_OBSERVATORY_RULES.md) §3–§7。本节保留 v1.8 实现基线；后续精修按 OBSERVATORY_RULES 对齐（如 section 间距 72–96px、Hero 560–640px、`--deep-soft: 0.68` 等）。
 
 | 项 | 决定 |
 |----|------|
-| 路由 | 单页 `pages/rescue.html`，不拆子路由 |
-| 布局 | 主内容区 **纵向三节**（顺序固定，见第 3 节） |
-| 上半区 | 6 metric 卡 + 饼/柱/折线 + 科普文案（附录 A） |
-| 下半区 | 4 监测点 + 简易地图 + live 卡片（附录 B） |
-| 第三节 | 左右分栏 **4 类**侧栏导航 + 主内容面板 + **4 行** HTML 表格（附录 C + E） |
-| 删除项 | 现有 `metric-grid` 中 `data-stat="actions"` / `data-stat="points"` 及与本页无关占位卡 |
-| 删除项 | 现有「污染来源 ↔ 解决路径」单一切换柱状图（由附录 A 饼/柱/折线 + 附录 C 方案区替代） |
-| 数据策略 | **方案 B**：上半区 + 第三节权威静态 + `mock-data.js`；下半区公开 API + mock 降级（详见 §4） |
+| 视频 | 保留；shade 约 `rgba(3,18,34,0.36→0.82)` |
+| Section | 默认透明；padding 约 96–120px 呼吸带（精修目标 72–96px，见 OBSERVATORY_RULES §7） |
+| 深壳 | Overview `0.66` / Monitor `0.72` / Source `0.64` + blur 8–10px |
+| 浅壳 | Hero / 站点 / 指标条 `rgba(234,245,247,0.58~0.72)` |
+| 站点面板 | **禁止** `overflow: auto` 内部丑滚动条 |
+| 禁止 | 全宽实色盖视频；浅灰后台；独立表格 |
 
 ---
 
-## 3. 三节信息架构（固定顺序）
+## 3. 信息架构
 
-### 3.1 第一节 — 静态污染现状
+> **Phase 1 紧凑化（v1.9，2026-07-21）：** 五段独立高 section 合并为四段。Overview + Live Monitor 并入 **`#command-deck`（Pollution Command Deck）**；Hero 增加状态摘要 ribbon；锚点主链 `#command-deck` / `#source-solution` / `#action-cta`；保留 `#pressure-overview` / `#live-monitor` 兼容锚点。API 与 mock 契约未变。
 
-- DOM 锚点（实现时必须提供）：`id="rescue-static"`。
-- 目的：用权威统计讲清「海洋面临什么问题」。
+### 3.0 Compact Hero（Phase 2 观察入口）
+- 视频透出；右半透明 Pressure Panel（`rgba(234,245,247,0.58)` + blur）；四行状态行
+- 底部 **status ribbon** 5 项：Pressure / Active Stations / Critical Sources / Last Update / Data Mode；深半透明、`margin-top: -36px` 桥接 Command Deck
+- Hero 锚点（平滑滚动）：`#pollution-command` / `#live-monitoring` / `#source-solution` / `#action-brief`
+- 兼容锚点：`#action-cta`（Footer 内隐藏）、`#pressure-overview` / `#live-monitor`
 
-**布局**（自上而下）：
+### 3.1 Pollution Command Deck（Phase 3 工作台）
+- **单 section** `#pollution-command.pollution-command-section`：header / `command-layout` / `command-bottom` 三行
+- **左栏** `.pressure-summary-panel`（360px）：`data-rescue-pressure-axis` 指数 + 判断句；`data-rescue-risk-matrix` 6 项 **2×3 紧凑矩阵**（无大 card）
+- **右栏** `#live-monitoring.live-monitor-stage`：顶部 **状态筛选** `data-rescue-status-filter`（All / Normal / Warning / Critical）；`.monitor-window` 地图 + station-panel + metric-strip
+- **底栏** `.command-bottom`：图表 **Tab**（趋势 / 构成 / 数据来源）单面板 ~150–180px；`data-rescue-sources-dialog-open` 打开完整来源 `<dialog>`
+- **刷新**：`data-rescue-deck-refresh` 调用 `refreshLiveWatch()` 并更新 `data-rescue-deck-refreshed-at`（不改 Hero ribbon）
+- 兼容锚点：`#command-deck` / `#pressure-overview` / `#live-monitor`（section 内隐藏 span）
 
-1. **6 张 metric 卡**（桌面 3×2 或 2×3；移动单列或双列），指标见附录 A.1。
-2. **可视化三件套**（同区，须含 `source-note` 与官方链接）：
-   - **饼图**：海洋垃圾组成 — 塑料 vs 其它（附录 A.2）
-   - **柱状图**：塑料来源结构（附录 A.2）
-   - **折线图**：静态时间序列（附录 A.3；默认中国近岸优良水质，待用户锁定）
-3. **文字科普块**：2–3 段 + 要点列表，覆盖塑料、酸化、珊瑚白化、中国近岸水质/赤潮风险；每段可链出来源表。
+### 3.2 Source Solution Workspace（Phase 4 工作台）
+- **三栏** `240px | 0.95fr | minmax(360px, 0.9fr)`；shell 高度预算 560–640px；`max-width: 1180px`
+- **左栏** `data-rescue-source-rail`：5 类污染源；缩略图 + 名称 + Critical/Warning + 短描述；选中高亮
+- **中栏** `data-rescue-source-visual`：统一比例图片 + 底部渐变标题
+- **右栏** `data-rescue-source-detail`：标题 + 核心判断 + **四块默认可见 bullet**（Source / Impact / Solution / Personal Action）；「展开更多」；底部来源
+- **导航** `data-rescue-source-nav` 上一项/下一项；键盘 Arrow 切换
+- **行动闭环**：「查看行动建议」平滑滚动至 `#action-brief`；「查看完整档案」打开 `data-rescue-source-drawer`
+- **禁止**独立大 `<table>`；表格信息已融合进四块
 
-### 3.2 第二节 — 动态实时监测
+### 3.3 Action Brief（Phase 5）
+- **`#action-brief.action-brief`**：Source 与 Footer 之间的轻量横带；四步行动建议 + 三按钮（行动中心 / 海洋之美）
+- Hero 锚点 `#action-brief` 指向本 section
 
-- DOM 锚点（实现时必须提供）：`id="rescue-live"`。
-- 目的：4 个监测点 + 简易地图（SVG/CSS pin，**不**引入重型地图 SDK）+ 近实时读数与预警色。
+### 3.4 Footer 继续探索（Phase 5）
+- **`#rescue-footer`**：三链 — 加入保护行动 / 回到海洋之美 / 探索海洋生命（`species.html`）
+- 底部 **查看数据来源** → 统一 `DataSourcesModal`（`data-rescue-data-sources-open`）
+- 箭头 hover 轻微位移；保持视频透出
 
-**交互**：
+### 3.5 页面状态与刷新（Phase 5）
+- **`LANCUN_RESCUE.pageState`**：`selectedStation` / `selectedSource` / `selectedChartTab` / `selectedRiskFilter` / `lastUpdatedAt` / `isSourceModalOpen` / `isDataSourcesOpen`
+- Command Deck **刷新观测**：500ms loading + 更新 `lastUpdatedAt`（不改 Hero ribbon Last Update）
 
-- 地图 pin 与卡片一一对应；点击 pin 高亮卡片。
-- 每卡须含：监测点名称、指标值、单位、**更新时间**、来源链接、加载中 / 成功 / 降级状态。
-- 预警色：正常 / 关注 / 异常（阈值在实现轮写入脚本常量，须文档化）。
-
-**监测点与 API**：见附录 B（4 项已锁定）。
-
-### 3.3 第三节 — 污染源分类科普与解决方案
-
-- DOM 锚点（实现时必须提供）：`id="rescue-solutions"`。
-- 目的：分类讲清污染源，并链到行动页。
-- **UI 权威细则**：附录 E（布局、交互、动效、DESIGN 对齐）；**内容四类**见附录 C。
-
-**布局**（自上而下）：
-
-1. **左右分栏主交互区**（桌面 ≥768px）：
-   - 左：`nav[data-rescue-sidebar]` — 竖向滚动 **4 张**图片导航卡（附录 E.2）
-   - 右：`section[data-rescue-panel]` — 当前分类详情面板（附录 E.3）
-   - 分栏 **25% / 75%**，间距 **24px**；版心 `var(--page-width)`；板块 `min-height: 90vh`
-2. **表格区**（分栏下方全宽）：1 张 HTML `<table>`，**4 行** × 4 列（附录 C.2）
-3. **行动链**：主面板 CTA 或模块底部链至 [`pages/action.html`](../pages/action.html)
-
-**四类分类**（侧栏 / 表格 / 主面板一致）：
-
-1. 塑料垃圾污染  
-2. 营养盐污水污染  
-3. 渔业航运污染（含幽灵渔具与船舶油污，合并原五类方案中的 #2/#4）  
-4. 气候酸化危害  
-
-**文案数据**：默认占位见附录 E.5，存于 `mock-data.js` → `rescuePollutionPanels[]`；**非永久锁定**，用户可后续修改（见附录 C.4）。
-
-**移动**（<768px）：侧栏改横向滚动在上，主面板在下（附录 E.4）。
+### 3.6 DataSourcesModal（Phase 5）
+- 统一 `<dialog data-rescue-data-sources-dialog>`；内容来自 `rescueDataSourcesCatalog`（含图片来源说明）
+- 入口：Hero 公开数据 / Command Deck / Source 详情 / Footer
 
 ---
 
@@ -124,7 +105,7 @@
 | 字段 | 内容 |
 |------|------|
 | 清单 | [`references/stastics_ref/rescue_sta.md`](../references/stastics_ref/rescue_sta.md) 第一节 + 中国公报条目 |
-| 实现 | 写入 [`mock-data.js`](../assets/js/mock-data.js)：`rescueStaticMetrics`、`rescueCharts`（饼/柱/折序列）、`rescuePollutionPanels[]`（§3.3 四类文案，**占位非永久锁定**）、`rescuePollutionTable[]`（表格 4 行，可与 panels 同源） |
+| 实现 | 写入 [`mock-data.js`](../assets/js/mock-data.js)：`rescueStaticMetrics`、`rescueCharts`、`rescuePressureIndex`、`rescuePollutionPanels[]`（5 类，含 sources/impact/governance/personalAction） |
 | 登记 | 所有数字与链接写入 [`DATA_SOURCES.md`](DATA_SOURCES.md) |
 | 口径 | 页面须标注来源、年份/估算说明；禁止与 ocean 页正面指标混用同一卡片 |
 
@@ -205,13 +186,18 @@ v1.0 草案中监测点 A–D（纽约水温、切萨皮克潮位、佛罗里达
 
 ## 5. 与现状代码的关系
 
-当前 [`pages/rescue.html`](../pages/rescue.html) 已按 v1.2 实现三节框架稿：
+当前 [`pages/rescue.html`](../pages/rescue.html) 已按 **v1.9 Phase 1 Compact Observatory** 实现：
 
-- §3.1：`rescue-dashboard.js` 渲染 6 卡 + 饼/柱/折（中国水质）+ 科普
-- §3.2：4 监测点 NOAA/OpenAQ fetch + `rescueLiveMock` 降级 + SVG 地图 pin 联动
-- §3.3：左右分栏 4 类侧栏（CSS 渐变占位）+ 主面板 + 4 行表格
+- 全页 `has-page-bg-video` + 本页 shade
+- Compact Hero：`pressure-panel` + 底部 status ribbon
+- **Command Deck**：左压力矩阵/图表 + 右 monitor-window（合并原 Overview + Monitor）
+- Source Workspace：滚动卡 + 图 + `<details>` 折叠四块档案
+- Footer：三链 CTA（含 DATA_SOURCES）
+- 脚本：`constants.js` → overview / live / source → `rescue-dashboard.js`
+- 结构 smoke：`node scripts/verify-rescue-compact.mjs`
 
 样式见 [`assets/css/rescue-page.css`](../assets/css/rescue-page.css)；数据见 [`mock-data.js`](../assets/js/mock-data.js)。
+
 
 ---
 

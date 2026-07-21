@@ -7,5 +7,6 @@
 - `ocean-bg.jpg` — 全站深色海纹底（1920 级；缺失时用 CSS 渐变）
 - `earth.jpg` — 首页 3D 地球表面纹理（等距圆柱，2048 级；当前为 Three.js 示例同源文件）
 - `earth-clouds.png` — 首页地球云层透明贴图（1024 级）
+- `rescue/world-satellite.jpg` — 呼救页 §3.2 监测地图卫星底图（2560×1280 等距圆柱，NASA Blue Marble 2002）
 
 来源与授权请同步写入 `docs/DATA_SOURCES.md`。

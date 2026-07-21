@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="澜存——我们的海洋 UI 草稿：观测现场、海洋作用与五大洋档案。" />
+    <title>我们的海洋 · UI 草稿｜澜存</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/css/base.css?v=77" />
+    <link rel="stylesheet" href="../assets/css/modules.css" />
+    <link rel="stylesheet" href="../assets/css/ocean-draft.css" />
+    <script src="../assets/js/mock-data.js" defer></script>
+    <script src="../assets/js/user-menu-html.js" defer></script>
+    <script src="../assets/js/app.js" defer></script>
+    <script src="../assets/js/ocean-draft.js" defer></script>
+  </head>
+  <body class="ocean-draft-page" data-page="ocean-draft">
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <header class="site-header site-header--overlay ocean-draft-header">
+      <a class="brand" href="../index.html"><img class="brand-mark" src="../assets/media/lancun-dolphin-logo.png" alt="" /><span>澜存</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button>
+      <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
+        <a href="../index.html">首页</a>
+        <a class="is-active" href="ocean-draft.html" aria-current="page">我们的海洋</a>
+        <a href="rescue.html">海在呼救</a>
+        <a href="species.html">生物档案</a>
+        <a href="action.html">行动中心</a>
+      </nav>
+      <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
+    </header>
+
+    <main id="main-content">
+      <section class="ocean-draft-cover" aria-labelledby="cover-title">
+        <div class="ocean-draft-cover__copy">
+          <p class="eyebrow">01 / 我们的海洋</p>
+          <h1 id="cover-title">地球的蓝色系统，<br />始终在呼吸。</h1>
+          <p class="ocean-draft-cover__lead">从珊瑚礁到极地海冰，潮汐、洋流与生命网络持续调节着这颗星球的节律。</p>
+          <p class="ocean-draft-cover__status"><span aria-hidden="true"></span> 公开观测与资料持续汇集</p>
+          <a class="ocean-draft-cover__scroll" href="#ocean-dashboard">向下阅读 <span aria-hidden="true">↓</span></a>
+        </div>
+        <figure class="ocean-draft-cover__video">
+          <video data-ocean-draft-video autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video>
+          <figcaption><span>海洋生命影像</span><span>用户提供视频 · 静音循环</span></figcaption>
+        </figure>
+      </section>
+
+      <nav class="ocean-draft-nav" aria-label="本页章节">
+        <a href="#ocean-dashboard"><span>01</span>观测现场</a>
+        <a href="#ocean-role"><span>02</span>海洋作用</a>
+        <a href="#five-oceans"><span>03</span>五大洋档案</a>
+      </nav>
+
+      <section id="ocean-dashboard" class="ocean-draft-observatory" aria-labelledby="dashboard-title">
+        <div class="ocean-draft-section-video" aria-hidden="true"><video data-ocean-draft-video autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video></div>
+        <div class="ocean-draft-heading">
+          <div>
+            <p class="eyebrow">观测现场</p>
+            <h2 id="dashboard-title">当前海洋正在发生什么</h2>
+            <p>来自 Coral Watch 与 NOAA CO-OPS 的公开观测；接口不可用时自动切换为本地演示数据。</p>
+          </div>
+          <div class="ocean-draft-heading__actions">
+            <p data-dashboard-updated aria-live="polite">等待观测数据…</p>
+            <button class="ocean-draft-text-button" type="button" data-refresh-dashboard>刷新数据 <span aria-hidden="true">↻</span></button>
+          </div>
+        </div>
+
+        <div class="ocean-draft-data-surface">
+          <section class="ocean-draft-data-group" aria-labelledby="coral-group-title">
+            <header class="ocean-draft-data-group__heading">
+              <p id="coral-group-title"><span aria-hidden="true"></span>珊瑚礁监测</p>
+              <small>Coral Watch · Southeast Florida</small>
+            </header>
+            <div class="ocean-draft-metrics" data-coral-dashboard aria-busy="true"></div>
+          </section>
+          <section class="ocean-draft-data-group" aria-labelledby="noaa-group-title">
+            <header class="ocean-draft-data-group__heading">
+              <p id="noaa-group-title"><span aria-hidden="true"></span>沿海观测</p>
+              <small>NOAA CO-OPS · The Battery 8518750</small>
+            </header>
+            <div class="ocean-draft-metrics" data-noaa-dashboard aria-busy="true"></div>
+          </section>
+          <footer class="ocean-draft-data-surface__footer">
+            <span>每项均标注实时、演示与加载状态。</span>
+            <button class="ocean-draft-inline-button" type="button" data-open-info="observatory">数据说明</button>
+          </footer>
+        </div>
+      </section>
+
+      <section id="ocean-role" class="ocean-draft-role" aria-labelledby="role-title">
+        <div class="ocean-draft-section-video ocean-draft-section-video--deep" aria-hidden="true"><video data-ocean-draft-video autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video></div>
+        <div class="ocean-draft-role__intro">
+          <p class="eyebrow">海洋作用</p>
+          <h2 id="role-title">海洋如何维持<br />一颗宜居星球</h2>
+          <p>海洋不是静止的蓝色背景。它吸收热量与碳、制造氧气，并借由沿岸生态系统留住能量。</p>
+          <div data-ocean-role-primary></div>
+        </div>
+        <div class="ocean-draft-role__visual">
+          <div class="ocean-draft-chart-switch" role="tablist" aria-label="碳吸收数据视图">
+            <button type="button" role="tab" aria-selected="true" data-chart-view="chart">趋势图</button>
+            <button type="button" role="tab" aria-selected="false" data-chart-view="table">数据表</button>
+          </div>
+          <div data-co2-trend-chart></div>
+          <div class="ocean-draft-table-wrap" data-co2-trend-table hidden></div>
+        </div>
+        <div class="ocean-draft-role__facts" data-ocean-role-facts></div>
+      </section>
+
+      <section id="five-oceans" class="ocean-draft-archive" aria-labelledby="archive-title">
+        <div class="ocean-draft-archive__heading">
+          <p class="eyebrow">五大洋档案</p>
+          <h2 id="archive-title">从每一片海，读懂整个地球。</h2>
+          <p>面积、深度与栖息地共同构成全球海洋的生命尺度。</p>
+        </div>
+        <nav class="ocean-draft-ocean-index" aria-label="五大洋快速索引">
+          <a href="#ocean-pacific"><strong>太平洋</strong><span>PACIFIC · 46%</span></a>
+          <a href="#ocean-atlantic"><strong>大西洋</strong><span>ATLANTIC · 23%</span></a>
+          <a href="#ocean-indian"><strong>印度洋</strong><span>INDIAN · 20%</span></a>
+          <a href="#ocean-southern"><strong>南大洋</strong><span>SOUTHERN · 20%</span></a>
+          <a href="#ocean-arctic"><strong>北冰洋</strong><span>ARCTIC · 4%</span></a>
+        </nav>
+        <div class="ocean-draft-ocean-list" data-five-oceans-list></div>
+      </section>
+
+      <section class="ocean-draft-next" aria-label="继续探索">
+        <div class="ocean-draft-section-video ocean-draft-section-video--footer" aria-hidden="true"><video data-ocean-draft-video autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video></div>
+        <p class="eyebrow">继续探索</p>
+        <div class="ocean-draft-next__links">
+          <a href="rescue.html">了解海洋正在面临什么 <span aria-hidden="true">→</span><small>海在呼救</small></a>
+          <a href="species.html">探索海洋生命 <span aria-hidden="true">→</span><small>生物档案</small></a>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="ocean-draft-dialog" data-ocean-dialog aria-labelledby="dialog-title">
+      <div class="ocean-draft-dialog__bar"><p class="eyebrow" data-dialog-eyebrow>资料说明</p><button type="button" class="ocean-draft-dialog__close" data-close-dialog aria-label="关闭弹窗">×</button></div>
+      <h2 id="dialog-title" data-dialog-title>资料说明</h2>
+      <div data-dialog-content></div>
+    </dialog>
+
+    <footer class="site-footer ocean-draft-footer">
+      <span>澜存 · UI 草稿</span>
+      <span>公开观测与静态资料均已登记来源 · 课程作品</span>
+    </footer>
+  </body>
+</html>

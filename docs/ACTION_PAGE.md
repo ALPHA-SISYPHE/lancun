@@ -6,6 +6,7 @@
 - 状态：讨论中（三节架构、mock 数据 schema、localStorage 契约与 Phase 0–4 已写入；实现轮视觉待用户确认）
 - 最近更新：2026-07-18
 - 适用范围：[`pages/action.html`](../pages/action.html) 及其脚本、样式、本页数据源
+- 视觉气质 / 禁止项 / 分阶段执行：见 [`ACTION_PAGE_VISUAL_RULES.md`](ACTION_PAGE_VISUAL_RULES.md) **v2.0**
 - 冲突优先级：用户当前对话明确要求 → `AGENTS.md` → **本文档** → `PAGE_STRUCTURE.md` → 根目录 `DESIGN.md`
 
 本文档是「保护行动中心」板块的**唯一权威**计划兼实现宪法。未写入本文或仍标「待确认」的内容，不得当作最终决定去实现。
@@ -533,8 +534,70 @@ export function migrateLegacyCheckins() { ... }
 
 ---
 
+## 附录 G — 实现状态 v2（2026-07-21，阶段 2–5）
+
+> 本节记录**已落地**的七模块架构与 localStorage schema，与 §2–§3 原「三节」规划并存；**以本节与 [`docs/ACTION_PAGE_VISUAL_RULES.md`](ACTION_PAGE_VISUAL_RULES.md) 为实现准绳**。旧 [`assets/js/action-page.js`](../assets/js/action-page.js) **未加载**。
+
+### G.1 七模块 DOM 锚点
+
+| 顺序 | 模块 | DOM |
+|------|------|-----|
+| 1 | ActionHero | `.action-hero` |
+| 2 | DailyActionDock | `#daily-action-dock` |
+| 3 | VolunteerMissionBoard | `#volunteer-mission-board` |
+| 4 | SupportHarbor | `#support-harbor` |
+| 5 | ImpactStoryCarousel | `#impact-story-carousel` |
+| 6 | PersonalActionArchive | `#personal-action-archive` |
+
+### G.2 localStorage keys（v2）
+
+| Key | 说明 |
+|-----|------|
+| `ocean-action-checkins.{username}` | 打卡记录数组 |
+| `ocean-action-badges.{username}` | 徽章解锁状态 |
+| `ocean-action-volunteer-registrations` | 全局志愿报名（每条含 `username`） |
+| `ocean-action-donations` | 全局捐款记录（每条含 `username`） |
+
+### G.3 脚本模块
+
+| 文件 | 职责 |
+|------|------|
+| [`assets/js/action/checkinStorage.js`](../assets/js/action/checkinStorage.js) | 打卡读写、连续天数 |
+| [`assets/js/action/checkinBadges.js`](../assets/js/action/checkinBadges.js) | 徽章规则与同步 |
+| [`assets/js/action/checkinUI.js`](../assets/js/action/checkinUI.js) | 打卡 UI、证书/历史/徽章 dialog |
+| [`data/volunteerActivities.js`](../data/volunteerActivities.js) | 30 条志愿活动 |
+| [`assets/js/action/volunteerStorage.js`](../assets/js/action/volunteerStorage.js) | 报名读写、去重 |
+| [`assets/js/action/volunteerUI.js`](../assets/js/action/volunteerUI.js) | 3 卡轮换、报名 dialog |
+| [`data/donationProjects.js`](../data/donationProjects.js) | 6 个捐款项目 |
+| [`data/impactStories.js`](../data/impactStories.js) | 9 条成果故事 |
+| [`assets/js/action/donationStorage.js`](../assets/js/action/donationStorage.js) | 捐款读写 |
+| [`assets/js/action/donationUI.js`](../assets/js/action/donationUI.js) | 捐款表单、感谢卡、记录 |
+| [`assets/js/action/impactCarousel.js`](../assets/js/action/impactCarousel.js) | 单卡轮播 8s |
+| [`assets/css/action-page.css`](../assets/css/action-page.css) | 本页样式（阶段 5 精修） |
+
+`app.js` → `renderProfile()` 桥接 `OceanActionCheckinUI` / `OceanActionVolunteerUI` / `OceanActionDonationUI`。
+
+### G.4 阶段 2–5 已实现清单
+
+- **阶段 2**：完整打卡表单、7 日条、连续天数、徽章 3/5/7/14/30、证书/历史/徽章 dialog、guest gating
+- **阶段 3**：30 活动库、3 卡展示、12s 自动换批、详情/报名/成功/记录 dialog、手机邮箱去重
+- **阶段 4**：6 项目 + 左叙事面板、金额 pill、感谢卡、记录 dialog；9 故事单卡轮播
+- **阶段 5**：打卡 dock 暗色玻璃、背景视频 shade 减轻、志愿/捐款模块色差、Footer 压缩、平板 2 列志愿、移动横向 scroll（7 日条/志愿卡）、dialog focus 归还、`prefers-reduced-motion` 补漏
+
+### G.5 验收脚本
+
+| 脚本 | 覆盖 |
+|------|------|
+| [`scripts/verify-action-checkin.mjs`](../scripts/verify-action-checkin.mjs) | 打卡全流程 |
+| [`scripts/verify-action-volunteer.mjs`](../scripts/verify-action-volunteer.mjs) | 志愿全流程 |
+| [`scripts/verify-action-donation.mjs`](../scripts/verify-action-donation.mjs) | 捐款 + 轮播 |
+| [`scripts/verify-action-page.mjs`](../scripts/verify-action-page.mjs) | 整页 guest gating、375px 无溢出、七模块 |
+
+---
+
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
+| 1.1 | 2026-07-21 | 附录 G：七模块 v2 实现、ocean-action-* keys、阶段 2–5 清单与 smoke 脚本 |
 | 1.0 | 2026-07-18 | 初版：三节架构、mock/localStorage 契约、附录 A–F、Phase 0–4 DoD |

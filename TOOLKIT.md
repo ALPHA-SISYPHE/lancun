@@ -1,6 +1,7 @@
 如果你是学生、预算为 0 元，完全可以做出高级感海洋保护网站。其实前端大作业不需要付费工具，下面这些都是免费开源 / 学生可免费使用的方案。
 
 一、免费前端模板（最推荐）
+
 1. Start Bootstrap ⭐⭐⭐⭐⭐（新手友好）
 
 GitHub：
@@ -42,7 +43,7 @@ Join Protection
 
 如果老师考察 HTML/CSS/JS，这个很合适。
 
-2. HTML5 UP ⭐⭐⭐⭐⭐（强烈推荐）
+1. HTML5 UP ⭐⭐⭐⭐⭐（强烈推荐）
 
 HTML5 UP
 
@@ -76,7 +77,7 @@ Massively
 
 如果你想做更像商业网站：
 
-3. Tailwind Awesome
+1. Tailwind Awesome
 
 Tailwind Awesome
 
@@ -88,7 +89,7 @@ Next.js
 
 模板。
 
-4. Flowbite 免费模板
+1. Flowbite 免费模板
 
 Flowbite
 
@@ -110,6 +111,7 @@ Ocean Monitor Dashboard
 物种数量
 保护区域
 三、完全免费的动画库（提升高级感）
+
 1. GSAP ⭐⭐⭐⭐⭐
 
 GSAP GitHub
@@ -128,7 +130,7 @@ GSAP GitHub
 
 很多获奖网站都用。
 
-2. Three.js ⭐⭐⭐⭐⭐
+1. Three.js ⭐⭐⭐⭐⭐
 
 Three.js GitHub
 
@@ -143,15 +145,19 @@ Three.js GitHub
 
 例如首页：
 
-       🌊
+```
+   🌊
+```
 
 Protect Ocean
 
-     🌊
+```
+ 🌊
+```
 
 背景是动态3D海洋。
 
-3. AOS（滚动动画）
+1. AOS（滚动动画）
 
 AOS GitHub
 
@@ -163,48 +169,7 @@ data-aos="fade-up"
 
 元素滚动出现。
 
-四、免费的 AI 辅助工具
-1. GitHub Copilot（学生免费）
 
-学生认证：
-
-GitHub Student Developer Pack
-
-可以免费获得：
-
-Copilot
-GitHub资源
-云服务优惠
-
-如果你有学校邮箱，非常建议申请。
-
-2. Cursor 免费版
-
-Cursor AI Editor
-
-免费额度：
-
-适合：
-
-修改模板
-解释代码
-生成组件
-
-例如：
-
-复制模板：
-
-问：
-
-把这个页面改成海洋保护主题，增加深海动画和污染数据模块
-
-3. v0 免费额度
-
-v0 by Vercel
-
-免费生成：
-
-React + Tailwind 页面。
 
 五、我建议你的“学生零成本方案”
 

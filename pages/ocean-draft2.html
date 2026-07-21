@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="澜存——我们的海洋 v1.3 三节框架稿备份（非正式版）。" />
+    <title>我们的海洋 · 框架稿备份 v1.3｜澜存</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/base.css?v=77" />
+    <link rel="stylesheet" href="../assets/css/modules.css" />
+    <link rel="stylesheet" href="../assets/css/ocean-draft2.css" />
+    <script src="../assets/js/mock-data.js" defer></script>
+    <script src="../assets/js/user-menu-html.js" defer></script>
+    <script src="../assets/js/app.js" defer></script>
+    <script src="../assets/js/ocean-draft2.js" defer></script>
+  </head>
+  <body class="has-page-bg-video" data-page="ocean-draft2">
+    <div class="page-bg-video" aria-hidden="true">
+      <video class="page-bg-video__media" autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video>
+      <div class="page-bg-video__shade"></div>
+    </div>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <header class="site-header site-header--overlay">
+      <a class="brand" href="../index.html"><img class="brand-mark" src="../assets/media/lancun-dolphin-logo.png" alt="" /><span>澜存</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button>
+      <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
+        <a href="../index.html">首页</a>
+        <a class="is-active" href="ocean-draft2.html" aria-current="page">我们的海洋</a>
+        <a href="rescue.html">海在呼救</a>
+        <a href="species.html">生物档案</a>
+        <a href="action.html">行动中心</a>
+      </nav>
+      <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
+    </header>
+
+    <main id="main-content" class="page-stage">
+      <section class="page-intro page-intro--dark">
+        <div>
+          <p class="eyebrow">01 / 我们的海洋</p>
+          <h1>从观测数据，读懂海洋如何守护地球。</h1>
+          <p class="lead">
+            本节展示珊瑚礁与沿海站的公开监测数据，以及海洋在碳汇与气候调节中的作用。污染相关数据请见「海在呼救」页。
+          </p>
+        </div>
+        <span class="tag">v1.3 框架稿备份</span>
+      </section>
+
+      <div class="page-island page-shell">
+        <nav class="ocean-page-nav" aria-label="本页章节">
+          <a href="#ocean-dashboard">数据看板</a>
+          <a href="#ocean-role">海的作用</a>
+          <a href="#five-oceans">五大洋</a>
+        </nav>
+
+        <section id="ocean-dashboard" class="ocean-section section" aria-labelledby="ocean-dashboard-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第一节</p>
+              <h2 id="ocean-dashboard-title">海洋数据看板</h2>
+              <p class="lead">正面观测与监测能力：Coral Watch 珊瑚礁站 + NOAA 沿海站（The Battery, 8518750）。</p>
+            </div>
+          </div>
+
+          <h3 class="ocean-section__group-title">珊瑚礁监测 · Coral Watch</h3>
+          <div class="ocean-metric-grid" data-coral-dashboard aria-busy="true"></div>
+
+          <h3 class="ocean-section__group-title is-spaced">沿海观测 · NOAA CO-OPS</h3>
+          <div class="ocean-metric-grid" data-noaa-dashboard aria-busy="true"></div>
+        </section>
+
+        <section id="ocean-role" class="ocean-section section" aria-labelledby="ocean-role-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第二节</p>
+              <h2 id="ocean-role-title">海的作用</h2>
+              <p class="lead">海洋在碳汇、热量缓冲与氧气循环中的角色——数据来自 IPCC / NOAA / UNEP 等公开统计。</p>
+            </div>
+          </div>
+          <div class="ocean-role-grid" data-ocean-role-cards></div>
+          <div data-co2-trend-chart></div>
+        </section>
+
+        <section id="five-oceans" class="ocean-section section" aria-labelledby="five-oceans-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">第三节</p>
+              <h2 id="five-oceans-title">五大洋</h2>
+              <p class="lead">从太平洋到北冰洋，每一块含面积、深度与代表性生态数据（静态登记，见页脚来源说明）。</p>
+            </div>
+          </div>
+          <div data-five-oceans-list></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <span>澜存 · v1.3 框架稿备份</span>
+      <span>正式版见 ocean.html · 见 docs/OCEAN_PAGE.md</span>
+    </footer>
+  </body>
+</html>

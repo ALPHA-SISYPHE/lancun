@@ -3,7 +3,7 @@
 ## 文档状态
 
 - 版本：0.8
-- 状态：讨论中（「我们的海洋」以 `docs/OCEAN_PAGE.md` v1.3 为准；「海在呼救」以 `docs/RESCUE_PAGE.md` v1.2 为准）
+- 状态：讨论中（「我们的海洋」以 `docs/OCEAN_PAGE.md` v1.3 为准；「海在呼救」以 `docs/RESCUE_PAGE.md` v1.8 为准）
 
 ## 产品结构原则
 
@@ -15,7 +15,7 @@
 
 1. 海洋之美首页
 2. 我们的海洋：单页纵向三节——**第一节 6 张看板**（Coral Watch×3 + NOAA×3）、**第二节 4 卡 + CO₂ 折线**、**第三节 五大洋**竖排（美图 + 介绍 + 3 项小看板）。**不使用**本页可拖地球与三节点；**不含** Protected Planet；污染数据不进本页。权威细则见 `docs/OCEAN_PAGE.md` v1.3。
-3. 海在呼救：单页纵向三节——**§3.1 静态 6 卡 + 饼/柱/折线 + 科普**、**§3.2 四监测点（NOAA 水质 DO/pH/盐度 + OpenAQ 沿海 PM2.5）+ 简易地图 live 看板**、**§3.3 四类侧栏 + 主面板 + 4 行表格**（附录 E）。不含个人积分/行动次数；§3.2 与 ocean 页 live 去重。权威细则见 `docs/RESCUE_PAGE.md` v1.2。
+3. 海在呼救（海洋污染观察与行动中心）：单页——**Compact Hero + status ribbon**、**Pollution Command Deck（压力+监测双栏）**、**Source Solution Workspace**、**Action CTA + Footer（三链）**。v1.9 Phase 1 紧凑 IA。功能细则见 `docs/RESCUE_PAGE.md` v1.9；视觉精修规则见 `docs/RESCUE_OBSERVATORY_RULES.md` v1.0。
 4. 海洋生物档案：濒危物种检索与海洋动物识别器入口
 5. 保护行动中心：打卡积分、志愿者报名、公益项目与捐款意向
 6. 我的界面：注册表单与本地行动记录
@@ -52,25 +52,23 @@
 
 ### 2. 我们的海洋（已锁定方向，见 OCEAN_PAGE.md）
 
-目的：以正面数据与五大洋叙事展示海洋之美与作用；首页可链入 `#ocean-dashboard`。
+目的：以正面数据与五大洋叙事展示海洋之美与作用；首页可链入 `#ocean-brief`。
 
-已锁定：去本页可拖地球；三节竖排；A.1–A.3 指标见 `OCEAN_PAGE.md` 附录；Protected Planet 非第一节；污染归「海在呼救」。
+已锁定：连续叙事杂志布局；`#ocean-brief` 合并观测与海的作用；`#five-oceans` 五洋档案；A.1–A.3 见 `OCEAN_PAGE.md` 附录。
 
-已实现：`pages/ocean.html` 三节骨架 + `ocean-dashboard.js`（v1.3 框架稿）。
+正式版：`pages/ocean.html` + `ocean-page.css` + `ocean-dashboard.js`（2026-07-20 由 draft2 升格）。
+
+框架稿备份：`pages/ocean-draft2.html`（v1.3 独立三节 UI）。
 
 首页 `#ocean-explore`：**背景视频 + 左栏文案 + 右侧 WebGL 3D 地球**（`assets/js/globe/`）；五大洋 `+` 标记点击跳转 `pages/ocean.html?ocean=id#five-oceans`。气泡未接入 v2。
 
-### 3. 海在呼救（已锁定方向，见 RESCUE_PAGE.md）
+### 3. 海在呼救（已锁定方向，见 RESCUE_PAGE.md + RESCUE_OBSERVATORY_RULES.md）
 
 目的：用权威统计与近实时监测说明污染与生态压力，并给出分类科普与可执行方案。
 
-已锁定：三节竖排；上半静态（6 卡 + 饼/柱/折线）、下半 4 点 live 地图（NOAA 水质三参数 + OpenAQ PM2.5，与 ocean 页去重）、第三节 **4 类左右分栏 UI + 4 行表格**（附录 E）；删除本页个人 stat 卡。指标见 `RESCUE_PAGE.md` 附录 A–E。
+已锁定：v1.8 Observatory（视频 + 更透半透明壳）；Overview / Monitor Window / Source Scroll；站点面板无内部滚动；无独立表格；禁止浅灰后台与全宽实色盖视频。后续精修气质、Token、间距与分阶段执行见 `docs/RESCUE_OBSERVATORY_RULES.md` v1.0。
 
-已锁定（UI）：§3.3 布局与交互见附录 E；文案 `rescuePollutionPanels` 为占位，待用户后续修改。
-
-已锁定：§3.1 折线图为「中国近岸优良水质 5 年趋势」（RESCUE 附录 A.3）。
-
-当前实现：[`pages/rescue.html`](../pages/rescue.html) 三节框架稿 + [`rescue-dashboard.js`](../assets/js/rescue-dashboard.js) + [`rescue-page.css`](../assets/css/rescue-page.css)。
+当前实现：[`pages/rescue.html`](../pages/rescue.html) + [`assets/js/rescue/`](../assets/js/rescue/) + [`rescue-dashboard.js`](../assets/js/rescue-dashboard.js) + [`rescue-page.css`](../assets/css/rescue-page.css)。
 
 ### 4. 海洋生物档案页（已锁定方向，见 SPECIES_PAGE.md）
 
@@ -100,7 +98,7 @@
 - 音视频播放控制、静音默认值和加载失败降级。
 - 互动反馈、行动进度和勋章状态。
 - 必要的加载、空状态、错误和成功反馈。
-- 登录/注册在任意页面右上角浮层完成；已登录显示头像悬停摘要，「进入我的」跳转 `pages/profile.html` 侧栏仪表盘；未登录直接打开该页时显示空状态引导。
+- 登录/注册在任意页面右上角浮层完成；已登录显示头像悬停摘要，「进入我的」跳转 `pages/profile.html` 侧栏仪表盘；未登录直接打开该页时显示空状态引导。账户 UI/交互细则见 [`docs/ACCOUNT_SYSTEM_RULES.md`](ACCOUNT_SYSTEM_RULES.md)。
 
 ## 待确认问题
 
@@ -115,7 +113,8 @@
 - [x] 行动页采用匿名表单 + localStorage，不制作真实账号注册。
 - [x] 「我们的海洋」三节结构与附录 A.1–A.3 已写入 `docs/OCEAN_PAGE.md` v1.3。
 - [x] 「我们的海洋」§0 用户需求摘要（v1.2）。
-- [x] 「我们的海洋」实现：`pages/ocean.html` 三节 + 数据渲染（框架稿）。
+- [x] 「我们的海洋」连续叙事版升格为正式 `pages/ocean.html`（v1.4）。
+- [x] v1.3 框架稿备份：`pages/ocean-draft2.html`。
 - [x] 「海在呼救」三节结构与附录 A/B/C/E 已写入 `docs/RESCUE_PAGE.md` v1.2（§3.2 去重 + §3.3 四类 UI）。
 - [x] 「海在呼救」§3.3 UI 已锁定（附录 E）；文案占位待用户后续改。
 - [x] 「海在呼救」静态折线图主题已锁定：中国近岸优良水质 5 年趋势。

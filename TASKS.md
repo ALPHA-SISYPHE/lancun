@@ -68,6 +68,11 @@
 - [x] 锁定打卡积分规则（+10 / 7 天 +30 / 30 天 +150）与 ISO 日期 schema
 - [x] 同步 `PAGE_STRUCTURE.md`、`AGENTS.md` 文档优先级
 - [x] 用户确认宪法后实现 `pages/action.html` 框架稿（Phase 0–4，见 ACTION_PAGE §8）
+- [x] **阶段 2** 每日打卡：`checkinStorage/Badges/UI`、7 日条、徽章/证书/历史 dialog；`verify-action-checkin.mjs`
+- [x] **阶段 3** 志愿任务板：30 活动、3 卡轮换、报名/记录 dialog；`verify-action-volunteer.mjs`
+- [x] **阶段 4** 捐款 + 成果轮播：`donationStorage/UI`、`impactCarousel`；`verify-action-donation.mjs`
+- [x] **阶段 5** 个人行动档案 strip + Footer + `archiveUI.js`；`verify-action-page.mjs`
+- [x] **阶段 6** 最终 UI 精修：滚动压缩、透明 glass、模块差异化、桌面三列修复、扩展 smoke（2026-07-21）
 
 ## 接下来
 

@@ -1,126 +1,395 @@
 <!doctype html>
+
 <html lang="zh-CN">
+
   <head>
+
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="澜存——海在呼救：污染现状、实时监测与保护行动。" />
+
+    <meta name="description" content="澜存——海在呼救：海洋污染观察与行动中心。" />
+
     <title>海在呼救｜澜存</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <link
+
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
+
       rel="stylesheet"
+
     />
+
     <link rel="stylesheet" href="../assets/css/base.css?v=77" />
+
     <link rel="stylesheet" href="../assets/css/modules.css" />
+
     <link rel="stylesheet" href="../assets/css/rescue-page.css" />
+
     <script src="../assets/js/mock-data.js" defer></script>
+
+    <script src="../assets/js/utils/authStorage.js" defer></script>
+
+    <script src="../assets/js/utils/accountMenuStats.js" defer></script>
+
     <script src="../assets/js/user-menu-html.js" defer></script>
+
     <script src="../assets/js/app.js" defer></script>
+
+    <script src="../assets/js/rescue/constants.js" defer></script>
+
+    <script src="../assets/js/rescue/page-state.js" defer></script>
+
+    <script src="../assets/js/rescue/data-sources-modal.js" defer></script>
+
+    <script src="../assets/js/rescue/pollution-overview.js" defer></script>
+
+    <script src="../assets/js/rescue/live-watch.js" defer></script>
+
+    <script src="../assets/js/rescue/command-deck.js" defer></script>
+
+    <script src="../assets/js/rescue/source-matrix.js" defer></script>
+
     <script src="../assets/js/rescue-dashboard.js" defer></script>
+
   </head>
-  <body class="has-page-bg-video" data-page="rescue">
+
+  <body class="rescue-page has-page-bg-video" data-page="rescue">
+
     <div class="page-bg-video" aria-hidden="true">
+
       <video class="page-bg-video__media" autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video>
-      <div class="page-bg-video__shade"></div>
+
+      <div class="page-bg-video__shade page-bg-video__shade--rescue"></div>
+
     </div>
+
     <a class="skip-link" href="#main-content">跳到主要内容</a>
+
     <header class="site-header site-header--overlay">
+
       <a class="brand" href="../index.html"><img class="brand-mark" src="../assets/media/lancun-dolphin-logo.png" alt="" /><span>澜存</span></a>
+
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">菜单</button>
+
       <nav id="primary-navigation" class="primary-navigation" aria-label="主导航">
+
         <a href="../index.html">首页</a>
+
         <a href="ocean.html">我们的海洋</a>
+
         <a class="is-active" href="rescue.html" aria-current="page">海在呼救</a>
+
         <a href="species.html">生物档案</a>
+
         <a href="action.html">行动中心</a>
+
       </nav>
+
       <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
+
     </header>
 
-    <main id="main-content" class="page-stage">
-      <section class="page-intro page-intro--dark">
-        <div>
-          <p class="eyebrow">02 / 海在呼救</p>
-          <h1>用数据理解压力，用行动回应海洋。</h1>
-          <p class="lead">
-            本节展示权威统计、近实时水质监测与污染源科普。正面观测与碳汇叙事请见「我们的海洋」页。
-          </p>
+
+
+    <main id="main-content" class="pollution-page">
+
+      <!-- 1. Compact Hero -->
+
+      <section class="pollution-hero" aria-labelledby="rescue-hero-title">
+
+        <div class="rescue-shell pollution-hero__inner">
+
+          <div class="pollution-hero__copy pollution-hero__copy--lead">
+
+            <p class="eyebrow">02 / 海在呼吸</p>
+
+            <h1 id="rescue-hero-title">用数据理解压力，<br />用行动回应海洋。</h1>
+
+          </div>
+
+          <aside class="pressure-panel" data-rescue-pressure-panel aria-label="Ocean Pressure Index"></aside>
+
+          <div class="pollution-hero__copy pollution-hero__copy--tail">
+
+            <p class="pollution-hero__lead">
+
+              从污染压力、实时监测到污染源溯源，观察塑料污染、海水酸化、富营养化与海温异常如何改变海洋系统。
+
+            </p>
+
+            <nav class="pollution-hero__anchors" aria-label="本页章节">
+
+              <a href="#pollution-command">污染压力</a>
+
+              <a href="#live-monitoring">实时监测</a>
+
+              <a href="#source-solution">污染源</a>
+
+              <a href="#action-brief">行动建议</a>
+
+            </nav>
+
+            <button type="button" class="pollution-hero__data-link" data-rescue-data-sources-open>公开数据说明</button>
+
+          </div>
+
         </div>
-        <span class="tag">结构框架稿</span>
+
+        <div class="status-ribbon pollution-hero__status-ribbon rescue-shell" data-rescue-hero-ribbon aria-label="页面状态摘要"></div>
+
       </section>
 
-      <div class="page-island page-shell">
-        <nav class="rescue-page-nav" aria-label="本页章节">
-          <a href="#rescue-static">污染现状</a>
-          <a href="#rescue-live">实时监测</a>
-          <a href="#rescue-solutions">污染源科普</a>
-        </nav>
 
-        <section id="rescue-static" class="rescue-section section" aria-labelledby="rescue-static-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">第一节</p>
-              <h2 id="rescue-static-title">静态污染现状</h2>
-              <p class="lead">权威统计与可视化，说明海洋面临的塑料、酸化、白化与中国近岸水质压力。</p>
-            </div>
-          </div>
-          <div class="rescue-metric-grid" data-rescue-metrics aria-busy="true"></div>
-          <div class="rescue-charts">
-            <div class="rescue-chart-card" data-rescue-pie-chart></div>
-            <div class="rescue-chart-card" data-rescue-bar-chart></div>
-            <div class="rescue-chart-card rescue-chart-card--wide" data-rescue-line-chart></div>
-          </div>
-          <div class="rescue-education card" data-rescue-education></div>
-        </section>
 
-        <section id="rescue-live" class="rescue-section section" aria-labelledby="rescue-live-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">第二节</p>
-              <h2 id="rescue-live-title">动态实时监测</h2>
-              <p class="lead">四个监测点：NOAA 水质（溶解氧 / pH / 盐度）与 OpenAQ 沿海 PM2.5；失败时自动降级演示数据。</p>
-            </div>
-          </div>
-          <div class="rescue-live">
-            <div class="rescue-live__map-wrap">
-              <svg class="rescue-live__map" data-rescue-map viewBox="0 0 800 400" role="img" aria-label="监测点分布示意地图">
-                <rect class="rescue-live__ocean" x="0" y="0" width="800" height="400" rx="12" />
-                <g data-rescue-map-pins></g>
-              </svg>
-            </div>
-            <div class="rescue-live__cards" data-rescue-live-cards aria-busy="true"></div>
-          </div>
-        </section>
-      </div>
+      <!-- 2. Pollution Command Deck -->
+      <section id="pollution-command" class="pollution-command-section" aria-labelledby="command-deck-title">
+        <span id="command-deck" class="command-deck__legacy-anchor" tabindex="-1" aria-hidden="true"></span>
+        <span id="pressure-overview" class="command-deck__legacy-anchor" tabindex="-1" aria-hidden="true"></span>
+        <span id="live-monitor" class="command-deck__legacy-anchor" tabindex="-1" aria-hidden="true"></span>
 
-      <section id="rescue-solutions" class="rescue-solutions rescue-solutions--dark" aria-labelledby="rescue-solutions-title">
-        <div class="rescue-solutions__inner">
-          <div class="section-heading section-heading--on-dark">
-            <div>
-              <p class="eyebrow">第三节</p>
-              <h2 id="rescue-solutions-title">污染源科普与解决方案</h2>
-              <p class="lead">选择左侧分类，查看数据要点与可执行方案。</p>
+        <div class="command-container rescue-shell">
+          <div class="command-header">
+            <header class="rescue-section-head rescue-section-head--compact rescue-section-head--on-dark">
+              <p class="eyebrow">Pollution Command Deck</p>
+              <h2 id="command-deck-title">污染压力与实时监测工作台</h2>
+            </header>
+            <div class="command-header__actions">
+              <p class="command-header__meta">
+                更新 · <span data-rescue-deck-refreshed-at>—</span>
+                · <button type="button" class="command-header__data-link" data-rescue-data-sources-open>DATA_SOURCES.md</button>
+              </p>
+              <button type="button" class="command-refresh-btn" data-rescue-deck-refresh>刷新观测</button>
             </div>
           </div>
-          <div class="rescue-solutions__split">
-            <nav class="rescue-pollution-sidebar" data-rescue-sidebar aria-label="污染源分类导航" role="tablist"></nav>
+
+          <div class="command-layout">
+            <aside class="pressure-summary-panel">
+              <div data-rescue-pressure-axis aria-label="压力结论"></div>
+              <div class="risk-matrix-compact" data-rescue-risk-matrix aria-busy="true"></div>
+            </aside>
+
+            <main id="live-monitoring" class="live-monitor-stage">
+              <div class="monitor-toolbar" data-rescue-status-filter role="group" aria-label="监测点状态筛选"></div>
+              <div class="monitor-window">
+                <div class="monitor-map" aria-label="监测点分布示意地图">
+                  <svg class="monitor-map__svg" data-rescue-map viewBox="0 0 800 400" role="img" aria-label="全球监测点分布示意">
+                    <defs>
+                      <clipPath id="rescueMapClip">
+                        <rect width="800" height="400" />
+                      </clipPath>
+                    </defs>
+                    <g clip-path="url(#rescueMapClip)">
+                      <image
+                        class="monitor-map__basemap"
+                        href="../assets/media/rescue/world-satellite.jpg"
+                        width="800"
+                        height="400"
+                        preserveAspectRatio="none"
+                      />
+                      <rect class="monitor-map__overlay" width="800" height="400" aria-hidden="true" />
+                    </g>
+                    <g data-rescue-map-pins></g>
+                  </svg>
+                </div>
+                <aside class="station-panel" data-rescue-station-detail aria-live="polite" aria-busy="true"></aside>
+                <div class="monitor-metrics" data-rescue-metric-strip aria-label="当前站点核心实时指标"></div>
+              </div>
+            </main>
+          </div>
+
+          <div class="command-bottom">
+            <div class="command-bottom__head">
+              <div class="command-chart-tabs" role="tablist" aria-label="图表与数据来源">
+                <button type="button" class="command-chart-tabs__btn is-active" role="tab" id="chart-tab-trend" aria-selected="true" aria-controls="chart-panel-trend" data-chart-tab="trend">趋势图</button>
+                <button type="button" class="command-chart-tabs__btn" role="tab" id="chart-tab-composition" aria-selected="false" aria-controls="chart-panel-composition" data-chart-tab="composition">构成图</button>
+                <button type="button" class="command-chart-tabs__btn" role="tab" id="chart-tab-sources" aria-selected="false" aria-controls="chart-panel-sources" data-chart-tab="sources">数据来源</button>
+              </div>
+              <button type="button" class="command-sources-dialog-btn" data-rescue-data-sources-open>查看完整数据来源</button>
+            </div>
+            <div class="command-chart-panels">
+              <div class="command-chart-panel chart-frame" id="chart-panel-trend" role="tabpanel" aria-labelledby="chart-tab-trend" data-rescue-chart-panel="trend">
+                <figure data-rescue-line-chart></figure>
+              </div>
+              <div class="command-chart-panel chart-frame command-chart-panel--composition" id="chart-panel-composition" role="tabpanel" aria-labelledby="chart-tab-composition" data-rescue-chart-panel="composition" hidden>
+                <figure data-rescue-pie-chart></figure>
+                <figure data-rescue-bar-chart></figure>
+              </div>
+              <div class="command-chart-panel chart-frame" id="chart-panel-sources" role="tabpanel" aria-labelledby="chart-tab-sources" data-rescue-chart-panel="sources" data-rescue-sources-tab hidden></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <dialog class="rescue-data-dialog" data-rescue-data-sources-dialog data-rescue-sources-dialog aria-labelledby="rescue-data-dialog-title">
+        <div class="rescue-data-dialog__inner">
+          <button type="button" class="rescue-data-dialog__close" data-rescue-data-sources-close data-rescue-sources-dialog-close aria-label="关闭">×</button>
+          <h3 id="rescue-data-dialog-title">数据来源说明</h3>
+          <div class="rescue-data-dialog__body" data-rescue-data-sources-body data-rescue-sources-dialog-body></div>
+          <a class="rescue-data-dialog__link" href="../docs/DATA_SOURCES.md">打开 docs/DATA_SOURCES.md</a>
+        </div>
+      </dialog>
+
+
+
+      <!-- 3. Source Solution Workspace -->
+
+      <section id="source-solution" class="source-solution-section source-workspace" aria-labelledby="source-solution-title">
+
+        <div class="rescue-shell">
+
+          <header class="rescue-section-head rescue-section-head--compact rescue-section-head--on-dark">
+
+            <p class="eyebrow">Source Solution Workspace</p>
+
+            <h2 id="source-solution-title">污染源档案与解决方案</h2>
+
+          </header>
+
+        </div>
+
+
+
+        <div class="source-solution-shell">
+
+          <nav class="source-card-rail" data-rescue-source-rail aria-label="污染源列表" role="tablist"></nav>
+
+          <div class="source-image-stage" data-rescue-source-visual aria-hidden="true"></div>
+
+          <div class="source-detail-column">
+            <div class="source-detail-nav" data-rescue-source-nav aria-label="污染源切换">
+              <button type="button" class="source-detail-nav__btn" data-rescue-source-prev aria-label="上一项污染源">← 上一项</button>
+              <button type="button" class="source-detail-nav__btn" data-rescue-source-next aria-label="下一项污染源">下一项 →</button>
+            </div>
+
             <section
-              class="rescue-pollution-panel"
-              data-rescue-panel
+              class="source-detail-panel"
+              data-rescue-source-detail
               role="tabpanel"
               aria-live="polite"
               tabindex="0"
             ></section>
           </div>
-          <div class="rescue-pollution-table-wrap" data-rescue-pollution-table></div>
+
+        </div>
+
+        <div class="source-archive-backdrop" data-rescue-source-drawer-backdrop hidden></div>
+        <aside
+          class="source-archive-drawer"
+          data-rescue-source-drawer
+          aria-hidden="true"
+          aria-labelledby="source-archive-title"
+          tabindex="-1"
+        >
+          <button type="button" class="source-archive-drawer__close" data-rescue-source-drawer-close aria-label="关闭">×</button>
+          <div class="source-archive-drawer__body" data-rescue-source-drawer-body></div>
+        </aside>
+
+      </section>
+
+
+
+      <!-- 4. Action Brief -->
+
+      <section id="action-brief" class="action-brief rescue-shell" aria-labelledby="action-brief-title">
+        <div class="action-brief__copy">
+          <h2 id="action-brief-title">从观察压力到采取行动</h2>
+          <p class="action-brief__intro">基于当前污染压力，建议你完成以下行动：</p>
+          <ol class="action-brief__steps">
+            <li>查看污染源治理方案</li>
+            <li>进入行动中心完成一次环保打卡</li>
+            <li>报名一次海洋志愿活动</li>
+            <li>回到海洋之美，理解我们正在保护什么</li>
+          </ol>
+        </div>
+        <div class="action-brief__actions">
+          <a class="action-brief__btn" href="action.html">加入保护行动</a>
+          <a class="action-brief__btn action-brief__btn--ghost" href="action.html">查看行动中心</a>
+          <a class="action-brief__btn action-brief__btn--ghost" href="ocean.html">回到海洋之美</a>
         </div>
       </section>
+
+
+
+      <!-- 5. Footer -->
+
+      <footer id="rescue-footer" class="rescue-end site-footer" aria-label="继续探索与页脚">
+
+        <span id="action-cta" class="command-deck__legacy-anchor" tabindex="-1" aria-hidden="true"></span>
+
+        <div class="rescue-end__overlay" aria-hidden="true"></div>
+
+        <div class="rescue-shell rescue-end__inner">
+
+          <p class="rescue-end__lead">继续探索</p>
+
+          <div class="rescue-end__cta">
+
+            <a class="rescue-end__cta-item" href="action.html">
+
+              <span class="rescue-end__cta-copy">
+
+                <span class="rescue-end__cta-title">加入保护行动</span>
+
+                <small>打卡、报名与公益支持</small>
+
+              </span>
+
+              <span class="rescue-end__cta-arrow" aria-hidden="true">→</span>
+
+            </a>
+
+            <a class="rescue-end__cta-item" href="ocean.html">
+
+              <span class="rescue-end__cta-copy">
+
+                <span class="rescue-end__cta-title">回到海洋之美</span>
+
+                <small>重新理解海洋系统</small>
+
+              </span>
+
+              <span class="rescue-end__cta-arrow" aria-hidden="true">→</span>
+
+            </a>
+
+            <a class="rescue-end__cta-item" href="species.html">
+
+              <span class="rescue-end__cta-copy">
+
+                <span class="rescue-end__cta-title">探索海洋生命</span>
+
+                <small>查看生物档案</small>
+
+              </span>
+
+              <span class="rescue-end__cta-arrow" aria-hidden="true">→</span>
+
+            </a>
+
+          </div>
+
+          <div class="rescue-end__main">
+
+            <div class="rescue-end__brand">澜存</div>
+
+            <div class="rescue-end__source">
+              <button type="button" class="rescue-end__data-link" data-rescue-data-sources-open>查看数据来源</button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </footer>
+
     </main>
 
-    <footer class="site-footer">
-      <span>澜存</span>
-      <span>数据来源见各模块链接与 docs/DATA_SOURCES.md</span>
-    </footer>
   </body>
+
 </html>
+

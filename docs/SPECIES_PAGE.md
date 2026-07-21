@@ -2,11 +2,30 @@
 
 ## 文档状态
 
-- 版本：1.0
-- 状态：讨论中（产品结构、三节架构、mock 数据与 Phase A 识别已写入；实现轮视觉待用户确认）
-- 最近更新：2026-07-18
+- 版本：**2.0**（2026-07-21 海洋生命档案馆全量对齐；v1 三节架构已由 8 模块取代）
+- 状态：v2 已实现（100 条本地库、分组轮播、双层检索、详情抽屉、ECNU 识别 + 用户新增 localStorage）
+- 最近更新：2026-07-21
 - 适用范围：[`pages/species.html`](../pages/species.html) 及其脚本、样式、本页数据源
 - 冲突优先级：用户当前对话明确要求 → `AGENTS.md` → **本文档** → `PAGE_STRUCTURE.md` → 其他专项文档
+
+### v2 架构摘要（当前实现）
+
+| 模块 | 锚点 | 说明 |
+|------|------|------|
+| Hero | `#life-archive-hero` | 背景视频 + 功能锚点 |
+| Search Dock | `#species-search-dock` | 4 维多选 + 精确/模糊检索 |
+| Archive Rails | `#species-archive-rails` | 7 组横向轮播（默认模式） |
+| Search Results | `#species-search-results` | 搜索模式网格 + 分页 |
+| Detail Drawer | `[data-species-drawer]` | 右侧/底部档案抽屉 |
+| AI Lab | `#ai-identification-lab` | ECNU 代理识别实验舱 |
+| New Record | `[data-new-record-panel]` | 未收录物种 localStorage 新增 |
+
+- 数据：[`assets/js/species/data/speciesDatabase.js`](../assets/js/species/data/speciesDatabase.js)（100 条）+ `localStorage` 用户新增
+- 脚本：[`assets/js/species/`](../assets/js/species/) 模块化；入口 [`species-page.js`](../assets/js/species-page.js)
+- 视觉气质、禁止项与分阶段执行见 [`SPECIES_ARCHIVE_RULES.md`](SPECIES_ARCHIVE_RULES.md)
+- v1 内容（三节 / 15 条 / 4 看板）**已废弃**，下文保留作历史参考
+
+---
 
 本文档是「海洋生物档案」板块的**唯一权威**计划兼实现宪法。未写入本文或仍标「待确认」的内容，不得当作最终决定去实现。
 

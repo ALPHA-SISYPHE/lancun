@@ -3,27 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="澜存——我们的海洋：观测看板、气候调节与五大洋探索。" />
+    <meta name="description" content="澜存——我们的海洋：公开观测、气候调节与五大洋探索。" />
     <title>我们的海洋｜澜存</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../assets/css/base.css?v=77" />
     <link rel="stylesheet" href="../assets/css/modules.css" />
     <link rel="stylesheet" href="../assets/css/ocean-page.css" />
     <script src="../assets/js/mock-data.js" defer></script>
+    <script src="../data/oceanProfiles.js" defer></script>
+    <script src="../assets/js/utils/authStorage.js" defer></script>
+    <script src="../assets/js/utils/accountMenuStats.js" defer></script>
     <script src="../assets/js/user-menu-html.js" defer></script>
     <script src="../assets/js/app.js" defer></script>
     <script src="../assets/js/ocean-dashboard.js" defer></script>
   </head>
-  <body class="has-page-bg-video" data-page="ocean">
+  <body class="ocean-page has-page-bg-video" data-page="ocean">
     <div class="page-bg-video" aria-hidden="true">
       <video class="page-bg-video__media" autoplay muted loop playsinline src="../assets/media/pages-bg.mp4"></video>
       <div class="page-bg-video__shade"></div>
     </div>
+    <div class="ocean2-scroll-progress" data-ocean-scroll-progress aria-hidden="true"><span></span></div>
     <a class="skip-link" href="#main-content">跳到主要内容</a>
     <header class="site-header site-header--overlay">
       <a class="brand" href="../index.html"><img class="brand-mark" src="../assets/media/lancun-dolphin-logo.png" alt="" /><span>澜存</span></a>
@@ -38,69 +39,141 @@
       <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
     </header>
 
-    <main id="main-content" class="page-stage">
-      <section class="page-intro page-intro--dark">
-        <div>
-          <p class="eyebrow">01 / 我们的海洋</p>
-          <h1>从观测数据，读懂海洋如何守护地球。</h1>
-          <p class="lead">
-            本节展示珊瑚礁与沿海站的公开监测数据，以及海洋在碳汇与气候调节中的作用。污染相关数据请见「海在呼救」页。
-          </p>
+    <main id="main-content">
+      <section class="ocean2-cover" aria-labelledby="cover-title">
+        <span id="hero" class="ocean2-scroll-target" tabindex="-1"></span>
+        <div class="ocean2-cover-scrim" aria-hidden="true"></div>
+        <div class="ocean2-cover__inner ocean2-shell">
+          <div class="ocean2-cover__copy">
+            <p class="eyebrow">01 / 我们的海洋</p>
+            <h1 id="cover-title">地球的蓝色系统，<br />始终在呼吸。</h1>
+            <p>从珊瑚礁到极地海冰，潮汐、洋流与生命网络持续调节着这颗星球的节律。</p>
+            <nav class="ocean2-cover__nav" aria-label="快速入口">
+              <a class="ocean2-cover__nav-link" href="#ocean-data">向下阅读 <span aria-hidden="true">↓</span></a>
+              <a class="ocean2-cover__nav-link" href="#ocean-data" data-hero-open-data data-open-sources>公开观测资料</a>
+              <a class="ocean2-cover__nav-link" href="#ocean-explorer">五大洋档案</a>
+            </nav>
+            <div class="ocean2-cover-stats" data-cover-stats aria-label="海洋关键数据摘要"></div>
+          </div>
         </div>
-        <span class="tag">结构框架稿</span>
       </section>
 
-      <div class="page-island page-shell">
-        <nav class="ocean-page-nav" aria-label="本页章节">
-          <a href="#ocean-dashboard">数据看板</a>
-          <a href="#ocean-role">海的作用</a>
-          <a href="#five-oceans">五大洋</a>
-        </nav>
-
-        <section id="ocean-dashboard" class="ocean-section section" aria-labelledby="ocean-dashboard-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">第一节</p>
-              <h2 id="ocean-dashboard-title">海洋数据看板</h2>
-              <p class="lead">正面观测与监测能力：Coral Watch 珊瑚礁站 + NOAA 沿海站（The Battery, 8518750）。</p>
+      <section id="ocean-brief" class="ocean2-brief ocean-data-section" aria-labelledby="brief-title">
+        <span id="ocean-data" class="ocean2-scroll-target" tabindex="-1"></span>
+        <div class="ocean2-brief-scrim" aria-hidden="true"></div>
+        <div class="ocean2-shell ocean2-data-container">
+          <header class="ocean2-data-header">
+            <div class="ocean2-data-header__copy">
+              <p class="eyebrow">海洋正在如何调节</p>
+              <h2 id="brief-title">一片海，如何调节一颗星球的呼吸？</h2>
+              <p class="ocean2-data-header__lead">公开观测与长期数据正为我们呈现海洋调节气候、碳循环与生态系统的方式。</p>
             </div>
+            <div class="ocean2-data-header__utility">
+              <p data-updated aria-live="polite">等待观测数据…</p>
+              <div class="ocean2-data-header__actions">
+                <button type="button" data-refresh>刷新观测 <span aria-hidden="true">↻</span></button>
+                <button type="button" data-open-info data-open-sources>数据说明</button>
+              </div>
+            </div>
+          </header>
+
+          <div class="ocean2-data-main">
+            <div class="ocean2-data-aside">
+              <div class="ocean2-data-kpis" data-report-kpis aria-label="核心观测指标"></div>
+              <aside class="ocean2-data-mechanism" data-mechanism aria-label="碳汇机制说明"></aside>
+            </div>
+            <section class="ocean2-data-trend" aria-labelledby="trend-title">
+              <div class="ocean2-data-trend__head">
+                <p class="eyebrow">长期趋势</p>
+                <div class="ocean2-view-switch" role="tablist" aria-label="碳吸收数据视图">
+                  <button type="button" role="tab" aria-selected="true" data-view="chart">趋势图</button>
+                  <button type="button" role="tab" aria-selected="false" data-view="table">数据表</button>
+                </div>
+              </div>
+              <div data-trend-chart></div>
+              <div data-trend-table hidden></div>
+            </section>
           </div>
 
-          <h3 class="ocean-section__group-title">珊瑚礁监测 · Coral Watch</h3>
-          <div class="ocean-metric-grid" data-coral-dashboard aria-busy="true"></div>
+          <section class="ocean2-observation-grid" aria-labelledby="observation-title">
+            <h3 id="observation-title" class="ocean2-observation-grid__title">公开观测网格</h3>
+            <div class="ocean2-observation-grid__cells" data-metrics aria-busy="true"></div>
+          </section>
+        </div>
+        <div class="ocean2-brief__fade" aria-hidden="true"></div>
+      </section>
 
-          <h3 class="ocean-section__group-title is-spaced">沿海观测 · NOAA CO-OPS</h3>
-          <div class="ocean-metric-grid" data-noaa-dashboard aria-busy="true"></div>
-        </section>
-
-        <section id="ocean-role" class="ocean-section section" aria-labelledby="ocean-role-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">第二节</p>
-              <h2 id="ocean-role-title">海的作用</h2>
-              <p class="lead">海洋在碳汇、热量缓冲与氧气循环中的角色——数据来自 IPCC / NOAA / UNEP 等公开统计。</p>
+      <section id="five-oceans" class="ocean2-explorer ocean-explorer-section" aria-labelledby="explorer-title">
+        <span id="ocean-explorer" class="ocean2-scroll-target" tabindex="-1"></span>
+        <div class="ocean2-shell ocean2-explorer-container">
+          <header class="ocean2-explorer-header">
+            <div class="ocean2-explorer-header__copy">
+              <p class="eyebrow">五大洋档案</p>
+              <h2 id="explorer-title">Ocean Explorer</h2>
+              <p>从每一片海读懂整个地球——点击标签切换，查看面积、深度与生态亮点。</p>
             </div>
-          </div>
-          <div class="ocean-role-grid" data-ocean-role-cards></div>
-          <div data-co2-trend-chart></div>
-        </section>
-
-        <section id="five-oceans" class="ocean-section section" aria-labelledby="five-oceans-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">第三节</p>
-              <h2 id="five-oceans-title">五大洋</h2>
-              <p class="lead">从太平洋到北冰洋，每一块含面积、深度与代表性生态数据（静态登记，见页脚来源说明）。</p>
+            <div class="ocean2-explorer-header__meta">
+              <p class="ocean2-explorer-header__hint" data-ocean-index aria-live="polite"><span class="ocean2-explorer-header__hint-label">五大洋档案</span> 01 / 05</p>
+              <button type="button" class="ocean2-explorer-header__sources" data-open-sources>图片来源</button>
             </div>
+          </header>
+          <div class="ocean2-explorer-stage">
+            <div class="ocean2-explorer__tabs" role="tablist" data-ocean-tabs aria-label="选择大洋"></div>
+            <div class="ocean2-explorer__panel" role="tabpanel" data-ocean-panel tabindex="0" aria-labelledby="explorer-title"></div>
+            <nav class="ocean2-explorer__nav" aria-label="切换大洋">
+              <button type="button" data-ocean-prev>上一项</button>
+              <button type="button" data-ocean-next>下一项</button>
+            </nav>
           </div>
-          <div data-five-oceans-list></div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      <footer id="next-reading" class="ocean2-end site-footer" aria-label="继续探索与页脚">
+        <span id="continue-exploring" class="ocean2-scroll-target" tabindex="-1"></span>
+        <video class="ocean2-end__bg" autoplay muted loop playsinline src="../assets/media/pages-bg.mp4" aria-hidden="true"></video>
+        <div class="ocean2-end__overlay" aria-hidden="true"></div>
+        <div class="ocean2-shell ocean2-end__inner">
+          <div class="ocean2-end__cta">
+            <a class="ocean2-end__cta-item" href="rescue.html">
+              <span class="ocean2-end__cta-copy">
+                <span class="ocean2-end__cta-title">海在呼吸</span>
+                <small>污染压力与行动中心</small>
+              </span>
+              <span class="ocean2-end__cta-arrow" aria-hidden="true">→</span>
+            </a>
+            <a class="ocean2-end__cta-item" href="species.html">
+              <span class="ocean2-end__cta-copy">
+                <span class="ocean2-end__cta-title">生物档案</span>
+                <small>海洋生命检索与 AI 识别</small>
+              </span>
+              <span class="ocean2-end__cta-arrow" aria-hidden="true">→</span>
+            </a>
+            <a class="ocean2-end__cta-item" href="action.html">
+              <span class="ocean2-end__cta-copy">
+                <span class="ocean2-end__cta-title">行动中心</span>
+                <small>打卡、报名与公益支持</small>
+              </span>
+              <span class="ocean2-end__cta-arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div class="ocean2-end__main">
+            <div class="ocean2-end__brand">澜存</div>
+            <button type="button" class="ocean2-end__source" data-open-sources>公开观测与登记资料 · 数据来源说明</button>
+          </div>
+          <nav class="ocean2-end__index" data-dock aria-label="本页阅读进度">
+            <a href="#hero" data-dock-link="hero"><span>01</span>开篇</a>
+            <a href="#ocean-data" data-dock-link="ocean-data"><span>02</span>公开观测</a>
+            <a href="#ocean-explorer" data-dock-link="ocean-explorer"><span>03</span>五大洋</a>
+            <a href="#continue-exploring" data-dock-link="continue-exploring"><span>04</span>继续探索</a>
+          </nav>
+        </div>
+      </footer>
     </main>
 
-    <footer class="site-footer">
-      <span>澜存</span>
-      <span>第一节可接实时 API；第二、三节为登记静态数据 · 见 docs/DATA_SOURCES.md</span>
-    </footer>
+    <dialog class="ocean2-dialog" data-dialog aria-labelledby="dialog-title">
+      <div class="ocean2-dialog__bar"><p class="eyebrow" data-dialog-eyebrow>资料说明</p><button type="button" data-close-dialog aria-label="关闭弹窗">×</button></div>
+      <h2 id="dialog-title" data-dialog-title>资料说明</h2>
+      <div data-dialog-content></div>
+    </dialog>
   </body>
 </html>

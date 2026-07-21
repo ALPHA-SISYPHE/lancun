@@ -56,10 +56,13 @@ sequenceDiagram
 | [`assets/js/species-page.js`](../assets/js/species-page.js) | 图片压缩、`recognizeSpecies()`、mock 降级、额度刷新 |
 | [`assets/css/species-page.css`](../assets/css/species-page.css) | 识别区与额度条样式 |
 | [`server/ecnu-proxy.mjs`](../server/ecnu-proxy.mjs) | HTTP 代理、ECNU 调用、物种匹配、额度持久化 |
-| [`server/species-catalog.json`](../server/species-catalog.json) | 12 种物种 id / 名称 / 别名（与 `mock-data.js` 同步） |
+| [`assets/js/species/data/speciesDatabase.js`](../assets/js/species/data/speciesDatabase.js) | **100 条**本地物种档案（v2） |
+| [`assets/js/species/utils/matchRecognitionResult.js`](../assets/js/species/utils/matchRecognitionResult.js) | 前端匹配 AI 返回与本地库 |
+| [`server/species-catalog.json`](../server/species-catalog.json) | 12 种物种 id / 名称 / 别名（ECNU 模型 hint；前端主匹配走 100 条库） |
 | [`.env.example`](../.env.example) | 环境变量模板（真实 Key 放 `.env`，不入库） |
 | [`package.json`](../package.json) | `npm run api` / `npm run serve` 脚本 |
 | [`scripts/verify-species-ai.mjs`](../scripts/verify-species-ai.mjs) | 代理连通性与识别 smoke test |
+| [`scripts/verify-life-archive.mjs`](../scripts/verify-life-archive.mjs) | 档案馆静态页 smoke test（100 条库 / 轮播 / 检索） |
 | [`docs/DATA_SOURCES.md`](DATA_SOURCES.md) | 服务出处、模型与演示步骤 |
 | [`docs/SPECIES_PAGE.md`](SPECIES_PAGE.md) | 页面宪法；附录 G.2 识别接口约定 |
 
@@ -99,7 +102,7 @@ node scripts/verify-species-ai.mjs
 | 项目 | 说明 |
 |------|------|
 | 识别模型 | ECNU `ecnu-plus`（支持图片理解，见[多模态对话](https://developer.ecnu.edu.cn/vitepress/llm/api/vision.html)） |
-| 识别范围 | 优先匹配 `speciesArchive` 12 种；档案外显示「未在澜存档案库中找到」 |
+| 识别范围 | 前端 `matchRecognitionResult` 对 **100 条** `LANCUN_SPECIES_DB` + 用户 localStorage 新增；代理 catalog 仅作模型 hint |
 | 结构化输出 | 代理请求 `json_schema`，解析失败时降级 `json_object` |
 | 额度显示 | 本地 `.quota-usage.json` 累计 credits / 次数 + 页面进度条（**非**平台实时余额） |
 | 失败降级 | 代理未启动或 API 报错 → 前端 `recognizeSpeciesMock()`，UI 标注演示模式 |

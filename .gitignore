@@ -15,6 +15,7 @@ desktop.ini
 references/
 assets/media/hero.original.mp4
 assets/media/*.original.*
+assets/media/**/_originals/
 
 # Bubble iteration capture artifacts (workspace root; H: archive is fine)
 bubble-loop-iter-*/

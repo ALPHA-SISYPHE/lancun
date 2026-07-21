@@ -41,13 +41,14 @@
 | 海洋塑料污染规模 | `rescue.html` §3.1 卡 1–2 | UNEP《From Pollution to Solution》 | 已锁定，见 `RESCUE_PAGE.md` A.1 |
 | 海洋垃圾塑料占比 / 来源 | `rescue.html` 卡 3 + 饼/柱图 | Ocean Conservancy ICC | 已锁定，见 A.2 |
 | 海水酸化 / 珊瑚白化 | `rescue.html` 卡 4–5 + 科普 | NOAA；IPCC AR6 | 已锁定，见 A.1 |
-| 中国近岸优良水质 | `rescue.html` 卡 6 + 折线（默认） | 生态环境部 2023 海洋公报 | 已锁定；折线 2019–2022 待核对 |
+| 中国近岸优良水质 | `rescue.html` §3.1 次级指标 | 生态环境部 2023 海洋公报 | 已锁定，见 A.1 |
+| 海洋塑料污染指数趋势 | `rescue.html` §3.1 折线 | UNEP / ICC 综合估算（占位） | v1.3；2019–2023 待核对 |
 | 动态监测 A | `rescue.html` §3.2 | NOAA datagetter `8574680`, `product=dissolved_oxygen` | 已锁定，见 `RESCUE_PAGE.md` B.2 v1.1 |
 | 动态监测 B | `rescue.html` §3.2 | NOAA datagetter `9414290`, `product=ph` | 已锁定 |
 | 动态监测 C | `rescue.html` §3.2 | NOAA datagetter `8726520`, `product=salinity` | 已锁定 |
 | 动态监测 D | `rescue.html` §3.2 | OpenAQ API v3，洛杉矶沿海 PM2.5 | 已锁定 |
 | 污染源四类科普 + 4 行表格 | `rescue.html` §3.3 | ICC / 生态环境部 / NOAA / IPCC；文案占位见 `mock-data.js` → `rescuePollutionPanels` | 已锁定 UI（附录 E）；文案占位非永久锁定 |
-| 历年变化趋势 | 折线图（rescue 页） | 中国近岸优良水质 5 年点（2019–2023） | 已锁定，见 RESCUE A.3 |
+| 历年变化趋势 | 折线图（rescue 页） | 海洋塑料污染指数 5 年点（2019–2023 占位） | v1.3，见 RESCUE A.3 |
 | 受影响物种 | 生物档案 | 待验证 | 待收集 |
 | 个人减塑行动 | 行动建议 | 待验证 | 待收集 |
 
@@ -185,6 +186,17 @@
 - 授权：Pexels License — 免费使用，需保留摄影师与 Pexels 出处。
 - 获取日期：2026-07-19
 - 本地路径：`assets/media/rescue/`（宽 1600px 压缩 JPEG）
+
+## 呼救页 §3.2 监测地图底图（NASA Blue Marble）
+
+| 本地文件 | 主题 | 来源 | 使用位置 |
+|---|---|---|---|
+| `world-satellite.jpg` | 全球卫星等距圆柱底图 | NASA Blue Marble 2002（MODIS 真彩色，公有领域） | `pages/rescue.html` §3.2 左侧监测地图 SVG `<image>` |
+
+- 原始素材：Wikimedia Commons [Blue Marble 2002](https://commons.wikimedia.org/wiki/File:Blue_Marble_2002.jpg)（5400×2700）或 NASA Earth Observatory [1 km 真彩色全球影像](https://science.nasa.gov/earth/earth-observatory/the-blue-marble-true-color-global-imagery-at-1km-resolution/)
+- 本地优化：宽 2560px（2:1）、JPEG q≈85，目标 1–3 MB
+- 获取日期：2026-07-20
+- 本地路径：`assets/media/rescue/world-satellite.jpg`
 
 ## 五大洋区块图（Pexels）
 
@@ -388,3 +400,15 @@ v2.3 光池/caustics 已废弃，不再作为装饰规范。
 | 4 | acidification | 气候酸化危害 | 同上 |
 
 表格 4 行 × 4 列；UI 细则见 `RESCUE_PAGE.md` 附录 E。
+
+---
+
+## 本地模拟账户（课程 demo）
+
+| Key | 用途 | 实现 |
+|-----|------|------|
+| `ocean-auth-users` | 注册用户列表（含明文 password，**仅演示**） | [`assets/js/utils/authStorage.js`](../assets/js/utils/authStorage.js) |
+| `ocean-auth-current-user` | 当前登录用户快照（不含 password） | 同上 |
+| `lancun.account` / `lancun.session` | 行动中心登录 gating 兼容桥接 | `authStorage.js` 内 `syncLegacyAuthBridge` |
+
+说明：密码明文存于 `localStorage` 仅为 Web 编程期末大作业前端演示，不适用于真实生产环境。
