@@ -18,33 +18,36 @@
 2. `AGENTS.md`
 3. 根目录 **`DESIGN.md`** 与 **`.codexrules`**（大疆风海水蓝最终设计基准；Codex/Cursor 做 UI 前必读）
 4. `docs/PROJECT_BRIEF.md` 和 `docs/ACCEPTANCE.md`
-5. `docs/OCEAN_REFINE_RULES.md`（「我们的海洋」视觉气质、紧凑排版、禁止项、分阶段执行）
-6. `docs/OCEAN_PAGE.md`（「我们的海洋」页面功能与数据宪法）
-7. `docs/RESCUE_OBSERVATORY_RULES.md`（「海在呼救 / Observatory」视觉气质、紧凑排版、禁止项、分阶段执行）
-8. `docs/RESCUE_PAGE.md`（「海在呼救」页面功能与数据宪法）
-9. `docs/SPECIES_PAGE.md`（「海洋生物档案」页面功能宪法）
-10. `docs/SPECIES_ARCHIVE_RULES.md`（「海洋生命档案馆」视觉气质、禁止项、分阶段执行与 Playwright 强制质检）
-11. `docs/ACTION_PAGE_VISUAL_RULES.md`（「海洋行动中心」视觉气质、禁止项、排版、分阶段执行）
-12. `docs/ACTION_PAGE.md`（「保护行动中心」页面宪法）
-13. `docs/ACCOUNT_SYSTEM_RULES.md`（右上角账户入口、头像菜单、登录注册弹窗、用户状态）
-14. `.cursor/skills/lancun-design/SKILL.md`（外部工具用法：Vercel 摘表、ui-ux-pro-max 三模块）
-15. `docs/DESIGN_SYSTEM.md`、`docs/PAGE_STRUCTURE.md` 等专项文档（**CSS 实现 mirror**）
-16. `TASKS.md`
+5. `docs/HOME_REFINE_RULES.md`（首页视觉气质、禁止项、Token、分阶段执行）
+6. `docs/OCEAN_REFINE_RULES.md`（「我们的海洋」视觉气质、紧凑排版、禁止项、分阶段执行）
+7. `docs/OCEAN_PAGE.md`（「我们的海洋」页面功能与数据宪法）
+8. `docs/RESCUE_OBSERVATORY_RULES.md`（「海在呼救 / Observatory」视觉气质、紧凑排版、禁止项、分阶段执行）
+9. `docs/RESCUE_LIVE_CONSOLE_RULES.md`（「海在呼救」Live Monitoring Console 局部精修：监测地图 + 图表 Tab）
+10. `docs/RESCUE_PAGE.md`（「海在呼救」页面功能与数据宪法）
+11. `docs/SPECIES_PAGE.md`（「海洋生物档案」页面功能宪法）
+12. `docs/SPECIES_ARCHIVE_RULES.md`（「海洋生命档案馆」视觉气质、禁止项、分阶段执行与 Playwright 强制质检）
+13. `docs/ACTION_PAGE_VISUAL_RULES.md`（「海洋行动中心」视觉气质、禁止项、排版、分阶段执行）
+14. `docs/ACTION_PAGE.md`（「保护行动中心」页面宪法）
+15. `docs/ACCOUNT_SYSTEM_RULES.md`（右上角账户入口、头像菜单、登录注册弹窗、用户状态）
+16. `.cursor/skills/lancun-design/SKILL.md`（外部工具用法：Vercel 摘表、ui-ux-pro-max 三模块）
+17. `docs/DESIGN_SYSTEM.md`、`docs/PAGE_STRUCTURE.md` 等专项文档（**CSS 实现 mirror**）
+18. `TASKS.md`
 
 ## 3. 工作方式
 
 - 先讨论并记录决定，再开始相应阶段的实现。
 - 不得将“待确认”的内容当作最终决定；必须保留标记或向用户确认。
 - 每次确认项目范围、页面、设计、数据或验收标准后，同步更新对应文档和 `TASKS.md`。
-- 开发新页面前读取根目录 **`DESIGN.md`**、`.codexrules`、`PROJECT_BRIEF.md`、`PAGE_STRUCTURE.md`、`docs/DESIGN_SYSTEM.md` 和 `ACCEPTANCE.md`；开发或修改 [`pages/ocean.html`](pages/ocean.html) 时另读 **`docs/OCEAN_REFINE_RULES.md`** 与 **`docs/OCEAN_PAGE.md`**；开发或修改 [`pages/rescue.html`](pages/rescue.html) 时另读 **`docs/RESCUE_OBSERVATORY_RULES.md`** 与 **`docs/RESCUE_PAGE.md`**；开发或修改 [`pages/species.html`](pages/species.html) 时另读 **`docs/SPECIES_PAGE.md`** 与 **`docs/SPECIES_ARCHIVE_RULES.md`**；开发或修改 [`pages/action.html`](pages/action.html) 时另读 **`docs/ACTION_PAGE_VISUAL_RULES.md`** 与 **`docs/ACTION_PAGE.md`**。
+- 开发新页面前读取根目录 **`DESIGN.md`**、`.codexrules`、`PROJECT_BRIEF.md`、`PAGE_STRUCTURE.md`、`docs/DESIGN_SYSTEM.md` 和 `ACCEPTANCE.md`；开发或修改 [`index.html`](index.html) 时另读 **`docs/HOME_REFINE_RULES.md`**；开发或修改 [`pages/ocean.html`](pages/ocean.html) 时另读 **`docs/OCEAN_REFINE_RULES.md`** 与 **`docs/OCEAN_PAGE.md`**；开发或修改 [`pages/rescue.html`](pages/rescue.html) 时另读 **`docs/RESCUE_OBSERVATORY_RULES.md`** 与 **`docs/RESCUE_PAGE.md`**；开发或修改 [`pages/species.html`](pages/species.html) 时另读 **`docs/SPECIES_PAGE.md`** 与 **`docs/SPECIES_ARCHIVE_RULES.md`**；开发或修改 [`pages/action.html`](pages/action.html) 时另读 **`docs/ACTION_PAGE_VISUAL_RULES.md`** 与 **`docs/ACTION_PAGE.md`**。
+- 修改 [`index.html`](index.html) 或 `assets/css/home.css` / `assets/js/hero.js` / `assets/js/ocean-explore-bg.js` / `assets/js/globe/**` 前必须先读 **`docs/HOME_REFINE_RULES.md`**（气质、禁止项、Token、分阶段执行）；每次只完成用户指定的当前阶段，完成后列出改动文件并停止；**不要**修改登录头像与账户系统。
 - 修改 [`pages/ocean.html`](pages/ocean.html) 或 `assets/css/ocean-page.css` / `assets/js/ocean-dashboard.js` 前必须先读 **`docs/OCEAN_REFINE_RULES.md`**（气质、禁止项、紧凑排版、分阶段执行）与 **`docs/OCEAN_PAGE.md`**（A.1–A.3 数据契约）；每次只完成用户指定的当前阶段，完成后列出改动文件并停止；布局 / Explorer / Footer 改动后建议跑 `node scripts/verify-ocean-compact.mjs`。
-- 修改 [`pages/rescue.html`](pages/rescue.html) 或 `assets/css/rescue-page.css` / `assets/js/rescue/**` 前必须先读 **`docs/RESCUE_OBSERVATORY_RULES.md`**（气质、禁止项、紧凑排版、分阶段执行）与 **`docs/RESCUE_PAGE.md`**（API / 数据契约）；每次只完成用户指定的当前阶段，完成后列出改动文件并停止。
+- 修改 [`pages/rescue.html`](pages/rescue.html) 或 `assets/css/rescue-page.css` / `assets/js/rescue/**` 前必须先读 **`docs/RESCUE_OBSERVATORY_RULES.md`**（气质、禁止项、紧凑排版、分阶段执行）与 **`docs/RESCUE_PAGE.md`**（API / 数据契约）；修改 `#live-monitoring`、`.monitor-window`、`.station-panel`、`.monitor-metrics`、`.command-bottom` 子树前另读 **`docs/RESCUE_LIVE_CONSOLE_RULES.md`**；每次只完成用户指定的当前阶段，完成后列出改动文件并停止。
 - 修改 [`pages/species.html`](pages/species.html) 或 `assets/css/species-page.css` / `assets/js/species/**` 前必须先读 **`docs/SPECIES_ARCHIVE_RULES.md`**（气质、禁止项、分阶段执行）；每一轮改动后**必跑** `node scripts/verify-life-archive.mjs`，通过后再汇报；涉及 AI 识别时追加 `node scripts/verify-species-ai.mjs`。
 - 修改 [`pages/action.html`](pages/action.html) 或 `assets/css/action-page.css` / `assets/js/action/**` 前必须先读 **`docs/ACTION_PAGE_VISUAL_RULES.md`**（气质、禁止项、排版、分阶段执行）与 **`docs/ACTION_PAGE.md`**（附录 G schema / DOM / smoke）；每次只完成用户指定的当前阶段，完成后列出改动文件并停止；布局改动后建议跑 `node scripts/verify-action-page.mjs`（及模块 smoke）。
 - 修改 `user-menu-html.js`、`app.js` 账户逻辑、`.user-menu` / `.auth-modal` 样式或账户弹窗前必须先读 **`docs/ACCOUNT_SYSTEM_RULES.md`**；每次只完成用户指定的当前阶段，完成后列出改动文件并停止。
 - 修改页面视觉或 `assets/css/**` 前必须先读取 **`DESIGN.md`** 与 lancun-design Skill（工具用法）。
 - 修改已有页面时保留用户已有成果，避免无关重写。
-- 一次集中完成一个可验收目标，完成后测试并说明结果；「我们的海洋」页须遵守 `OCEAN_REFINE_RULES.md`：只做当前阶段、不顺手做下一阶段、完成后列出改动文件并停止；「海在呼救 / Observatory」页须遵守 `RESCUE_OBSERVATORY_RULES.md`：只做当前阶段、不顺手做下一阶段、完成后列出改动文件并停止；物种页须遵守 `SPECIES_ARCHIVE_RULES.md`：只做当前阶段、不顺手做下一阶段、完成后列出改动文件并停止；行动中心页须遵守 `ACTION_PAGE_VISUAL_RULES.md`：只做当前阶段、不顺手做下一阶段、完成后列出改动文件并停止。
+- 一次集中完成一个可验收目标，完成后测试并说明结果；首页须遵守 `HOME_REFINE_RULES.md`：只做当前阶段、不顺手做下一阶段、完成后列出改动文件并停止；「我们的海洋」页须遵守 `OCEAN_REFINE_RULES.md`：只做当前阶段、不顺手做下一阶段、完成后列出改动文件并停止；「海在呼救 / Observatory」页须遵守 `RESCUE_OBSERVATORY_RULES.md`：只做当前阶段、不顺手做下一阶段、完成后列出改动文件并停止；物种页须遵守 `SPECIES_ARCHIVE_RULES.md`：只做当前阶段、不顺手做下一阶段、完成后列出改动文件并停止；行动中心页须遵守 `ACTION_PAGE_VISUAL_RULES.md`：只做当前阶段、不顺手做下一阶段、完成后列出改动文件并停止。
 - 所有重要视觉决定必须先征询用户意见，包括主视觉、配色、排版、动效强度、图片风格和页面构图。
 - 不得未经用户确认擅自完成“最终美化”。可以先制作结构清晰的框架稿，再让用户逐步选择和调整。
 - 需要探索视觉时，优先先生成或整理图片方向稿，再依据用户选定的方向实现页面。

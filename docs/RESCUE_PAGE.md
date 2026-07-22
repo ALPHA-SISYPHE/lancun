@@ -66,18 +66,18 @@
 - **单 section** `#pollution-command.pollution-command-section`：header / `command-layout` / `command-bottom` 三行
 - **左栏** `.pressure-summary-panel`（360px）：`data-rescue-pressure-axis` 指数 + 判断句；`data-rescue-risk-matrix` 6 项 **2×3 紧凑矩阵**（无大 card）
 - **右栏** `#live-monitoring.live-monitor-stage`：顶部 **状态筛选** `data-rescue-status-filter`（All / Normal / Warning / Critical）；`.monitor-window` 地图 + station-panel + metric-strip
-- **底栏** `.command-bottom`：图表 **Tab**（趋势 / 构成 / 数据来源）单面板 ~150–180px；`data-rescue-sources-dialog-open` 打开完整来源 `<dialog>`
+- **底栏** `.command-bottom`：图表 **Tab**（趋势 / 构成 / 数据来源）单面板 ~150–180px；`data-rescue-data-sources-open` 打开完整来源 `<dialog>`
 - **刷新**：`data-rescue-deck-refresh` 调用 `refreshLiveWatch()` 并更新 `data-rescue-deck-refreshed-at`（不改 Hero ribbon）
 - 兼容锚点：`#command-deck` / `#pressure-overview` / `#live-monitor`（section 内隐藏 span）
 
 ### 3.2 Source Solution Workspace（Phase 4 工作台）
-- **三栏** `240px | 0.95fr | minmax(360px, 0.9fr)`；shell 高度预算 560–640px；`max-width: 1180px`
-- **左栏** `data-rescue-source-rail`：5 类污染源；缩略图 + 名称 + Critical/Warning + 短描述；选中高亮
-- **中栏** `data-rescue-source-visual`：统一比例图片 + 底部渐变标题
-- **右栏** `data-rescue-source-detail`：标题 + 核心判断 + **四块默认可见 bullet**（Source / Impact / Solution / Personal Action）；「展开更多」；底部来源
+- **三栏** `240px | 0.95fr | minmax(320px, 0.9fr)`；shell 紧凑高度 **420–480px**（桌面约 `460px`）；`max-width: 1180px`
+- **左栏** `data-rescue-source-rail`：4 类污染源；缩略图 + 名称 + Critical/Warning + 短描述；卡片均分高度与 shell 对齐
+- **中栏** `data-rescue-source-visual`：统一比例图片（`max-height: 320px`）+ 底部渐变标题；不溢出右栏
+- **右栏** `data-rescue-source-detail`：标题 + 核心判断 + **Source / Impact 各 2 条 bullet**；Solution / Personal Action **仅在 drawer**
 - **导航** `data-rescue-source-nav` 上一项/下一项；键盘 Arrow 切换
-- **行动闭环**：「查看行动建议」平滑滚动至 `#action-brief`；「查看完整档案」打开 `data-rescue-source-drawer`
-- **禁止**独立大 `<table>`；表格信息已融合进四块
+- **行动闭环**：「查看行动建议」平滑滚动至 `#action-brief`；「查看完整档案」打开 `data-rescue-source-drawer`（含完整 Solution / Personal）
+- **禁止**独立大 `<table>`；表格信息已融合进块结构
 
 ### 3.3 Action Brief（Phase 5）
 - **`#action-brief.action-brief`**：Source 与 Footer 之间的轻量横带；四步行动建议 + 三按钮（行动中心 / 海洋之美）

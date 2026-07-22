@@ -35,6 +35,14 @@
 - [x] 同步 `PAGE_STRUCTURE.md`、`DATA_SOURCES.md`、`mock-data.js` 占位
 - [x] 实现轮重写 `pages/ocean.html`（三节骨架 + 数据渲染，v1.3）
 
+## 「海在呼救 / Observatory」精修（2026-07-21–22）
+
+> 全页：`docs/RESCUE_OBSERVATORY_RULES.md` · Live Console 局部：`docs/RESCUE_LIVE_CONSOLE_RULES.md`
+
+- [x] 沉淀 `docs/RESCUE_OBSERVATORY_RULES.md` + Observatory 阶段 1–6（Command Deck、Hero、Source、Action Brief、verify）
+- [x] 沉淀 `docs/RESCUE_LIVE_CONSOLE_RULES.md` v1.0（监测地图 + 图表 Tab 局部规则）
+- [x] Live Console 局部精修：Console Token、站点详情/指标条深色叠层、图表区高度对齐（2026-07-22）
+
 ## Phase A — `#ocean-explore` Convex 风格 Globe MVP（2026-07-18）
 
 - [x] A1 地球提亮：HemisphereLight、ACESFilmic exposure ~1.25、emissive、云层 ~0.38、大气 ~0.2、初始 rotation Y ~-25°
@@ -73,6 +81,9 @@
 - [x] **阶段 4** 捐款 + 成果轮播：`donationStorage/UI`、`impactCarousel`；`verify-action-donation.mjs`
 - [x] **阶段 5** 个人行动档案 strip + Footer + `archiveUI.js`；`verify-action-page.mjs`
 - [x] **阶段 6** 最终 UI 精修：滚动压缩、透明 glass、模块差异化、桌面三列修复、扩展 smoke（2026-07-21）
+- [x] **阶段 7A** Hero 层级与结构压缩：ParticipationHub 占位、Hero 无遮挡、页高 −25%（2026-07-22）
+- [x] **阶段 7B–7C** ParticipationHub 双 Tab、公益 3 卡 + dialog、双往期成果轮播与详情弹窗（2026-07-22）
+- [x] **阶段 7D–7E 最终精修** `--deep-panel` 0.70、深海 glass、卡片/表单气质、多视口 smoke（1440/1536/1920/768/375）（2026-07-22）
 
 ## 接下来
 
@@ -199,6 +210,18 @@
 - [x] 本地 HTTP 验收：关键资源 200；import map 配置
 - [ ] 用户目视验收（桌面 / 移动 / reduced-motion）
 - [ ] 气泡 Phase B（可选，未纳入 v2）
+
+### 首页精修（HOME_REFINE_RULES v1.0 · 2026-07-21）
+
+- [x] 锁定首页精修绑定规则：[`docs/HOME_REFINE_RULES.md`](docs/HOME_REFINE_RULES.md)（定位 / 禁止 / Token / 功能目标 / 分阶段）
+- [x] 同步 `AGENTS.md` 文档优先级与改前必读
+- [x] 同步 `PAGE_STRUCTURE.md` 首页索引
+- [x] **P1** 结构 / 视觉节奏：Hero + explore 双视频、section 高度、遮罩、42/58 布局、卡片区预留、双 CTA 平滑滚动
+- [x] **P2** 地球交互：热点背面隐藏、点击高亮、hover 名称
+- [x] **P3** 简介卡片：左侧切换、查看完整档案、`pages/ocean.html#ocean-{id}`
+- [x] **P3b** 深链跳转：首页卡片 → 我们的海洋 Ocean Explorer 对应 tab + 滚动定位；`?ocean=` 兼容
+- [x] **P4** 探索生态：section 指示、地球提示淡出、五大洋索引、ESC 返回、继续探索入口、地球朝向切换
+- [x] **P5** 验收：桌面 / 窄屏 / reduced-motion、性能与最终 UI 精修
 
 ### Phase D — Convex 分阶段修复（2026-07-18）
 

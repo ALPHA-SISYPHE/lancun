@@ -170,7 +170,7 @@ const ok = base.pageVideo
   && noOverflow
   && base.fiveOceansTop !== null
   && base.fiveOceansTop < base.viewportHeight * 1.75
-  && base.scrollHeight <= 2650
+  && base.scrollHeight <= 2780
   && base.heroNavLinks === 3
   && base.oceanDataAnchor
   && base.oceanExplorerAnchor

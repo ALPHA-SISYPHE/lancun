@@ -59,24 +59,36 @@
     const video = document.querySelector('[data-ocean-explore-video]');
     if (!section || !video || typeof IntersectionObserver === 'undefined') return;
 
+    const syncPlayback = (shouldPlay) => {
+      if (!shouldShowVideo() || video.hidden || document.hidden) {
+        video.pause();
+        return;
+      }
+      if (shouldPlay) {
+        const play = video.play();
+        if (play && typeof play.catch === 'function') play.catch(() => {});
+      } else {
+        video.pause();
+      }
+    };
+
     const io = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (!shouldShowVideo() || video.hidden) {
-            video.pause();
-            return;
-          }
-          if (entry.isIntersecting) {
-            const play = video.play();
-            if (play && typeof play.catch === 'function') play.catch(() => {});
-          } else {
-            video.pause();
-          }
-        });
+        entries.forEach((entry) => syncPlayback(entry.isIntersecting));
       },
       { root: null, threshold: 0.08 },
     );
     io.observe(section);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        video.pause();
+        return;
+      }
+      const rect = section.getBoundingClientRect();
+      const inView = rect.bottom > 0 && rect.top < window.innerHeight;
+      syncPlayback(inView);
+    });
   }
 
   function boot() {

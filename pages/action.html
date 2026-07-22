@@ -29,6 +29,7 @@
     <script src="../data/impactStories.js" defer></script>
     <script src="../assets/js/action/donationStorage.js" defer></script>
     <script src="../assets/js/action/donationUI.js" defer></script>
+    <script src="../assets/js/action/participationHub.js" defer></script>
     <script src="../assets/js/action/impactCarousel.js" defer></script>
     <script src="../assets/js/action/archiveUI.js" defer></script>
   </head>
@@ -57,19 +58,20 @@
       <section class="action-hero" aria-labelledby="action-hero-title">
         <div class="action-hero__scrim" aria-hidden="true"></div>
         <div class="action-shell action-hero__inner">
-          <div class="action-hero__copy">
-            <p class="action-hero__eyebrow">04 / 行动中心</p>
-            <p class="action-hero__en">Ocean Action Center · 海洋行动中心</p>
-            <h1 id="action-hero-title">把关心，<br />变成一次可持续的行动。</h1>
-            <p class="action-hero__lead">
-              打卡每日环保行动，报名海洋志愿活动，支持长期公益项目；让每一次微小参与，都被记录、被看见、被延续。
-            </p>
-            <nav class="action-hero__anchors" aria-label="本页章节">
-              <a href="#daily-action-dock">每日打卡</a>
-              <a href="#volunteer-mission-board">志愿报名</a>
-              <a href="#support-harbor">公益支持</a>
-              <a href="#personal-action-archive">行动档案</a>
-            </nav>
+          <div class="action-hero__content">
+            <div class="action-hero__copy">
+              <p class="action-hero__eyebrow">04 / 行动中心</p>
+              <p class="action-hero__en">Ocean Action Center · 海洋行动中心</p>
+              <h1 id="action-hero-title">把关心，<br />变成一次可持续的行动。</h1>
+              <p class="action-hero__lead">
+                打卡每日环保行动，报名海洋志愿活动，支持长期公益项目；让每一次微小参与，都被记录、被看见、被延续。
+              </p>
+              <nav class="action-hero__anchors" aria-label="本页章节">
+                <a href="#daily-action-dock">每日打卡</a>
+                <a href="#participation-hub">参与行动</a>
+                <a href="#personal-action-archive">行动档案</a>
+              </nav>
+            </div>
           </div>
           <aside class="action-hero__aside action-panel--light" aria-label="今日状态摘要">
             <p class="action-hero__aside-label">今日状态</p>
@@ -211,107 +213,148 @@
         </div>
       </section>
 
-      <!-- 3–4. Mission & Support Grid -->
-      <section class="mission-support-grid" aria-label="志愿任务与公益支持">
-        <div class="action-shell mission-support-grid__inner">
-          <section id="volunteer-mission-board" class="action-module action-module--mission action-panel--deep volunteer-board" data-mission-board aria-labelledby="mission-board-title">
-            <header class="mission-board-head">
-              <div class="action-deck-head action-deck-head--mission">
-                <span class="action-deck-head__mark" aria-hidden="true"></span>
-                <div>
-                  <h2 id="mission-board-title">志愿任务板</h2>
-                  <p>每次展示 3 个精选海洋行动任务，支持换一批，也可以查看详情并报名。</p>
-                </div>
-              </div>
-              <div class="mission-board-tools">
-                <button class="button button-ghost" type="button" data-mission-refresh>换一批</button>
-                <span class="mission-board-tools__hint" data-mission-auto-hint>每 12 秒自动换新</span>
-              </div>
-            </header>
-            <p class="action-disclaimer">本页面为课程作业模拟，不产生真实报名效力。</p>
-            <p class="action-volunteer-hint" data-volunteer-login-hint hidden>请先登录后报名</p>
-            <p class="status-message" data-volunteer-status aria-live="polite"></p>
-
-            <div class="mission-card-grid" data-mission-card-grid aria-live="polite"></div>
-          </section>
-
-          <section id="support-harbor" class="action-module action-module--harbor action-panel--deep support-harbor-module" aria-labelledby="support-harbor-title">
-            <header class="action-deck-head action-deck-head--harbor">
-              <span class="action-deck-head__mark" aria-hidden="true"></span>
-              <div>
-                <h2 id="support-harbor-title">公益支持港</h2>
-                <p>选择支持项目与金额，了解资金去向；本流程为课程演示，不产生真实支付。</p>
-              </div>
-            </header>
-            <p class="action-disclaimer">本页面为课程作业模拟，不产生真实支付效力。</p>
-            <p class="action-donation-hint" data-donation-login-hint hidden>请先登录后再提交支持</p>
-            <p class="status-message" data-donation-status aria-live="polite"></p>
-
-            <div class="support-harbor-shell">
-              <div class="support-harbor-layout">
-                <div class="support-project-panel action-panel--light" data-donation-project-panel aria-live="polite"></div>
-
-                <form class="support-harbor-form" data-donation-form action="#" method="post" aria-label="公益支持表单">
-                <div class="field">
-                  <label for="donate-project">支持项目</label>
-                  <select id="donate-project" name="project" data-donation-project></select>
-                  <p class="field-error" id="donate-project-error"></p>
-                </div>
-                <fieldset class="support-amount-fieldset">
-                  <legend>捐款金额</legend>
-                  <div class="support-amount-pills" data-donation-amount-pills role="group" aria-label="快捷金额"></div>
-                </fieldset>
-                <div class="field" data-donation-custom-wrap hidden>
-                  <label for="donate-custom">自定义金额（元）</label>
-                  <input id="donate-custom" name="customAmount" type="number" min="1" data-donation-custom placeholder="请输入金额" />
-                  <p class="field-error" id="donate-custom-error"></p>
-                </div>
-                <div class="field">
-                  <label for="donate-name">姓名或昵称</label>
-                  <input id="donate-name" name="donorName" type="text" placeholder="用于感谢卡展示" autocomplete="name" />
-                  <p class="field-error" id="donate-name-error"></p>
-                </div>
-                <label class="support-anonymous">
-                  <input type="checkbox" name="anonymous" />
-                  匿名捐赠
-                </label>
-                <div class="field">
-                  <label for="donate-message">留言</label>
-                  <textarea id="donate-message" name="message" rows="2" placeholder="写下你的支持寄语…"></textarea>
-                </div>
-                <div class="field">
-                  <label for="donate-email">邮箱（可选）</label>
-                  <input id="donate-email" name="email" type="email" autocomplete="email" placeholder="用于演示联系记录" />
-                  <p class="field-error" id="donate-email-error"></p>
-                </div>
-                <button class="button button-primary support-submit" type="submit">确认支持</button>
-                </form>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <!-- 5. ImpactStoryCarousel -->
-      <section id="impact-story-carousel" class="action-module action-module--impact" aria-labelledby="impact-story-title">
-        <div class="action-shell action-panel--deep">
-          <header class="impact-head">
-            <div>
-              <h2 id="impact-story-title">往期行动成果</h2>
-              <p class="impact-head__hint" data-impact-auto-hint>一次展示一条影响力故事 · 每 8 秒自动切换</p>
-            </div>
-            <p class="impact-carousel__counter" data-impact-counter aria-live="polite">01 / 09</p>
+      <!-- 3. ParticipationHub -->
+      <section id="participation-hub" class="participation-hub action-module" data-participation-hub aria-labelledby="participation-hub-title">
+        <div class="action-shell participation-hub__inner">
+          <header class="participation-header">
+            <h2 id="participation-hub-title">参与中心</h2>
+            <p>志愿报名与公益支持集中在此，右侧可浏览对应往期成果。</p>
           </header>
 
-          <div class="impact-carousel" data-impact-carousel>
-            <button class="impact-carousel__nav" type="button" data-impact-prev aria-label="上一条">‹</button>
-            <article class="impact-story-card" data-impact-card aria-live="polite"></article>
-            <button class="impact-carousel__nav" type="button" data-impact-next aria-label="下一条">›</button>
+          <div class="participation-tabs" role="tablist" aria-label="参与中心">
+            <button
+              type="button"
+              class="participation-tabs__btn is-active"
+              role="tab"
+              id="participation-tab-volunteer"
+              data-participation-tab="volunteer"
+              aria-selected="true"
+              aria-controls="participation-panel-volunteer"
+            >
+              志愿报名
+            </button>
+            <button
+              type="button"
+              class="participation-tabs__btn"
+              role="tab"
+              id="participation-tab-donation"
+              data-participation-tab="donation"
+              aria-selected="false"
+              aria-controls="participation-panel-donation"
+              tabindex="-1"
+            >
+              公益支持
+            </button>
+          </div>
+
+          <div
+            class="participation-content"
+            role="tabpanel"
+            id="participation-panel-volunteer"
+            data-participation-panel="volunteer"
+            aria-labelledby="participation-tab-volunteer"
+          >
+            <div class="participation-content__main">
+              <section
+                id="volunteer-mission-board"
+                class="action-panel--deep volunteer-board"
+                data-mission-board
+                aria-labelledby="mission-board-title"
+              >
+                <header class="mission-board-head">
+                  <div>
+                    <h3 id="mission-board-title" class="participation-panel-title">志愿活动</h3>
+                    <p class="participation-panel-lead">每次展示 3 个精选任务，支持换一批与详情报名。</p>
+                  </div>
+                  <div class="mission-board-tools">
+                    <button class="button button-ghost" type="button" data-mission-refresh>换一批</button>
+                    <span class="mission-board-tools__hint" data-mission-auto-hint>每 12 秒自动换新</span>
+                  </div>
+                </header>
+                <p class="action-disclaimer">本页面为课程作业模拟，不产生真实报名效力。</p>
+                <p class="action-volunteer-hint" data-volunteer-login-hint hidden>请先登录后报名</p>
+                <p class="status-message" data-volunteer-status aria-live="polite"></p>
+                <div class="mission-card-grid volunteer-card-grid" data-mission-card-grid aria-live="polite"></div>
+              </section>
+            </div>
+            <aside class="participation-content__aside">
+              <section
+                id="impact-story-carousel"
+                class="action-panel--deep impact-story-module impact-story-module--aside"
+                aria-labelledby="impact-story-title"
+              >
+                <header class="impact-head impact-head--compact">
+                  <div>
+                    <h3 id="impact-story-title" class="participation-panel-title">志愿往期成果</h3>
+                    <p class="impact-head__hint" data-impact-auto-hint-volunteer>一次展示一条 · 每 8 秒自动切换</p>
+                  </div>
+                  <p class="impact-carousel__counter" data-impact-counter-volunteer aria-live="polite">01 / 09</p>
+                </header>
+                <div class="impact-carousel impact-carousel--aside" data-impact-carousel-volunteer>
+                  <button class="impact-carousel__nav" type="button" data-impact-prev-volunteer aria-label="上一条">‹</button>
+                  <article class="impact-story-card" data-impact-card-volunteer aria-live="polite"></article>
+                  <button class="impact-carousel__nav" type="button" data-impact-next-volunteer aria-label="下一条">›</button>
+                </div>
+              </section>
+            </aside>
+          </div>
+
+          <div
+            class="participation-content"
+            role="tabpanel"
+            id="participation-panel-donation"
+            data-participation-panel="donation"
+            aria-labelledby="participation-tab-donation"
+            hidden
+          >
+            <div class="participation-content__main">
+              <section
+                id="support-harbor"
+                class="action-panel--deep support-harbor-module"
+                data-donation-board
+                aria-labelledby="support-harbor-title"
+              >
+                <header class="mission-board-head">
+                  <div>
+                    <h3 id="support-harbor-title" class="participation-panel-title">公益项目</h3>
+                    <p class="participation-panel-lead">每次展示 3 个支持项目，点击查看详情并完成模拟支持。</p>
+                  </div>
+                  <div class="mission-board-tools">
+                    <button class="button button-ghost" type="button" data-donation-refresh>换一批</button>
+                    <span class="mission-board-tools__hint" data-donation-auto-hint>每 12 秒自动换新</span>
+                  </div>
+                </header>
+                <p class="action-disclaimer">本页面为课程作业模拟，不产生真实支付效力。</p>
+                <p class="action-donation-hint" data-donation-login-hint hidden>请先登录后再提交支持</p>
+                <p class="status-message" data-donation-status aria-live="polite"></p>
+                <div class="donation-card-grid" data-donation-card-grid aria-live="polite"></div>
+              </section>
+            </div>
+            <aside class="participation-content__aside">
+              <section
+                id="impact-story-carousel-donation"
+                class="action-panel--deep impact-story-module impact-story-module--aside"
+                aria-labelledby="impact-story-donation-title"
+              >
+                <header class="impact-head impact-head--compact">
+                  <div>
+                    <h3 id="impact-story-donation-title" class="participation-panel-title">公益往期成果</h3>
+                    <p class="impact-head__hint" data-impact-auto-hint-donation>一次展示一条 · 每 8 秒自动切换</p>
+                  </div>
+                  <p class="impact-carousel__counter" data-impact-counter-donation aria-live="polite">01 / 09</p>
+                </header>
+                <div class="impact-carousel impact-carousel--aside" data-impact-carousel-donation>
+                  <button class="impact-carousel__nav" type="button" data-impact-prev-donation aria-label="上一条">‹</button>
+                  <article class="impact-story-card" data-impact-card-donation aria-live="polite"></article>
+                  <button class="impact-carousel__nav" type="button" data-impact-next-donation aria-label="下一条">›</button>
+                </div>
+              </section>
+            </aside>
           </div>
         </div>
       </section>
 
-      <!-- 6. PersonalActionArchive -->
+      <!-- 4. PersonalActionArchive -->
       <section id="personal-action-archive" class="action-module action-module--archive" aria-labelledby="personal-archive-title">
         <div class="personal-archive-strip">
           <div class="archive-strip__intro">
@@ -507,6 +550,82 @@
         <button class="action-dialog-close" type="button" data-volunteer-records-close aria-label="关闭">×</button>
       </header>
       <div class="volunteer-records-list" data-volunteer-records-list></div>
+    </dialog>
+
+    <dialog class="action-dialog donation-detail-dialog" data-donation-detail-dialog aria-labelledby="donation-detail-title">
+      <header class="action-dialog-header">
+        <h2 id="donation-detail-title">公益项目详情</h2>
+        <button class="action-dialog-close" type="button" data-donation-detail-close aria-label="关闭">×</button>
+      </header>
+      <div class="donation-detail-layout">
+        <div class="donation-detail-cover" data-donation-detail-cover role="img" aria-label="项目封面"></div>
+        <div class="support-project-panel action-panel--light" data-donation-project-panel aria-live="polite"></div>
+        <form class="support-harbor-form" data-donation-form action="#" method="post" aria-label="公益支持表单">
+          <input type="hidden" id="donate-project" name="project" data-donation-project value="" />
+          <p class="field-error" id="donate-project-error"></p>
+          <fieldset class="support-amount-fieldset">
+            <legend>捐款金额</legend>
+            <div class="support-amount-pills" data-donation-amount-pills role="group" aria-label="快捷金额"></div>
+          </fieldset>
+          <div class="field" data-donation-custom-wrap hidden>
+            <label for="donate-custom">自定义金额（元）</label>
+            <input id="donate-custom" name="customAmount" type="number" min="1" data-donation-custom placeholder="请输入金额" />
+            <p class="field-error" id="donate-custom-error"></p>
+          </div>
+          <div class="field">
+            <label for="donate-name">姓名或昵称</label>
+            <input id="donate-name" name="donorName" type="text" placeholder="用于感谢卡展示" autocomplete="name" />
+            <p class="field-error" id="donate-name-error"></p>
+          </div>
+          <label class="support-anonymous">
+            <input type="checkbox" name="anonymous" />
+            匿名捐赠
+          </label>
+          <div class="field">
+            <label for="donate-message">留言</label>
+            <textarea id="donate-message" name="message" rows="2" placeholder="写下你的支持寄语…"></textarea>
+          </div>
+          <div class="field">
+            <label for="donate-email">邮箱（可选）</label>
+            <input id="donate-email" name="email" type="email" autocomplete="email" placeholder="用于演示联系记录" />
+            <p class="field-error" id="donate-email-error"></p>
+          </div>
+          <footer class="action-dialog-footer">
+            <button class="button button-ghost" type="button" data-donation-detail-close-footer>关闭</button>
+            <button class="button button-primary support-submit" type="submit">确认支持</button>
+          </footer>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog class="action-dialog impact-detail-dialog impact-report-card" data-impact-detail-dialog aria-labelledby="impact-detail-title">
+      <header class="action-dialog-header">
+        <p class="impact-detail-eyebrow">Impact Report</p>
+        <h2 id="impact-detail-title" data-impact-detail-title>往期成果报告</h2>
+        <button class="action-dialog-close" type="button" data-impact-detail-close aria-label="关闭">×</button>
+      </header>
+      <div class="impact-detail-layout">
+        <div class="impact-detail-cover" data-impact-detail-cover role="img" aria-label="成果封面"></div>
+        <span class="impact-detail-type" data-impact-detail-type></span>
+        <p class="impact-detail-metric" data-impact-detail-metric></p>
+        <dl class="impact-detail-meta">
+          <div><dt>地点</dt><dd data-impact-detail-location></dd></div>
+          <div><dt>时间</dt><dd data-impact-detail-date></dd></div>
+        </dl>
+        <section class="impact-detail-block">
+          <h3>成果简介</h3>
+          <p data-impact-detail-summary></p>
+        </section>
+        <section class="impact-detail-block impact-detail-block--detail">
+          <h3>详细说明</h3>
+          <div class="impact-detail-detail" data-impact-detail-detail></div>
+        </section>
+        <p class="impact-detail-organizer" data-impact-detail-organizer></p>
+        <div class="impact-detail-gallery" data-impact-detail-gallery hidden></div>
+      </div>
+      <footer class="action-dialog-footer">
+        <button class="button button-primary" type="button" data-impact-detail-close-footer>关闭</button>
+      </footer>
     </dialog>
 
     <dialog class="action-dialog donation-thanks-dialog" data-donation-thanks-dialog aria-labelledby="donation-thanks-title">

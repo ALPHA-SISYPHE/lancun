@@ -20,7 +20,9 @@ export function getTargetScreenFraction(isNarrow) {
 export const EARTH_VISUAL_RADIUS = 1;
 
 /** Target diameter as a fraction of the canvas shorter side. */
-export const EARTH_SCREEN_FILL = 0.9;
+export const EARTH_SCREEN_FILL = 0.86;
+
+export const EARTH_SCREEN_FILL_NARROW = 0.78;
 
 const probeA = new THREE.Vector3();
 const probeB = new THREE.Vector3();

@@ -1,5 +1,5 @@
 /**
- * 行动中心 · 阶段 4 捐款 + 轮播 smoke
+ * 行动中心 · 阶段 3 捐款 + 轮播 smoke
  */
 import { chromium } from 'playwright';
 
@@ -41,6 +41,13 @@ const dataCounts = await page.evaluate(() => ({
 if (dataCounts.projects >= 6 && dataCounts.stories >= 9) pass('donation + impact data counts', dataCounts);
 else fail('donation + impact data counts', dataCounts);
 
+await page.click('[data-participation-tab="donation"]');
+await page.waitForTimeout(200);
+
+const donationCards = await page.locator('.donation-project-card').count();
+if (donationCards === 3) pass('donation tab shows 3 project cards');
+else fail('donation tab shows 3 project cards', { donationCards });
+
 const guest = await page.evaluate(() => ({
   hintVisible: document.querySelector('[data-donation-login-hint]')?.hidden === false,
   submitDisabled: document.querySelector('.support-submit')?.disabled === true,
@@ -48,13 +55,13 @@ const guest = await page.evaluate(() => ({
 if (guest.hintVisible && guest.submitDisabled) pass('guest gating');
 else fail('guest gating', guest);
 
-const counterBefore = await page.locator('[data-impact-counter]').textContent();
-await page.click('[data-impact-next]');
+const counterBefore = await page.locator('[data-impact-counter-donation]').textContent();
+await page.click('[data-impact-next-donation]');
 await page.waitForTimeout(200);
-const counterAfter = await page.locator('[data-impact-counter]').textContent();
-const visibleCards = await page.locator('[data-impact-card] h3').count();
-if (visibleCards === 1 && counterBefore !== counterAfter) pass('impact carousel single slide + next');
-else fail('impact carousel single slide + next', { visibleCards, counterBefore, counterAfter });
+const counterAfter = await page.locator('[data-impact-counter-donation]').textContent();
+const visibleCards = await page.locator('[data-impact-card-donation] h3').count();
+if (visibleCards === 1 && counterBefore !== counterAfter) pass('donation impact carousel single slide + next');
+else fail('donation impact carousel single slide + next', { visibleCards, counterBefore, counterAfter });
 
 await page.evaluate(
   (username) => {
@@ -69,7 +76,11 @@ await page.evaluate(
   USER,
 );
 
-const raisedBefore = await page.locator('.support-project-panel__raised-head span').first().textContent();
+await page.locator('[data-donation-support]').first().click();
+await page.waitForSelector('[data-donation-detail-dialog][open]', { timeout: 5000 });
+pass('donation detail dialog opens');
+
+const raisedBefore = await page.locator('[data-donation-detail-dialog] .support-project-panel__raised-head span').first().textContent();
 await page.click('[data-donation-amount="30"]');
 await page.fill('#donate-name', 'Smoke Donor');
 await page.fill('#donate-message', '支持海洋保护');
@@ -88,7 +99,7 @@ if (saved.count >= 1 && saved.record?.amount === 30) pass('donation saved to loc
 else fail('donation saved to localStorage', saved);
 
 await page.click('[data-donation-thanks-continue]');
-const raisedAfter = await page.locator('.support-project-panel__raised-head span').first().textContent();
+const raisedAfter = await page.locator('.donation-project-card__raised-head strong').first().textContent();
 if (raisedBefore !== raisedAfter) pass('raised amount updated');
 else fail('raised amount updated', { raisedBefore, raisedAfter });
 

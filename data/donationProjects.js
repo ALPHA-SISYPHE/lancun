@@ -1,9 +1,54 @@
 /**
- * 海洋行动中心 · 公益支持项目（阶段 4）
+ * 海洋行动中心 · 公益支持项目（阶段 2 数据层）
+ * 导出 window.DONATION_PROJECTS
  */
 (function donationProjectsModule() {
+  const IMG = {
+    coral: '../assets/media/action/past-xisha-coral.jpg',
+    coast: '../assets/media/action/past-bohai-clean.jpg',
+    mangrove: '../assets/media/action/past-guangxi-mangrove.jpg',
+    rescue: '../assets/media/action/volunteer-coast-clean.jpg',
+    school: '../assets/media/action/volunteer-school-outreach.jpg',
+    monitor: '../assets/media/action/volunteer-coral-monitor.jpg',
+    dolphin: '../assets/media/action/past-dolphin-watch.jpg',
+  };
+
+  const DEFAULT_AMOUNTS = [10, 30, 50, 100];
+
+  function project({
+    id,
+    title,
+    category,
+    targetAmount,
+    raisedAmount,
+    summary,
+    description,
+    useOfFunds,
+    image,
+    impactGoal,
+    organizer,
+    status = '募集中',
+    suggestedAmounts = DEFAULT_AMOUNTS,
+  }) {
+    return {
+      id,
+      title,
+      category,
+      targetAmount,
+      raisedAmount,
+      summary,
+      description,
+      useOfFunds,
+      image: image || '',
+      impactGoal,
+      organizer,
+      status,
+      suggestedAmounts,
+    };
+  }
+
   window.DONATION_PROJECTS = [
-    {
+    project({
       id: 'dp-coral',
       title: '珊瑚礁修复专项',
       category: '珊瑚礁修复',
@@ -13,37 +58,37 @@
       description:
         '资金将用于珊瑚断枝培育、水下固定作业、季度健康监测与社区科普联动。本项目为课程演示，不产生真实支付。',
       useOfFunds: ['珊瑚苗圃维护与购水', '水下修复作业补给', 'Reef 健康监测设备耗材', '修复成果公众报告'],
-      image: '../assets/media/action/past-xisha-coral.jpg',
+      image: IMG.coral,
       impactGoal: '修复珊瑚礁面积 1200㎡',
       organizer: '南海珊瑚保护协作基金',
-    },
-    {
+    }),
+    project({
       id: 'dp-coast',
-      title: '海岸净滩行动基金',
-      category: '海岸净滩',
+      title: '海岸垃圾清理专项',
+      category: '海岸垃圾清理',
       targetAmount: 280000,
       raisedAmount: 94200,
       summary: '组织多城海岸清洁与塑料分类回收，减少近岸垃圾入海。',
       description: '覆盖工具采购、志愿者保险、垃圾运输与数据记录平台维护。',
       useOfFunds: ['清理工具与防护装备', '垃圾运输与分类', '净滩数据平台维护', '公众动员与培训'],
-      image: '../assets/media/action/past-bohai-clean.jpg',
+      image: IMG.coast,
       impactGoal: '年度清理海岸垃圾 12 吨',
       organizer: '蓝海净滩联盟',
-    },
-    {
+    }),
+    project({
       id: 'dp-mangrove',
-      title: '红树林种植计划',
-      category: '红树林种植',
+      title: '红树林恢复计划',
+      category: '红树林恢复',
       targetAmount: 320000,
       raisedAmount: 128600,
       summary: '在滨海湿地补植红树幼苗，修复潮间带生态缓冲带。',
       description: '资金用于苗床建设、补植劳务、外来种清除与长期巡护。',
       useOfFunds: ['红树幼苗采购', '湿地补植与养护', '入侵植物清除', '湿地巡护与记录'],
-      image: '../assets/media/action/past-guangxi-mangrove.jpg',
+      image: IMG.mangrove,
       impactGoal: '种植红树林苗 15000 株',
       organizer: '滨海湿地恢复中心',
-    },
-    {
+    }),
+    project({
       id: 'dp-rescue',
       title: '海洋生物救助基金',
       category: '海洋生物救助',
@@ -52,11 +97,11 @@
       summary: '支持搁浅海龟、受伤海鸟等紧急救助与康复放归。',
       description: '用于救助站运营、医疗耗材、运输与康复监测。',
       useOfFunds: ['救助站日常运营', '医疗与康复耗材', '紧急运输与安置', '放归后跟踪监测'],
-      image: '../assets/media/action/volunteer-coast-clean.jpg',
+      image: IMG.rescue,
       impactGoal: '年度救助并放归 18 只海龟',
       organizer: '海洋生命救助协作网',
-    },
-    {
+    }),
+    project({
       id: 'dp-education',
       title: '青少年海洋教育计划',
       category: '青少年海洋教育',
@@ -65,22 +110,63 @@
       summary: '为中小学提供海洋课堂、教具包与讲师培训。',
       description: '让青少年在课堂与户外实践中建立海洋保护意识。',
       useOfFunds: ['海洋教具包制作', '讲师与志愿者培训', '校园课堂与工作坊', '教育成果评估'],
-      image: '../assets/media/action/volunteer-school-outreach.jpg',
+      image: IMG.school,
       impactGoal: '举办海洋课堂 32 场',
       organizer: '蓝色校园教育基金',
-    },
-    {
+    }),
+    project({
       id: 'dp-data',
-      title: '海洋污染数据监测',
-      category: '海洋污染数据监测',
+      title: '海洋污染监测计划',
+      category: '海洋污染监测',
       targetAmount: 360000,
       raisedAmount: 145200,
       summary: '建设近岸水质与塑料泄漏监测点，开放公众可读的演示数据。',
       description: '支持传感器维护、数据校准、开源平台与社区观察员培训。',
       useOfFunds: ['监测传感器维护', '数据校准与质控', '公众数据平台', '社区观察点培训'],
-      image: '../assets/media/action/volunteer-coral-monitor.jpg',
+      image: IMG.monitor,
       impactGoal: '建立 4 个社区观察点',
       organizer: '公众海洋观测计划',
-    },
+    }),
+    project({
+      id: 'dp-turtle',
+      title: '海龟保护专项',
+      category: '海龟保护',
+      targetAmount: 380000,
+      raisedAmount: 156500,
+      summary: '支持海龟产卵沙滩巡护、保育池升级与放归跟踪监测。',
+      description:
+        '资金用于产卵季巡护装备、干扰源排查、保育池水质系统与卫星标记跟踪。本项目为课程演示，不产生真实支付。',
+      useOfFunds: ['产卵沙滩巡护装备', '保育池水质与温控', '干扰源排查与宣传', '放归个体跟踪监测'],
+      image: IMG.rescue,
+      impactGoal: '年度保护并放归海龟 18 只',
+      organizer: '南海海龟保护协作站',
+    }),
+    project({
+      id: 'dp-seabird',
+      title: '海鸟栖息地守护计划',
+      category: '海鸟栖息地保护',
+      targetAmount: 240000,
+      raisedAmount: 87300,
+      summary: '修复海鸟繁殖地缓冲带，减少人为干扰并建立巡护记录体系。',
+      description: '覆盖栖息地围栏维护、巡护员培训、干扰事件上报平台与公众科普。',
+      useOfFunds: ['繁殖地缓冲带维护', '巡护员培训与补贴', '干扰事件上报平台', '栖息地科普展板'],
+      image: IMG.mangrove,
+      impactGoal: '守护海鸟繁殖地 27 处',
+      organizer: '黄海湿地水鸟保护联盟',
+    }),
+    project({
+      id: 'dp-ghostnet',
+      title: '渔网回收与再利用计划',
+      category: '渔网回收与再利用',
+      targetAmount: 420000,
+      raisedAmount: 167900,
+      summary: '回收幽灵渔网与废弃网具，推动再生材料进入循环利用链条。',
+      description: '支持渔港回收点建设、网具分类拆解、再生材料试点与渔民参与激励。',
+      useOfFunds: ['渔港回收点建设', '网具分类与运输', '再生材料试点加工', '渔民回收激励与培训'],
+      image: IMG.coast,
+      impactGoal: '回收废弃渔网 120 吨',
+      organizer: '无幽灵渔网行动协作网',
+      status: '进行中',
+    }),
   ];
 })();

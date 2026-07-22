@@ -1,8 +1,8 @@
 import { chromium } from 'playwright';
 
 const BASE = process.env.RESCUE_VERIFY_URL || 'http://127.0.0.1:8080';
-const MAX_SCROLL_HEIGHT = Number(process.env.RESCUE_MAX_SCROLL_HEIGHT || 3000);
-const MAX_SCROLL_RATIO = Number(process.env.RESCUE_MAX_SCROLL_RATIO || 3.35);
+const MAX_SCROLL_HEIGHT = Number(process.env.RESCUE_MAX_SCROLL_HEIGHT || 3900);
+const MAX_SCROLL_RATIO = Number(process.env.RESCUE_MAX_SCROLL_RATIO || 4.3);
 
 const browser = await chromium.launch();
 const errors = [];
@@ -73,7 +73,7 @@ assert(
 assert('hero ribbon cells', desktopMetrics.heroRibbon >= 5, String(desktopMetrics.heroRibbon));
 assert('map pins rendered', desktopMetrics.mapPins >= 4, String(desktopMetrics.mapPins));
 assert('status filters', desktopMetrics.filterBtns >= 4, String(desktopMetrics.filterBtns));
-assert('chart tabs', desktopMetrics.chartTabs >= 3, String(desktopMetrics.chartTabs));
+assert('chart tabs removed', desktopMetrics.chartTabs === 0, String(desktopMetrics.chartTabs));
 assert('data sources triggers', desktopMetrics.dataSourcesTriggers >= 4, String(desktopMetrics.dataSourcesTriggers));
 assert('footer explore links', desktopMetrics.footerLinks === 3, String(desktopMetrics.footerLinks));
 
@@ -89,19 +89,100 @@ if (await filterBtn.count()) {
 }
 assert('status filter clickable', await filterBtn.count() > 0);
 
-const chartTab = desktop.locator('[data-chart-tab="composition"]');
-if (await chartTab.count()) {
-  await chartTab.click();
-  await desktop.waitForTimeout(200);
-}
-assert('chart tab clickable', await chartTab.count() > 0);
+const chartInsights = await desktop.evaluate(() => {
+  const panel = document.querySelector('.pollution-insight-panel');
+  const grid = document.querySelector('.insight-panel-grid');
+  const canvas = document.querySelector('.trend-chart-card__canvas');
+  const ring = document.querySelector('.composition-card .rescue-pie__ring');
+  const svg = document.querySelector('.trend-chart-card__canvas .rescue-trend svg');
+  return {
+    hasGrid: Boolean(grid),
+    hasTrendCard: Boolean(document.querySelector('[data-rescue-trend-card] .rescue-trend svg')),
+    hasRing: Boolean(ring),
+    hasBars: Boolean(document.querySelector('.source-structure-card .rescue-bar')),
+    panelHeight: panel?.getBoundingClientRect().height ?? 0,
+    gridHeight: grid?.getBoundingClientRect().height ?? 0,
+    canvasHeight: canvas?.getBoundingClientRect().height ?? 0,
+    ringSize: ring?.getBoundingClientRect().width ?? 0,
+    svgHeight: svg?.getBoundingClientRect().height ?? 0,
+    yearLabels: document.querySelectorAll('.rescue-trend__label').length,
+    sourcesSummary: document.querySelector('[data-rescue-sources-summary]')?.textContent?.trim() ?? '',
+    tabCount: document.querySelectorAll('[data-chart-tab]').length,
+  };
+});
 
-await desktop.locator('.command-header__data-link[data-rescue-data-sources-open]').click();
+assert('no chart tabs', chartInsights.tabCount === 0);
+assert('insight panel grid', chartInsights.hasGrid && chartInsights.hasTrendCard);
+assert('insight ring and bars', chartInsights.hasRing && chartInsights.hasBars);
+assert(
+  'insight panel height budget',
+  chartInsights.panelHeight >= 420 && chartInsights.panelHeight <= 500,
+  `${Math.round(chartInsights.panelHeight)}px`,
+);
+assert(
+  'insight grid height cap',
+  chartInsights.gridHeight >= 298 && chartInsights.gridHeight <= 320,
+  `${Math.round(chartInsights.gridHeight)}px`,
+);
+assert(
+  'trend canvas height range',
+  chartInsights.canvasHeight >= 280 && chartInsights.canvasHeight <= 320,
+  `${Math.round(chartInsights.canvasHeight)}px`,
+);
+assert(
+  'composition ring size cap',
+  chartInsights.ringSize >= 112 && chartInsights.ringSize <= 136,
+  `${Math.round(chartInsights.ringSize)}px`,
+);
+assert(
+  'desktop trend svg height',
+  chartInsights.svgHeight >= 60,
+  `${Math.round(chartInsights.svgHeight)}px`,
+);
+assert(
+  'desktop trend year labels',
+  chartInsights.yearLabels >= 5,
+  String(chartInsights.yearLabels),
+);
+assert('data insights sources summary', chartInsights.sourcesSummary.startsWith('数据参考'), chartInsights.sourcesSummary.slice(0, 48));
+
+await desktop.locator('#live-monitoring').scrollIntoViewIfNeeded();
 await desktop.waitForTimeout(300);
+
+const desktopLiveConsole = await desktop.evaluate(() => ({
+  stationPos: getComputedStyle(document.querySelector('.station-panel')).position,
+  metricsPos: getComputedStyle(document.querySelector('.monitor-metrics')).position,
+  mapZ: getComputedStyle(document.querySelector('.monitor-map')).zIndex,
+}));
+
+assert('desktop station panel absolute', desktopLiveConsole.stationPos === 'absolute', desktopLiveConsole.stationPos);
+assert('desktop metrics strip absolute', desktopLiveConsole.metricsPos === 'absolute', desktopLiveConsole.metricsPos);
+assert('desktop monitor map above gradient', desktopLiveConsole.mapZ === '2', desktopLiveConsole.mapZ);
+
+await desktop.evaluate(() => {
+  window.LANCUN_RESCUE?.openDataSourcesModal?.();
+});
+await desktop.waitForTimeout(400);
 const dialogOpen = await desktop.locator('[data-rescue-data-sources-dialog]').evaluate(
   (el) => el?.open === true,
 );
 assert('data sources dialog opens', dialogOpen);
+const dialogLayout = await desktop.evaluate(() => {
+  const dialog = document.querySelector('.rescue-data-dialog');
+  const body = document.querySelector('.rescue-data-dialog__body');
+  const items = body?.querySelectorAll('.rescue-data-dialog__list li').length ?? 0;
+  const style = dialog ? getComputedStyle(dialog) : null;
+  const bodyStyle = body ? getComputedStyle(body) : null;
+  return {
+    items,
+    maxHeight: style?.maxHeight ?? '',
+    bodyOverflow: bodyStyle?.overflowY ?? '',
+    hasDocItem: Boolean(body?.textContent?.includes('本项目数据说明文件')),
+  };
+});
+assert('data sources modal list items', dialogLayout.items >= 6, String(dialogLayout.items));
+assert('data sources modal scroll body', dialogLayout.bodyOverflow === 'auto', dialogLayout.bodyOverflow);
+assert('data sources modal doc note', dialogLayout.hasDocItem);
 await desktop.keyboard.press('Escape');
 await desktop.waitForTimeout(150);
 
@@ -159,14 +240,25 @@ await tablet.setViewportSize({ width: 768, height: 1024 });
 await tablet.goto(`${BASE}/pages/rescue.html`, { waitUntil: 'domcontentloaded', timeout: 45000 });
 await tablet.waitForTimeout(1500);
 
-const tabletMetrics = await tablet.evaluate(() => ({
-  scrollWidth: document.documentElement.scrollWidth,
-  clientWidth: document.documentElement.clientWidth,
-  commandCols: getComputedStyle(document.querySelector('.command-layout')).gridTemplateColumns,
-  sourceCols: getComputedStyle(document.querySelector('.source-solution-shell')).gridTemplateColumns,
-  monitorOrder: getComputedStyle(document.querySelector('.live-monitor-stage')).order,
-  pressureOrder: getComputedStyle(document.querySelector('.pressure-summary-panel')).order,
-}));
+const tabletMetrics = await tablet.evaluate(() => {
+  const canvas = document.querySelector('.trend-chart-card__canvas');
+  const panel = document.querySelector('.pollution-insight-panel');
+  const grid = document.querySelector('.insight-panel-grid');
+  return {
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+    commandCols: getComputedStyle(document.querySelector('.command-layout')).gridTemplateColumns,
+    sourceCols: getComputedStyle(document.querySelector('.source-solution-shell')).gridTemplateColumns,
+    monitorOrder: getComputedStyle(document.querySelector('.live-monitor-stage')).order,
+    pressureOrder: getComputedStyle(document.querySelector('.pressure-summary-panel')).order,
+    stationPos: getComputedStyle(document.querySelector('.station-panel')).position,
+    metricsPos: getComputedStyle(document.querySelector('.monitor-metrics')).position,
+    canvasHeight: canvas?.getBoundingClientRect().height ?? 0,
+    panelHeight: panel?.getBoundingClientRect().height ?? 0,
+    gridCols: grid ? getComputedStyle(grid).gridTemplateColumns : '',
+    tabCount: document.querySelectorAll('[data-chart-tab]').length,
+  };
+});
 
 assert(
   'tablet no horizontal overflow',
@@ -175,12 +267,31 @@ assert(
 );
 assert('tablet command stacked', !tabletMetrics.commandCols.includes('360px'), tabletMetrics.commandCols);
 assert('tablet map before pressure', tabletMetrics.monitorOrder === '1' && tabletMetrics.pressureOrder === '2');
+assert(
+  'tablet monitor stack layout',
+  tabletMetrics.stationPos === 'relative' && tabletMetrics.metricsPos === 'relative',
+  `station=${tabletMetrics.stationPos} metrics=${tabletMetrics.metricsPos}`,
+);
+assert(
+  'tablet chart canvas height',
+  tabletMetrics.canvasHeight >= 240 && tabletMetrics.canvasHeight <= 280,
+  `${Math.round(tabletMetrics.canvasHeight)}px`,
+);
+assert(
+  'tablet insight single column',
+  !tabletMetrics.gridCols.includes('1.45fr') && tabletMetrics.gridCols.split(' ').filter(Boolean).length === 1,
+  tabletMetrics.gridCols,
+);
+assert('tablet insight panel height', tabletMetrics.panelHeight > 0 && tabletMetrics.panelHeight <= 720, `${Math.round(tabletMetrics.panelHeight)}px`);
+assert('tablet no chart tabs', tabletMetrics.tabCount === 0);
 
 const mobile = await browser.newPage();
 trackPage(mobile);
 await mobile.setViewportSize({ width: 375, height: 812 });
 await mobile.goto(`${BASE}/pages/rescue.html`, { waitUntil: 'domcontentloaded', timeout: 45000 });
 await mobile.waitForTimeout(1500);
+await mobile.locator('.pollution-insight-panel').scrollIntoViewIfNeeded();
+await mobile.waitForTimeout(400);
 
 const mobileMetrics = await mobile.evaluate(() => {
   const inner = document.querySelector('.pollution-hero__inner');
@@ -190,13 +301,24 @@ const mobileMetrics = await mobile.evaluate(() => {
   const tailIdx = children.findIndex((c) => c.includes('copy--tail'));
   const stationPanel = document.querySelector('.station-panel');
   const monitorWindow = document.querySelector('.monitor-window');
+  const metricsStrip = document.querySelector('.monitor-metrics');
+  const canvas = document.querySelector('.trend-chart-card__canvas');
+  const ring = document.querySelector('.composition-card .rescue-pie__ring');
+  const grid = document.querySelector('.insight-panel-grid');
   const stationPos = stationPanel ? getComputedStyle(stationPanel).position : '';
+  const metricsPos = metricsStrip ? getComputedStyle(metricsStrip).position : '';
   return {
     scrollWidth: document.documentElement.scrollWidth,
     clientWidth: document.documentElement.clientWidth,
     pressureAfterTitle: panelIdx > leadIdx && panelIdx < tailIdx,
     stationRelative: stationPos === 'relative',
+    metricsRelative: metricsPos === 'relative',
     monitorIsGrid: getComputedStyle(monitorWindow).display === 'grid',
+    canvasHeight: canvas?.getBoundingClientRect().height ?? 0,
+    ringSize: ring?.getBoundingClientRect().width ?? 0,
+    gridCols: grid ? getComputedStyle(grid).gridTemplateColumns : '',
+    yearLabels: document.querySelectorAll('.rescue-trend__label').length,
+    tabCount: document.querySelectorAll('[data-chart-tab]').length,
     childrenOrder: children.join(' | '),
   };
 });
@@ -212,6 +334,28 @@ assert(
   mobileMetrics.childrenOrder,
 );
 assert('mobile station panel below map', mobileMetrics.stationRelative && mobileMetrics.monitorIsGrid);
+assert('mobile metrics strip below map', mobileMetrics.metricsRelative && mobileMetrics.monitorIsGrid);
+assert(
+  'mobile chart canvas height',
+  mobileMetrics.canvasHeight >= 240 && mobileMetrics.canvasHeight <= 260,
+  `${Math.round(mobileMetrics.canvasHeight)}px`,
+);
+assert(
+  'mobile ring size',
+  mobileMetrics.ringSize >= 110 && mobileMetrics.ringSize <= 120,
+  `${Math.round(mobileMetrics.ringSize)}px`,
+);
+assert(
+  'mobile insight single column',
+  !mobileMetrics.gridCols.includes('1.45fr') && mobileMetrics.gridCols.split(' ').filter(Boolean).length === 1,
+  mobileMetrics.gridCols,
+);
+assert('mobile no chart tabs', mobileMetrics.tabCount === 0);
+assert(
+  'mobile trend year labels',
+  mobileMetrics.yearLabels >= 5,
+  String(mobileMetrics.yearLabels),
+);
 
 const blockingConsoleErrors = consoleErrors.filter(
   (msg) => !/(CORS|openaq|noaa|ERR_FAILED|status of 400|Failed to load resource)/i.test(msg),

@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/base.css?v=77" />
-    <link rel="stylesheet" href="assets/css/home.css?v=80" />
+    <link rel="stylesheet" href="assets/css/home.css?v=88" />
     <script type="importmap">
       {
         "imports": {
@@ -20,9 +20,12 @@
     <script src="assets/js/hero.js" defer></script>
     <script src="assets/js/ocean-explore-bg.js" defer></script>
     <script src="assets/js/mock-data.js" defer></script>
+    <script src="data/oceanHotspots.js" defer></script>
+    <script src="assets/js/ocean-preview-card.js" defer></script>
+    <script src="assets/js/home-ecosystem.js" defer></script>
     <script src="assets/js/vendor/gsap.min.js" defer></script>
     <script src="assets/js/vendor/ScrollTrigger.min.js" defer></script>
-    <script type="module" src="assets/js/globe/index.js?v=5"></script>
+    <script type="module" src="assets/js/globe/index.js?v=21"></script>
     <script>
       window.LANCUN_globeInitState = 'pending';
       document.addEventListener('DOMContentLoaded', function () {
@@ -68,21 +71,47 @@
       </nav>
       <div class="header-actions" data-user-menu-host data-profile-href="pages/profile.html"></div>
     </header>
-    <main id="main-content">
-      <section class="video-hero" aria-labelledby="hero-title">
+    <nav class="home-section-indicator" data-home-section-indicator aria-label="页面进度">
+      <a class="home-section-indicator__item is-current" href="#hero-intro" data-section-indicator="intro">
+        <span class="home-section-indicator__dot" aria-hidden="true"></span>
+        <span class="home-section-indicator__label">01 Intro</span>
+      </a>
+      <a class="home-section-indicator__item" href="#ocean-explore" data-section-indicator="globe">
+        <span class="home-section-indicator__dot" aria-hidden="true"></span>
+        <span class="home-section-indicator__label">02 Globe</span>
+      </a>
+    </nav>
+    <main id="main-content" class="home-page">
+      <section id="hero-intro" class="hero-ocean-intro video-hero" aria-labelledby="hero-title">
         <img class="hero-poster" width="1920" height="1080" alt="" decoding="async" />
         <video class="hero-video" autoplay muted loop playsinline aria-hidden="true" data-hero-video></video>
         <div class="video-fallback" aria-hidden="true"></div>
-        <div class="hero-shade" aria-hidden="true"></div>
-        <div class="hero-artwork">
+        <div class="hero-overlay" aria-hidden="true"></div>
+        <div class="hero-content">
           <p class="hero-kicker">LANCUN OCEAN PROTECTION</p>
-          <h1 id="hero-title"><span>同守澜海</span><strong>生机永续</strong></h1>
-          <p class="hero-note">留住每一片浪潮，让海洋生生不息</p>
-          <a class="hero-enter" href="#ocean-explore">进入海洋世界 <span aria-hidden="true">↓</span></a>
+          <h1 id="hero-title">
+            <span class="hero-title">同守澜海</span>
+            <span class="hero-subtitle">生机永续</span>
+          </h1>
+          <p class="hero-description">留住每一片浪潮，让海洋生生不息</p>
+          <div class="hero-cta-row">
+            <a class="hero-enter hero-enter--primary" href="#ocean-explore" data-scroll-target="ocean-explore">
+              进入海洋世界 <span class="hero-enter__arrow" aria-hidden="true">↓</span>
+            </a>
+            <a class="hero-enter hero-enter--secondary" href="#ocean-explore" data-scroll-target="globe-focus">
+              探索五大洋
+            </a>
+          </div>
         </div>
       </section>
 
-      <section id="ocean-explore" class="ocean-explore ocean-explore--dark-interim ocean-explore--video-bg" aria-labelledby="ocean-explore-title" data-header-sentinel data-ocean-explore>
+      <section
+        id="ocean-explore"
+        class="ocean-globe-explorer ocean-explore ocean-explore--dark-interim ocean-explore--video-bg"
+        aria-labelledby="ocean-explore-title"
+        data-header-sentinel
+        data-ocean-explore
+      >
         <video
           class="ocean-explore__bg-video"
           muted
@@ -93,32 +122,54 @@
           data-ocean-explore-video
         ></video>
         <div class="ocean-explore__bg-shade" aria-hidden="true"></div>
-        <div class="ocean-explore__overlay">
-          <div class="ocean-explore__inner">
-            <div class="ocean-explore__layout">
-              <div class="ocean-explore__copy page-island" data-ocean-panel>
-                <div class="ocean-panel-intro" data-ocean-intro>
-                  <p class="eyebrow ocean-explore__eyebrow">五大洋</p>
-                  <h2 id="ocean-explore-title">我们在守护哪一片海？</h2>
-                  <p class="ocean-explore__lede">地球被一片相互联通的咸水覆盖。太平洋、大西洋、印度洋、南大洋与北冰洋共同调节气候、承载生命，也需要我们的理解与行动。</p>
-                  <div class="ocean-explore__actions">
-                    <a class="button button-secondary ocean-explore__link" href="pages/ocean.html#ocean-brief">探索我们的海洋</a>
-                  </div>
+        <div class="ocean-globe-explorer__overlay ocean-explore__overlay">
+          <div class="globe-section-inner ocean-explore__inner">
+            <div class="ocean-globe-explorer__copy ocean-explore__copy page-island" data-ocean-panel>
+              <div class="ocean-panel-intro" data-ocean-intro>
+                <p class="eyebrow ocean-explore__eyebrow">五大洋</p>
+                <h2 id="ocean-explore-title">我们在守护哪一片海？</h2>
+                <p class="ocean-explore__lede">地球被一片相互联通的咸水覆盖。太平洋、大西洋、印度洋、南大洋与北冰洋共同调节气候、承载生命，也需要我们的理解与行动。</p>
+                <div class="ocean-explore__actions">
+                  <a class="button button-secondary ocean-explore__link" href="pages/ocean.html#ocean-explorer">探索我们的海洋</a>
                 </div>
               </div>
-              <div class="ocean-explore__stage" data-globe-scene data-globe-canvas-wrap>
-                <canvas data-globe-canvas aria-label="可拖转的地球"></canvas>
-                <p class="globe-status" data-globe-status hidden role="status">
-                  3D 地球未能加载。请确认浏览器支持 WebGL；若仍空白，请运行根目录 serve.ps1 后打开
-                  <code>http://127.0.0.1:8080/index.html</code>。
-                </p>
-              </div>
+              <div class="ocean-card-slot" data-ocean-card-slot aria-hidden="true"></div>
+              <nav class="ocean-index-rail" data-ocean-index aria-label="五大洋索引"></nav>
+            </div>
+            <div
+              class="ocean-globe-explorer__stage ocean-explore__stage globe-stage"
+              data-globe-scene
+              data-globe-canvas-wrap
+              tabindex="-1"
+            >
+              <canvas data-globe-canvas aria-label="可拖转的地球"></canvas>
+              <div class="hotspot-layer globe-hotspot-layer" data-globe-hotspot-layer aria-hidden="false"></div>
+              <p class="globe-status" data-globe-status hidden role="status">
+                3D 地球未能加载。请确认浏览器支持 WebGL；若仍空白，请运行根目录 serve.ps1 后打开
+                <code>http://127.0.0.1:8080/index.html</code>。
+              </p>
             </div>
           </div>
-          <p class="globe-scene-hint">拖动旋转 · 点击 + 探索</p>
+          <p class="globe-scene-hint" data-globe-scene-hint role="status">拖动地球 · 点击 + 探索五大洋</p>
+          <nav class="home-continue" aria-label="继续探索">
+            <span class="home-continue__label">继续探索</span>
+            <a class="home-continue__link" href="pages/ocean.html#ocean-explorer">我们的海洋 <span aria-hidden="true">→</span></a>
+            <a class="home-continue__link" href="pages/rescue.html">海在呼救 <span aria-hidden="true">→</span></a>
+            <a class="home-continue__link" href="pages/species.html">生物档案 <span aria-hidden="true">→</span></a>
+            <a class="home-continue__link" href="pages/action.html">行动中心 <span aria-hidden="true">→</span></a>
+          </nav>
         </div>
       </section>
     </main>
-    <footer class="site-footer"><span>澜存</span><span>海洋保护展示与互动课程项目</span></footer>
+    <footer class="site-footer home-footer">
+      <span>澜存</span>
+      <nav class="home-footer__links" aria-label="站点页面">
+        <a href="pages/ocean.html">我们的海洋</a>
+        <a href="pages/rescue.html">海在呼救</a>
+        <a href="pages/species.html">生物档案</a>
+        <a href="pages/action.html">行动中心</a>
+      </nav>
+      <span class="home-footer__note">海洋保护展示与互动课程项目</span>
+    </footer>
   </body>
 </html>

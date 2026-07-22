@@ -9,6 +9,50 @@ const OCEAN2_COVER_LABELS = {
 
 let ocean2ActiveId = 'pacific';
 
+const OCEAN2_TAB_IDS = ['pacific', 'atlantic', 'indian', 'southern', 'arctic'];
+
+const ocean2NormalizeOceanId = (raw) => {
+  if (!raw || typeof raw !== 'string') return null;
+  const id = raw.trim().toLowerCase();
+  return OCEAN2_TAB_IDS.includes(id) ? id : null;
+};
+
+const ocean2ResolveOceanIdFromLocation = () => {
+  const hash = window.location.hash.replace('#', '');
+  if (hash.startsWith('ocean-')) {
+    const fromHash = ocean2NormalizeOceanId(hash.slice('ocean-'.length));
+    if (fromHash) return fromHash;
+  }
+
+  const fromBareHash = ocean2NormalizeOceanId(hash);
+  if (fromBareHash) return fromBareHash;
+
+  const params = new URLSearchParams(window.location.search);
+  return ocean2NormalizeOceanId(params.get('ocean'));
+};
+
+const ocean2DefaultOceanId = () => {
+  const oceans = window.LANCUN_DATA?.fiveOceans || [];
+  return oceans[0]?.id || 'pacific';
+};
+
+const ocean2ApplyOceanDeepLink = ({ scroll = false } = {}) => {
+  const oceans = window.LANCUN_DATA?.fiveOceans || [];
+  const resolved = ocean2ResolveOceanIdFromLocation();
+  const fallback = ocean2DefaultOceanId();
+  const id = resolved && oceans.some((ocean) => ocean.id === resolved) ? resolved : fallback;
+
+  ocean2ShowOcean(id);
+
+  if (scroll) {
+    requestAnimationFrame(() => ocean2ScrollToAnchor('ocean-explorer'));
+  }
+
+  if (new URLSearchParams(window.location.search).has('ocean')) {
+    history.replaceState(null, '', `${window.location.pathname}#ocean-${id}`);
+  }
+};
+
 const ocean2GetProfile = (id) => {
   const profiles = window.OCEAN_PROFILES || [];
   const profile = profiles.find((item) => item.id === id);
@@ -244,7 +288,13 @@ const ocean2PanelHtml = (ocean, index) => {
         <p>${profile.description}</p>
         <dl class="ocean2-explorer__dossier">${dossier.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join('')}</dl>
       </div>
-      <div class="ocean2-explorer__actions"><small class="ocean2-explorer__source">影像来源：${ocean.imageSource}</small><button type="button" data-ocean-detail="${ocean.id}">查看完整档案 ↗</button></div>
+      <div class="ocean2-explorer__actions">
+        <small class="ocean2-explorer__source">影像来源：${ocean.imageSource}</small>
+        <div class="ocean2-explorer__action-group">
+          <button type="button" data-ocean-detail="${ocean.id}">查看完整档案 ↗</button>
+          <a class="ocean2-explorer__home-link" href="../index.html#ocean-explore">返回首页探索地球</a>
+        </div>
+      </div>
     </div>
   </article>`;
 };
@@ -288,14 +338,11 @@ const ocean2RenderOceans = () => {
   const tabs = document.querySelector('[data-ocean-tabs]');
   tabs.innerHTML = oceans.map((ocean, index) => `<button type="button" class="ocean2-explorer__tab" role="tab" id="ocean-tab-${ocean.id}" data-ocean-tab="${ocean.id}" aria-controls="ocean-panel" aria-selected="${index === 0}">${String(index + 1).padStart(2, '0')} ${ocean.name}</button>`).join('');
   document.querySelector('[data-ocean-panel]').id = 'ocean-panel';
-  ocean2ShowOcean(oceans[0]?.id || 'pacific');
+  ocean2ShowOcean(ocean2DefaultOceanId());
 };
 
-const ocean2HashOcean = () => {
-  const hash = window.location.hash.replace('#', '');
-  if (!hash.startsWith('ocean-')) return;
-  const id = hash.replace('ocean-', '');
-  if (window.LANCUN_DATA?.fiveOceans?.some((ocean) => ocean.id === id)) ocean2ShowOcean(id);
+const ocean2HashOcean = ({ scroll = false } = {}) => {
+  ocean2ApplyOceanDeepLink({ scroll });
 };
 
 const ocean2OpenOceanProfile = (id) => {
@@ -439,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ocean2SetDock();
   ocean2InitScrollProgress();
   ocean2InitSmoothAnchors();
-  ocean2HashOcean();
+  ocean2HashOcean({ scroll: Boolean(ocean2ResolveOceanIdFromLocation()) });
 
   document.querySelector('[data-refresh]')?.addEventListener('click', ocean2Refresh);
   document.querySelectorAll('[data-open-sources]').forEach((trigger) => {
@@ -489,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('[data-ocean-prev]')?.addEventListener('click', () => ocean2NavigateOcean(-1));
   document.querySelector('[data-ocean-next]')?.addEventListener('click', () => ocean2NavigateOcean(1));
 
-  window.addEventListener('hashchange', ocean2HashOcean);
+  window.addEventListener('hashchange', () => ocean2HashOcean({ scroll: false }));
 
   document.querySelector('[data-close-dialog]')?.addEventListener('click', ocean2CloseDialog);
   document.querySelector('[data-dialog]')?.addEventListener('close', () => {

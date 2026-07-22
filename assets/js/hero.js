@@ -44,7 +44,7 @@ async function probeMedia(url) {
 }
 
 async function applyHeroMedia() {
-  const hero = document.querySelector('.video-hero');
+  const hero = document.querySelector('.hero-ocean-intro, .video-hero');
   if (!hero) return;
 
   const prefs = getLancunPrefs();
@@ -94,9 +94,67 @@ async function applyHeroMedia() {
 }
 
 function initHeroKenBurns() {
-  const hero = document.querySelector('.video-hero');
+  const hero = document.querySelector('.hero-ocean-intro, .video-hero');
   if (!hero) return;
   hero.classList.toggle('has-ken-burns', !shouldReduceMotion());
+}
+
+function initHeroScroll() {
+  document.querySelectorAll('[data-scroll-target]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const section =
+        document.getElementById('ocean-globe-explorer') ||
+        document.querySelector('[data-ocean-explore]');
+      if (!section) return;
+      const reduced = shouldReduceMotion();
+      section.scrollIntoView({
+        behavior: reduced ? 'auto' : 'smooth',
+        block: 'start',
+      });
+      if (link.dataset.scrollTarget === 'globe-focus') {
+        const stage = section.querySelector('[data-globe-scene]');
+        if (!stage) return;
+        stage.setAttribute('tabindex', '-1');
+        const focusStage = () => stage.focus({ preventScroll: true });
+        if (reduced) focusStage();
+        else window.setTimeout(focusStage, 450);
+      }
+    });
+  });
+}
+
+function initHeroVideoViewport() {
+  const hero = document.querySelector('.hero-ocean-intro, .video-hero');
+  const video = hero?.querySelector('.hero-video');
+  if (!hero || !video || typeof IntersectionObserver === 'undefined') return;
+
+  const syncHeroVideo = (inView) => {
+    if (video.hidden || !video.getAttribute('src')) return;
+    if (!inView || document.hidden) {
+      video.pause();
+      return;
+    }
+    const play = video.play();
+    if (play && typeof play.catch === 'function') play.catch(() => {});
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => syncHeroVideo(entry.isIntersecting));
+    },
+    { threshold: 0.12 },
+  );
+  observer.observe(hero);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      video.pause();
+      return;
+    }
+    const rect = hero.getBoundingClientRect();
+    syncHeroVideo(rect.bottom > 0 && rect.top < window.innerHeight);
+  });
 }
 
 window.LANCUN_getPrefs = getLancunPrefs;
@@ -111,6 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
   applyMotionPref();
   applyHeroMedia();
   initHeroKenBurns();
+  initHeroScroll();
+  initHeroVideoViewport();
   window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', () => {
     applyMotionPref();
     applyHeroMedia();

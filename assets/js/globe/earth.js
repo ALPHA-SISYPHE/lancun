@@ -6,11 +6,14 @@ const CLOUD_RADIUS = 1.015;
 const ATMOSPHERE_RADIUS = 1.08;
 
 /**
+ * Unified earthGroup: mesh, atmosphere, clouds, and CSS2D hotspots share one transform.
+ * User drag + auto-spin must only rotate this group — never individual child meshes.
+ *
  * @returns {Promise<{ group: THREE.Group, clouds: THREE.Mesh | null, update: (dt: number) => void }>}
  */
 export async function createEarthGroup() {
-  const group = new THREE.Group();
-  group.rotation.y = THREE.MathUtils.degToRad(-25);
+  const earthGroup = new THREE.Group();
+  earthGroup.rotation.y = THREE.MathUtils.degToRad(-25);
 
   const earthGeometry = new THREE.SphereGeometry(EARTH_RADIUS, 64, 64);
   const earthMaterial = new THREE.MeshPhongMaterial({
@@ -19,7 +22,7 @@ export async function createEarthGroup() {
     shininess: 22,
   });
   const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-  group.add(earthMesh);
+  earthGroup.add(earthMesh);
 
   const atmosphere = new THREE.Mesh(
     new THREE.SphereGeometry(ATMOSPHERE_RADIUS, 64, 64),
@@ -30,7 +33,7 @@ export async function createEarthGroup() {
       side: THREE.BackSide,
     }),
   );
-  group.add(atmosphere);
+  earthGroup.add(atmosphere);
 
   let clouds = null;
 
@@ -54,14 +57,14 @@ export async function createEarthGroup() {
         depthWrite: false,
       }),
     );
-    group.add(clouds);
+    earthGroup.add(clouds);
   } catch {
     /* clouds optional */
   }
 
-  const update = (dt) => {
-    if (clouds) clouds.rotation.y += dt * 0.015;
+  const update = () => {
+    /* clouds / atmosphere follow earthGroup rotation only */
   };
 
-  return { group, clouds, update };
+  return { group: earthGroup, clouds, update };
 }

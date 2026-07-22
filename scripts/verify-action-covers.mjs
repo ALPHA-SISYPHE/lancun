@@ -1,3 +1,4 @@
+/** @deprecated Legacy pre-ParticipationHub DOM; use verify-action-page.mjs instead. */
 import { chromium } from 'playwright';
 
 const browser = await chromium.launch();

@@ -2,12 +2,12 @@
  * #ocean-explore — 3D Earth MVP (globe v2)
  */
 import * as THREE from '../vendor/three.module.min.js';
-import { CSS2DRenderer } from '../vendor/CSS2DRenderer.js';
 import { createEarthGroup } from './earth.js';
 import { createGlobeControls } from './controls.js';
 import { createOceanMarkers } from './markers.js';
 import {
   EARTH_SCREEN_FILL,
+  EARTH_SCREEN_FILL_NARROW,
   EARTH_VISUAL_RADIUS,
   getProjectedFraction,
   getProjectedSphereFill,
@@ -37,11 +37,14 @@ async function initGlobe() {
   const section = document.querySelector('[data-ocean-explore]');
   const canvas = document.querySelector('[data-globe-canvas]');
   const canvasWrap = document.querySelector('[data-globe-canvas-wrap]');
-  const oceans = window.LANCUN_DATA?.fiveOceans;
+  const hotspotLayer = document.querySelector('[data-globe-hotspot-layer]');
+  const oceans = window.OCEAN_HOTSPOTS || window.LANCUN_DATA?.fiveOceans;
 
-  if (!section || !canvas || !canvasWrap || !oceans?.length) {
+  if (!section || !canvas || !canvasWrap || !hotspotLayer || !oceans?.length) {
     return null;
   }
+
+  const getHost = () => canvas.closest('[data-globe-scene]') || canvasWrap;
 
   let renderer;
   try {
@@ -51,7 +54,7 @@ async function initGlobe() {
     return null;
   }
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isNarrowViewport() ? 1.5 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.25;
@@ -73,27 +76,30 @@ async function initGlobe() {
   fillLight.position.set(2, -1, 3);
   scene.add(fillLight);
 
-  const labelRenderer = new CSS2DRenderer();
-  labelRenderer.domElement.className = 'globe-label-layer';
-  canvasWrap.appendChild(labelRenderer.domElement);
-
   const { group: earthGroup, update: updateEarth } = await createEarthGroup();
   scene.add(earthGroup);
-  createOceanMarkers(earthGroup, oceans);
 
-  const { controls, syncTarget, updateAutoSpin, applyMotion, dispose: disposeControls } = createGlobeControls(
-    camera,
-    canvas,
-    earthGroup,
-    { motionReduced },
-  );
+  const markerApi = createOceanMarkers(earthGroup, oceans, hotspotLayer);
+
+  const syncHotspots = () => {
+    markerApi.updateHotspotPositions(camera, earthGroup, getHost());
+  };
+
+  const { controls, syncTarget, updateAutoSpin, applyMotion, dispose: disposeControls, rotateToLng, isDragging, isAutoSpinning } =
+    createGlobeControls(camera, canvas, earthGroup, {
+      motionReduced,
+      onEarthRotationChange: syncHotspots,
+    });
 
   let running = true;
   let animationId = null;
   let resizeObserver = null;
   let intersectionObserver = null;
   let visible = true;
+  let pageVisible = !document.hidden;
   const clock = new THREE.Clock();
+
+  const getScreenFill = () => (isNarrowViewport() ? EARTH_SCREEN_FILL_NARROW : EARTH_SCREEN_FILL);
 
   const applySeat = () => {
     earthGroup.position.set(0, 0, 0);
@@ -102,7 +108,7 @@ async function initGlobe() {
     const z = solveCameraDistanceForFill(
       camera,
       EARTH_VISUAL_RADIUS,
-      EARTH_SCREEN_FILL,
+      getScreenFill(),
       camera.aspect,
       CAMERA_Y,
     );
@@ -113,39 +119,42 @@ async function initGlobe() {
     syncTarget();
 
     const projected = getProjectedFraction(camera, earthGroup.position);
-    const fill = getProjectedSphereFill(camera, EARTH_VISUAL_RADIUS, camera.aspect);
+    getProjectedSphereFill(camera, EARTH_VISUAL_RADIUS, camera.aspect);
     window.__globeDebug = {
-      module: 'globe@v5',
-      earthScreenFill: fill,
+      module: 'globe@v21-acceptance',
+      earthScreenFill: getScreenFill(),
       earthScreenFracX: projected.x,
       earthScreenFracY: projected.y,
       earthPos: earthGroup.position.toArray(),
+      earthRot: [earthGroup.rotation.x, earthGroup.rotation.y, earthGroup.rotation.z],
       cameraZ: camera.position.z,
+      isDragging: isDragging(),
+      autoSpin: isAutoSpinning(),
       isNarrow: isNarrowViewport(),
     };
   };
 
   const resize = () => {
-    const host = canvas.closest('[data-globe-scene]') || canvasWrap;
+    const host = getHost();
     const w = host.clientWidth;
     const h = host.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
-    labelRenderer.setSize(w, h);
     camera.aspect = w / h;
     applySeat();
+    markerApi.updateHotspotPositions(camera, earthGroup, host);
   };
 
   const animate = () => {
     if (!running) return;
     animationId = requestAnimationFrame(animate);
-    if (!visible) return;
+    if (!visible || !pageVisible) return;
     const dt = clock.getDelta();
     updateEarth(dt);
     updateAutoSpin(dt);
     controls.update();
+    markerApi.updateHotspotPositions(camera, earthGroup, getHost());
     renderer.render(scene, camera);
-    labelRenderer.render(scene, camera);
   };
 
   applySeat();
@@ -153,10 +162,17 @@ async function initGlobe() {
   requestAnimationFrame(resize);
   animate();
 
+  const onVisibilityChange = () => {
+    pageVisible = !document.hidden;
+    if (pageVisible) clock.getDelta();
+  };
+
   window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', onVisibilityChange);
+
   if (typeof ResizeObserver !== 'undefined') {
     resizeObserver = new ResizeObserver(() => resize());
-    resizeObserver.observe(canvas.closest('[data-globe-scene]') || canvasWrap);
+    resizeObserver.observe(getHost());
   }
 
   if (typeof IntersectionObserver !== 'undefined') {
@@ -174,7 +190,17 @@ async function initGlobe() {
 
   window.dispatchEvent(new Event('lancun-home-globe-ready'));
 
+  const rotateToOcean = (id) => {
+    const list = window.OCEAN_HOTSPOTS || oceans;
+    const ocean = list.find((item) => item.id === id);
+    if (!ocean) return;
+    const lng = ocean.lng ?? ocean.lon;
+    if (typeof lng === 'number') rotateToLng(lng);
+  };
+
   return {
+    markerApi,
+    rotateToOcean,
     applyMotion: () => {
       applyMotion();
       section.classList.toggle('ocean-explore--static', motionReduced());
@@ -184,11 +210,13 @@ async function initGlobe() {
       if (animationId != null) cancelAnimationFrame(animationId);
       disposeControls();
       window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       resizeObserver?.disconnect();
       intersectionObserver?.disconnect();
       controls.dispose();
+      markerApi.dispose();
       renderer.dispose();
-      labelRenderer.domElement.remove();
+      hotspotLayer.innerHTML = '';
     },
   };
 }

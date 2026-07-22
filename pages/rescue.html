@@ -189,7 +189,7 @@
                         href="../assets/media/rescue/world-satellite.jpg"
                         width="800"
                         height="400"
-                        preserveAspectRatio="none"
+                        preserveAspectRatio="xMidYMid slice"
                       />
                       <rect class="monitor-map__overlay" width="800" height="400" aria-hidden="true" />
                     </g>
@@ -202,26 +202,22 @@
             </main>
           </div>
 
-          <div class="command-bottom">
-            <div class="command-bottom__head">
-              <div class="command-chart-tabs" role="tablist" aria-label="图表与数据来源">
-                <button type="button" class="command-chart-tabs__btn is-active" role="tab" id="chart-tab-trend" aria-selected="true" aria-controls="chart-panel-trend" data-chart-tab="trend">趋势图</button>
-                <button type="button" class="command-chart-tabs__btn" role="tab" id="chart-tab-composition" aria-selected="false" aria-controls="chart-panel-composition" data-chart-tab="composition">构成图</button>
-                <button type="button" class="command-chart-tabs__btn" role="tab" id="chart-tab-sources" aria-selected="false" aria-controls="chart-panel-sources" data-chart-tab="sources">数据来源</button>
+          <section class="pollution-insight-panel command-bottom" aria-labelledby="pollution-insight-title">
+            <div class="insight-panel-header">
+              <div class="insight-panel-header__copy">
+                <p class="eyebrow">DATA INSIGHT</p>
+                <h3 id="pollution-insight-title">海洋塑料污染数据洞察</h3>
+                <p>趋势、构成与来源结构共同构成当前污染压力判断。</p>
               </div>
-              <button type="button" class="command-sources-dialog-btn" data-rescue-data-sources-open>查看完整数据来源</button>
+              <button type="button" class="data-source-btn command-sources-dialog-btn" data-rescue-data-sources-open>查看完整数据来源</button>
             </div>
-            <div class="command-chart-panels">
-              <div class="command-chart-panel chart-frame" id="chart-panel-trend" role="tabpanel" aria-labelledby="chart-tab-trend" data-rescue-chart-panel="trend">
-                <figure data-rescue-line-chart></figure>
-              </div>
-              <div class="command-chart-panel chart-frame command-chart-panel--composition" id="chart-panel-composition" role="tabpanel" aria-labelledby="chart-tab-composition" data-rescue-chart-panel="composition" hidden>
-                <figure data-rescue-pie-chart></figure>
-                <figure data-rescue-bar-chart></figure>
-              </div>
-              <div class="command-chart-panel chart-frame" id="chart-panel-sources" role="tabpanel" aria-labelledby="chart-tab-sources" data-rescue-chart-panel="sources" data-rescue-sources-tab hidden></div>
+            <div class="insight-panel-grid" aria-live="polite">
+              <div class="trend-chart-card" data-rescue-trend-card></div>
+              <div class="composition-card" data-rescue-composition-card></div>
+              <div class="source-structure-card" data-rescue-source-structure-card></div>
             </div>
-          </div>
+            <div class="insight-source-row" data-rescue-sources-summary aria-label="数据来源摘要"></div>
+          </section>
         </div>
       </section>
 
@@ -230,7 +226,6 @@
           <button type="button" class="rescue-data-dialog__close" data-rescue-data-sources-close data-rescue-sources-dialog-close aria-label="关闭">×</button>
           <h3 id="rescue-data-dialog-title">数据来源说明</h3>
           <div class="rescue-data-dialog__body" data-rescue-data-sources-body data-rescue-sources-dialog-body></div>
-          <a class="rescue-data-dialog__link" href="../docs/DATA_SOURCES.md">打开 docs/DATA_SOURCES.md</a>
         </div>
       </dialog>
 

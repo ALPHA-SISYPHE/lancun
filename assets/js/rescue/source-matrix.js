@@ -27,7 +27,6 @@
     if (!panels?.length || !rail || !visual || !panelHost) return;
 
     let activeIndex = 0;
-    let expanded = false;
 
     panelHost.id = 'rescue-source-detail';
 
@@ -156,16 +155,6 @@
     };
 
     const bindPanelActions = () => {
-      panelHost.querySelector('[data-rescue-source-expand]')?.addEventListener('click', (e) => {
-        const btn = e.currentTarget;
-        expanded = !expanded;
-        btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        btn.textContent = expanded ? '收起详情' : '展开更多';
-        panelHost.querySelectorAll('[data-source-more]').forEach((el) => {
-          el.hidden = !expanded;
-        });
-      });
-
       panelHost.querySelector('[data-rescue-source-archive-open]')?.addEventListener('click', () => {
         openDrawer(activeIndex);
       });
@@ -181,17 +170,8 @@
       const p = panels[index];
       if (!p) return;
 
-      expanded = false;
-      const sourceBullets = getBullets(p, 'sourceBullets', p.sources);
-      const impactBullets = getBullets(p, 'impactBullets', p.ecologicalImpact);
-      const governance = (p.governance || []).slice(0, 4);
-      const personal = (p.personalAction || []).slice(0, 4);
-      const pathwayMore = p.pathway
-        ? `<p class="source-info-block__more" data-source-more hidden><strong>路径：</strong>${p.pathway}</p>`
-        : '';
-      const summaryMore = p.summary
-        ? `<p class="source-info-block__more" data-source-more hidden>${p.summary}</p>`
-        : '';
+      const sourceBullets = getBullets(p, 'sourceBullets', p.sources).slice(0, 2);
+      const impactBullets = getBullets(p, 'impactBullets', p.ecologicalImpact).slice(0, 2);
 
       const applyContent = () => {
         renderVisual(p, false);
@@ -199,12 +179,9 @@
           <h3 class="source-detail-panel__title">${p.title}</h3>
           <p class="source-detail-panel__judgment">${p.dataHighlight || p.summary || ''}</p>
           <div class="source-detail-blocks">
-            ${infoBlock('Source · 来源', sourceBullets, pathwayMore)}
-            ${infoBlock('Impact · 生态影响', impactBullets, summaryMore)}
-            ${infoBlock('Solution · 解决方案', governance)}
-            ${infoBlock('Personal Action · 个人行动', personal)}
+            ${infoBlock('Source · 来源', sourceBullets)}
+            ${infoBlock('Impact · 生态影响', impactBullets)}
           </div>
-          <button type="button" class="source-detail-panel__expand" data-rescue-source-expand aria-expanded="false">展开更多</button>
           <div class="source-detail-panel__footer">
             <p class="source-detail-panel__sources">
               来源：${(p.sourceRefs || []).join(' · ') || '见 DATA_SOURCES.md'}

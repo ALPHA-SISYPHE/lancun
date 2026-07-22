@@ -82,14 +82,16 @@
   function isAnyVolunteerDialogOpen() {
     return Boolean(
       document.querySelector(
-        '[data-volunteer-detail-dialog][open], [data-volunteer-register-dialog][open], [data-volunteer-success-dialog][open], [data-volunteer-records-dialog][open]',
+        '[data-volunteer-detail-dialog][open], [data-volunteer-register-dialog][open], [data-volunteer-success-dialog][open], [data-volunteer-records-dialog][open], [data-impact-detail-dialog][open]',
       ),
     );
   }
 
   function shouldPauseAutoRotate() {
+    const volunteerTabActive = window.OceanActionParticipationHub?.getActiveTab?.() !== 'donation';
     return (
-      state.hoverPaused
+      !volunteerTabActive
+      || state.hoverPaused
       || state.dialogPaused
       || document.hidden
       || state.reducedMotion
@@ -186,7 +188,6 @@
                 <ul class="mission-card__meta">
                   <li>${escapeHtml(activity.location)}</li>
                   <li>${escapeHtml(activity.date)} · ${escapeHtml(activity.time)}</li>
-                  <li>${escapeHtml(activity.organizer)}</li>
                 </ul>
               </div>
               <div class="mission-card__slots">
@@ -511,17 +512,6 @@
   function bindEvents() {
     $('[data-mission-refresh]')?.addEventListener('click', rotateBatch);
 
-    const board = $('[data-mission-board]');
-    board?.addEventListener('mouseenter', () => {
-      state.hoverPaused = true;
-      updateAutoHint();
-    });
-    board?.addEventListener('mouseleave', () => {
-      state.hoverPaused = false;
-      updateAutoHint();
-      if (!shouldPauseAutoRotate()) startAutoRotate();
-    });
-
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && !shouldPauseAutoRotate()) startAutoRotate();
       else stopAutoRotate();
@@ -600,5 +590,15 @@
     renderMissionBoard,
     openRecordsDialog,
     rotateBatch,
+    pauseAutoRotate(pause) {
+      state.hoverPaused = pause;
+      updateAutoHint();
+      if (pause) stopAutoRotate();
+      else if (!shouldPauseAutoRotate()) startAutoRotate();
+    },
+    resumeAutoRotate() {
+      updateAutoHint();
+      if (!shouldPauseAutoRotate()) startAutoRotate();
+    },
   };
 })();

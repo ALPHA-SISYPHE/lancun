@@ -9,10 +9,14 @@
       : window.LANCUN_DATA?.rescueDeckSources || [];
     const mediaNotes = catalog?.mediaNotes || [];
     const docHref = catalog?.docHref || '../docs/DATA_SOURCES.md';
+    const listItems = [
+      ...agencies,
+      { name: 'docs/DATA_SOURCES.md', href: docHref, note: '本项目数据说明文件' },
+    ];
 
     host.innerHTML = `
       <ul class="rescue-data-dialog__list">
-        ${agencies
+        ${listItems
           .map(
             (item) => `
           <li>
@@ -30,9 +34,6 @@
         </section>`
           : ''
       }`;
-
-    const docLink = host.closest('.rescue-data-dialog__inner')?.querySelector('.rescue-data-dialog__link');
-    if (docLink) docLink.setAttribute('href', docHref);
   };
 
   const openDataSourcesModal = () => {

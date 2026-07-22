@@ -305,6 +305,8 @@ Hero (anchors + pressure-panel)
 
 另须人工核对桌面 + 平板 + 移动视口视觉气质。
 
+**Live Monitoring Console 子模块**（监测地图 + 图表 Tab）另见 [`RESCUE_LIVE_CONSOLE_RULES.md`](RESCUE_LIVE_CONSOLE_RULES.md)；修改 `.station-panel` / `.monitor-metrics` / `.command-bottom` 前必读。
+
 ---
 
 ## 10. 与 RESCUE_PAGE 边界
@@ -328,6 +330,8 @@ Hero (anchors + pressure-panel)
 
 | 文件 | 用途 |
 |------|------|
+| [`docs/RESCUE_OBSERVATORY_RULES.md`](RESCUE_OBSERVATORY_RULES.md) | 全页气质 / 紧凑 / 分阶段 |
+| [`docs/RESCUE_LIVE_CONSOLE_RULES.md`](RESCUE_LIVE_CONSOLE_RULES.md) | Live Console 局部精修（地图 + 图表 Tab） |
 | [`pages/rescue.html`](../pages/rescue.html) | DOM / 锚点 |
 | [`assets/css/rescue-page.css`](../assets/css/rescue-page.css) | Token 与布局 |
 | [`assets/js/rescue/constants.js`](../assets/js/rescue/constants.js) | 常量 |

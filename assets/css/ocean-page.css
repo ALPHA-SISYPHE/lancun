@@ -322,13 +322,28 @@
   text-decoration: none;
 }
 
-.ocean2-data-trend { min-width: 0; }
+.ocean2-data-trend {
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
 .ocean2-data-trend__head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
   margin-bottom: .5rem;
+  flex-shrink: 0;
+}
+.ocean2-data-trend [data-trend-chart] {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.ocean2-data-trend [data-trend-table][hidden] {
+  display: none;
 }
 .ocean2-view-switch { display: flex; gap: .85rem; }
 .ocean2-view-switch button {
@@ -338,9 +353,24 @@
 }
 .ocean2-view-switch button[aria-selected="true"] { color: #fff; border-bottom-color: #9edcff; }
 
-.ocean2-chart h3 { margin: 0 0 .2rem; color: #fff; font-size: .9375rem; font-weight: 600; }
-.ocean2-chart p { margin: 0; color: rgba(255,255,255,.68); font-size: .8125rem; }
-.ocean2-chart svg { display: block; width: 100%; height: 4.5rem; margin-top: .35rem; }
+.ocean2-chart {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+.ocean2-chart h3 { margin: 0 0 .2rem; color: #fff; font-size: .9375rem; font-weight: 600; flex-shrink: 0; }
+.ocean2-chart p { margin: 0; color: rgba(255,255,255,.68); font-size: .8125rem; flex-shrink: 0; }
+.ocean2-chart svg {
+  display: block;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 6rem;
+  height: auto;
+  aspect-ratio: 650 / 110;
+  margin-top: .35rem;
+}
 .ocean2-axis { stroke: rgba(255,255,255,.2); }
 .ocean2-line { fill: none; stroke: #9edcff; stroke-width: 2.5; }
 .ocean2-dot { fill: #fff; }
@@ -348,6 +378,7 @@
 .ocean2-chart a {
   display: inline-block; margin-top: .4rem;
   color: #9edcff; font-size: .8125rem; font-weight: 700; text-decoration: none;
+  flex-shrink: 0;
 }
 .ocean2-table { width: 100%; border-collapse: collapse; color: #fff; font-size: .875rem; }
 .ocean2-table th, .ocean2-table td {
@@ -621,6 +652,11 @@
   align-items: end;
   margin-top: auto;
 }
+.ocean2-explorer__action-group {
+  display: grid;
+  gap: .55rem;
+  justify-items: end;
+}
 .ocean2-explorer__source { color: #52647b; font-size: .8125rem; line-height: 1.4; }
 .ocean2-explorer__actions button {
   flex-shrink: 0;
@@ -631,6 +667,21 @@
   cursor: pointer;
   font-size: .8125rem;
   font-weight: 700;
+}
+.ocean2-explorer__home-link {
+  color: #52647b;
+  font-size: .75rem;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(16, 35, 61, .22);
+  transition: color var(--duration-ui) var(--ease-ui), border-color var(--duration-ui) var(--ease-ui);
+}
+.ocean2-explorer__home-link:hover,
+.ocean2-explorer__home-link:focus-visible {
+  color: #10233d;
+  border-bottom-color: rgba(16, 35, 61, .55);
+  outline: none;
 }
 .ocean2-explorer__nav {
   display: flex;

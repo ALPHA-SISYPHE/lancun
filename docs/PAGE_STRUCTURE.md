@@ -50,6 +50,14 @@
 
 候选内容：沉浸式主视觉、自动播放或交互式音视频、少量核心数据、探索入口、行动号召。首页避免大段文字。
 
+**精修规则：** [`docs/HOME_REFINE_RULES.md`](HOME_REFINE_RULES.md) v1.0 — 两屏结构（HeroOceanIntro + OceanGlobeExplorer）、双背景视频、右侧 WebGL 地球；分阶段执行，不改账户系统与其他子页。
+
+**现行实现（`index.html`）：**
+
+- Section 1：全屏 Hero 视频（`hero.mp4`）+ 品牌文案 + 进入海洋世界 CTA
+- Section 2：`#ocean-explore` — 背景视频 + 左栏文案 + 右栏 [`assets/js/globe/`](../assets/js/globe/) 3D 地球（自转 / 拖动 / 五大洋 `+` 标记）
+- 五大洋简介卡片切换、查看完整档案深链 — **待 P2–P3**（见 HOME_REFINE_RULES §7–§9）
+
 ### 2. 我们的海洋（已锁定方向，见 OCEAN_PAGE.md）
 
 目的：以正面数据与五大洋叙事展示海洋之美与作用；首页可链入 `#ocean-brief`。
@@ -60,7 +68,7 @@
 
 框架稿备份：`pages/ocean-draft2.html`（v1.3 独立三节 UI）。
 
-首页 `#ocean-explore`：**背景视频 + 左栏文案 + 右侧 WebGL 3D 地球**（`assets/js/globe/`）；五大洋 `+` 标记点击跳转 `pages/ocean.html?ocean=id#five-oceans`。气泡未接入 v2。
+首页 `#ocean-explore` 细则见 [`HOME_REFINE_RULES.md`](HOME_REFINE_RULES.md)；子页五大洋 tab 深链格式：`pages/ocean.html#ocean-{id}`。
 
 ### 3. 海在呼救（已锁定方向，见 RESCUE_PAGE.md + RESCUE_OBSERVATORY_RULES.md）
 
@@ -80,15 +88,15 @@
 
 当前实现：[`pages/species.html`](../pages/species.html) 仍为旧占位框架，待按宪法改版。
 
-### 5. 保护行动中心
+### 5. 保护行动中心（海洋行动中心）
 
 目的：把理解转化为个人行动，并满足表单要求。
 
-**已锁定结构（2026-07-18）**：单页纵向三节 — ① 每日打卡（积分 + 月度日历）② 志愿者报名模拟（项目列表 + 弹窗表单 + 本地记录）③ 模拟捐款 + 往期成果展示。全部为前端 mock + localStorage，无真实支付/报名。
+**当前结构（v3，2026-07-22）**：单页纵向模块 — ① ActionHero ② DailyActionDock（打卡 + streak/徽章）③ **ParticipationHub**（志愿报名 / 公益支持 **Tab 切换**；各 Tab 主区 3 卡轮播 + 侧栏往期成果轮播；详情/报名/捐款均在 dialog）④ PersonalActionArchive strip + Footer。前端 mock + localStorage，无真实支付/报名。
 
-细则、数据 schema、响应式与 Phase 0–4 见 [`docs/ACTION_PAGE.md`](ACTION_PAGE.md) 附录 A–F。
+细则、DOM hook、localStorage schema 与 smoke 见 [`docs/ACTION_PAGE.md`](ACTION_PAGE.md) 附录 G、[`docs/ACTION_PAGE_VISUAL_RULES.md`](ACTION_PAGE_VISUAL_RULES.md)。
 
-当前实现：[`pages/action.html`](../pages/action.html) 仍为旧占位框架，待按宪法改版。
+当前实现：[`pages/action.html`](../pages/action.html) + [`assets/css/action-page.css`](../assets/css/action-page.css) + [`assets/js/action/`](../assets/js/action/)。
 
 ## 全站功能
 
@@ -109,7 +117,7 @@
 - [ ] 行动表单提交后产生什么结果。
 - [ ] 是否需要中英文切换、主题切换或搜索。
 - [x] 已选择方案 A：五页平衡型。
-- [x] 地图采用重点海域地图，而非全球实时地图。（首页 3D 地球已推倒；`ocean.html` 本页地球按 `OCEAN_PAGE.md` 移除）
+- [x] 地图采用重点海域地图，而非全球实时地图。（首页保留 3D 地球探索区；`ocean.html` 本页可拖地球按 `OCEAN_PAGE.md` 移除）
 - [x] 行动页采用匿名表单 + localStorage，不制作真实账号注册。
 - [x] 「我们的海洋」三节结构与附录 A.1–A.3 已写入 `docs/OCEAN_PAGE.md` v1.3。
 - [x] 「我们的海洋」§0 用户需求摘要（v1.2）。
