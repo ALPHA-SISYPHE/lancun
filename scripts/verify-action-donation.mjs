@@ -41,12 +41,9 @@ const dataCounts = await page.evaluate(() => ({
 if (dataCounts.projects >= 6 && dataCounts.stories >= 9) pass('donation + impact data counts', dataCounts);
 else fail('donation + impact data counts', dataCounts);
 
-await page.click('[data-participation-tab="donation"]');
-await page.waitForTimeout(200);
-
 const donationCards = await page.locator('.donation-project-card').count();
-if (donationCards === 3) pass('donation tab shows 3 project cards');
-else fail('donation tab shows 3 project cards', { donationCards });
+if (donationCards === 3) pass('donation section shows 3 project cards');
+else fail('donation section shows 3 project cards', { donationCards });
 
 const guest = await page.evaluate(() => ({
   hintVisible: document.querySelector('[data-donation-login-hint]')?.hidden === false,

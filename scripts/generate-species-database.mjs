@@ -2,30 +2,17 @@
  * 生成 ≥100 条 LANCUN_SPECIES_DB → assets/js/species/data/speciesDatabase.js
  * 运行：node scripts/generate-species-database.mjs
  */
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'assets/js/species/data/speciesDatabase.js');
-
-const IMAGES = new Set([
-  'chinese-white-dolphin',
-  'blue-whale',
-  'sperm-whale',
-  'spotted-seal',
-  'green-turtle',
-  'hawksbill-turtle',
-  'leatherback-turtle',
-  'staghorn-coral',
-  'brain-coral',
-  'red-coral',
-  'chinese-sturgeon',
-  'large-yellow-croaker',
-]);
+const SPECIES_MEDIA_DIR = join(ROOT, 'assets/media/species');
 
 function img(id) {
-  return IMAGES.has(id) ? `assets/media/species/${id}.jpg` : '';
+  const file = join(SPECIES_MEDIA_DIR, `${id}.jpg`);
+  return existsSync(file) ? `assets/media/species/${id}.jpg` : '';
 }
 
 function ensureTwo(list, fallbackA, fallbackB) {

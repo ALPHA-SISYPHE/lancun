@@ -1127,14 +1127,15 @@
 .upload-zone {
   position: relative;
   display: grid;
-  place-content: center;
+  place-content: start center;
+  align-content: start;
   flex: 1;
   min-height: 0;
   min-width: 0;
   padding: 0.85rem;
   border: 1.5px dashed rgba(7, 30, 48, 0.2);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.48);
   text-align: center;
   cursor: pointer;
   transition: border-color var(--duration-ui) var(--ease-ui), background var(--duration-ui) var(--ease-ui);
@@ -1176,13 +1177,16 @@
 
 .upload-zone__preview {
   display: grid;
-  gap: 0.55rem;
+  justify-items: center;
+  gap: 0.4rem;
   width: 100%;
   cursor: default;
 }
 
 .upload-zone__preview img {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  height: 110px;
   aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: calc(var(--radius) - 2px);
@@ -1199,20 +1203,24 @@
 
 .upload-zone__filename {
   margin: 0;
-  font-size: 0.6875rem;
-  color: rgba(8, 35, 61, 0.6);
-  word-break: break-all;
+  max-width: 100%;
+  font-size: 0.625rem;
+  line-height: 1.3;
+  color: rgba(8, 35, 61, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .upload-zone__actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .upload-zone__actions .button {
-  padding: 0.35rem 0.65rem;
+  padding: 0.35rem 0.85rem;
   font-size: 0.8125rem;
 }
 
@@ -1222,7 +1230,7 @@
   flex: 1;
   min-height: 0;
   min-width: 0;
-  padding: 1rem 1.05rem;
+  padding: 0.7rem 0.8rem;
   border: 1px solid rgba(7, 30, 48, 0.1);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.28);
@@ -1289,41 +1297,41 @@
 }
 
 .ai-result-name {
-  margin: 0 0 0.3rem;
-  font-size: 1.2rem;
+  margin: 0 0 0.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .ai-result-meta,
 .ai-result-sci {
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.2rem;
   font-size: 0.8125rem;
-  line-height: 1.5;
+  line-height: 1.4;
   color: rgba(8, 35, 61, 0.65);
 }
 
 .ai-result-sci {
   font-style: italic;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.4rem;
 }
 
 .ai-demo-note {
-  margin: 0 0 0.55rem;
+  margin: 0 0 0.4rem;
   font-size: 0.75rem;
   color: #8a6a1f;
 }
 
 .ai-match-card {
-  margin: 0 0 0.75rem;
-  padding: 0.7rem 0.85rem;
+  margin: 0 0 0.55rem;
+  padding: 0.45rem 0.6rem;
   border: 1px solid rgba(7, 30, 48, 0.1);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.45);
 }
 
 .ai-match-card__label {
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.2rem;
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -1334,7 +1342,7 @@
 .ai-match-card__desc {
   margin: 0;
   font-size: 0.8125rem;
-  line-height: 1.55;
+  line-height: 1.45;
   color: rgba(8, 35, 61, 0.78);
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -2080,6 +2088,10 @@ body.drawer-open {
     grid-template-columns: 1fr;
     padding: 1.35rem 1.1rem;
     max-height: none;
+  }
+
+  .upload-zone__preview img {
+    height: 96px;
   }
 
   .upload-zone__actions .button,

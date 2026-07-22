@@ -2,14 +2,111 @@ const STATUS_EN = { ok: 'Normal', watch: 'Warning', alert: 'Critical' };
 
 const PIE_SWATCH_CLASS = ['rescue-pie__swatch--primary', 'rescue-pie__swatch--secondary'];
 
+const ringPoint = (cx, cy, r, degFromTopClockwise) => {
+  const rad = ((degFromTopClockwise - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+};
+
+const describeDonutSegment = (cx, cy, rOut, rIn, startDeg, endDeg) => {
+  if (endDeg <= startDeg) return '';
+  const span = endDeg - startDeg;
+  const large = span > 180 ? 1 : 0;
+  const p1 = ringPoint(cx, cy, rOut, startDeg);
+  const p2 = ringPoint(cx, cy, rOut, endDeg);
+  const p3 = ringPoint(cx, cy, rIn, endDeg);
+  const p4 = ringPoint(cx, cy, rIn, startDeg);
+  return [
+    `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`,
+    `A ${rOut} ${rOut} 0 ${large} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`,
+    `L ${p3.x.toFixed(2)} ${p3.y.toFixed(2)}`,
+    `A ${rIn} ${rIn} 0 ${large} 0 ${p4.x.toFixed(2)} ${p4.y.toFixed(2)}`,
+    'Z',
+  ].join(' ');
+};
+
+const buildCompositionRingSvg = (pie) => {
+  const plastic = pie.slices.find((s) => s.label === '塑料')?.value ?? 85;
+  const other = 100 - plastic;
+  const plasticEnd = (plastic / 100) * 360;
+  const cx = 50;
+  const cy = 50;
+  const rOut = 46;
+  const rIn = 28;
+  const plasticPath = describeDonutSegment(cx, cy, rOut, rIn, 0, plasticEnd);
+  const otherPath = describeDonutSegment(cx, cy, rOut, rIn, plasticEnd, 360);
+
+  return `
+    <svg class="composition-ring__svg" viewBox="0 0 100 100" role="img" aria-label="${pie.label}">
+      <g class="composition-ring__segment composition-ring__segment--plastic" data-segment="plastic" tabindex="0" aria-label="塑料 ${plastic}%">
+        <path class="composition-ring__path" d="${plasticPath}" />
+      </g>
+      <g class="composition-ring__segment composition-ring__segment--other" data-segment="other" tabindex="0" aria-label="其它 ${other}%">
+        <path class="composition-ring__path" d="${otherPath}" />
+      </g>
+    </svg>`;
+};
+
+const bindCompositionRingInteractions = (ringHost, pie) => {
+  if (!ringHost || !pie?.slices?.length) return;
+  const plastic = pie.slices.find((s) => s.label === '塑料')?.value ?? 85;
+  const plasticEnd = (plastic / 100) * 360;
+  const segmentMeta = {
+    plastic: { midDeg: plasticEnd / 2 },
+    other: { midDeg: (plasticEnd + 360) / 2 },
+  };
+  const segments = ringHost.querySelectorAll('.composition-ring__segment');
+  const legendRoot = ringHost.closest('.composition-card__ring');
+  const legendItems = legendRoot?.querySelectorAll('.rescue-pie__legend li');
+
+  const clearActive = () => {
+    segments.forEach((seg) => seg.classList.remove('is-active'));
+    legendItems?.forEach((li) => li.classList.remove('is-active'));
+  };
+
+  const activate = (key) => {
+    clearActive();
+    const seg = ringHost.querySelector(`[data-segment="${key}"]`);
+    const meta = segmentMeta[key];
+    if (seg && meta) {
+      const rad = ((meta.midDeg - 90) * Math.PI) / 180;
+      const pop = 4;
+      seg.style.setProperty('--pop-x', `${Math.cos(rad) * pop}px`);
+      seg.style.setProperty('--pop-y', `${Math.sin(rad) * pop}px`);
+      seg.classList.add('is-active');
+    }
+    legendItems?.forEach((li) => {
+      if (li.dataset.segment === key) li.classList.add('is-active');
+    });
+  };
+
+  segments.forEach((seg) => {
+    const key = seg.dataset.segment;
+    if (!key) return;
+    seg.addEventListener('mouseenter', () => activate(key));
+    seg.addEventListener('focus', () => activate(key));
+    seg.addEventListener('mouseleave', clearActive);
+    seg.addEventListener('blur', clearActive);
+  });
+
+  legendItems?.forEach((li) => {
+    const key = li.dataset.segment;
+    if (!key) return;
+    li.setAttribute('tabindex', '0');
+    li.addEventListener('mouseenter', () => activate(key));
+    li.addEventListener('focus', () => activate(key));
+    li.addEventListener('mouseleave', clearActive);
+    li.addEventListener('blur', clearActive);
+  });
+};
+
 const buildLineChartSvg = (trend, compact = false) => {
   if (!trend?.points?.length) return '';
   const points = trend.points;
   const width = 640;
   const height = compact ? 300 : 280;
   const pad = compact
-    ? { top: 16, right: 14, bottom: 28, left: 40 }
-    : { top: 20, right: 16, bottom: 36, left: 44 };
+    ? { top: 16, right: 14, bottom: 28, left: 50 }
+    : { top: 20, right: 16, bottom: 36, left: 52 };
   const innerW = width - pad.left - pad.right;
   const innerH = height - pad.top - pad.bottom;
   const values = points.map((p) => p.value);
@@ -18,11 +115,25 @@ const buildLineChartSvg = (trend, compact = false) => {
   const xStep = points.length > 1 ? innerW / (points.length - 1) : 0;
   const toX = (i) => pad.left + i * xStep;
   const toY = (v) => pad.top + innerH - ((v - minV) / (maxV - minV)) * innerH;
+  const baseY = pad.top + innerH;
   const polyline = points.map((p, i) => `${toX(i)},${toY(p.value)}`).join(' ');
   const gridLines = Array.from({ length: 4 }, (_, i) => {
     const y = pad.top + (innerH / 3) * i;
     return `<line class="rescue-trend__grid" x1="${pad.left}" y1="${y}" x2="${width - pad.right}" y2="${y}" />`;
   }).join('');
+  const yAxisLine = `<line class="rescue-trend__axis" x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${baseY}" />`;
+  const xAxisLine = `<line class="rescue-trend__axis" x1="${pad.left}" y1="${baseY}" x2="${width - pad.right}" y2="${baseY}" />`;
+  const yTicks = [0, 1, 2, 3]
+    .map((i) => {
+      const v = maxV - (i / 3) * (maxV - minV);
+      const y = pad.top + (innerH / 3) * i;
+      return `<text class="rescue-trend__tick" x="${pad.left - 8}" y="${y + 4}" text-anchor="end">${Math.round(v)}</text>`;
+    })
+    .join('');
+  const areaFill =
+    compact && points.length > 1
+      ? `<polygon class="rescue-trend__area" points="${points.map((p, i) => `${toX(i)},${toY(p.value)}`).join(' ')} ${toX(points.length - 1)},${baseY} ${toX(0)},${baseY}" />`
+      : '';
   const dots = points
     .map(
       (p, i) =>
@@ -32,14 +143,24 @@ const buildLineChartSvg = (trend, compact = false) => {
   const labels = points
     .map((p, i) => `<text class="rescue-trend__label" x="${toX(i)}" y="${height - 10}" text-anchor="middle">${p.year}</text>`)
     .join('');
+  const unit = trend.unit || '';
+  const unitX = pad.left - 10;
+  const unitY = pad.top + innerH / 2;
+  const yUnitLabel = unit
+    ? `<text class="rescue-trend__unit" x="${unitX}" y="${unitY}" text-anchor="middle" transform="rotate(-90, ${unitX}, ${unitY})">${unit}</text>`
+    : '';
 
   return `
     <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${trend.label}">
       ${gridLines}
-      <line class="rescue-trend__axis" x1="${pad.left}" y1="${pad.top + innerH}" x2="${width - pad.right}" y2="${pad.top + innerH}" />
+      ${yAxisLine}
+      ${xAxisLine}
+      ${areaFill}
       <polyline class="rescue-trend__line" points="${polyline}" />
       ${dots}
       ${labels}
+      ${yTicks}
+      ${yUnitLabel}
     </svg>`;
 };
 
@@ -356,7 +477,6 @@ const renderDataInsightsPanel = () => {
   const bar = data.rescueCharts?.bar;
   if (!trend?.points?.length || !pie?.slices?.length || !bar?.rows?.length) return;
 
-  const plastic = pie.slices.find((s) => s.label === '塑料')?.value ?? 85;
   const meta = `单位：${trend.unit} · ${trend.source}${trend.footnote ? ` · ${trend.footnote}` : ''}`;
 
   trendCard.innerHTML = `
@@ -371,12 +491,12 @@ const renderDataInsightsPanel = () => {
     <h4 class="insight-card__title">${pie.label}</h4>
     <p class="insight-card__source">${pie.source}</p>
     <div class="rescue-pie rescue-pie--compact composition-card__ring">
-      <div class="rescue-pie__ring" style="--ring-plastic: ${plastic}%" role="img" aria-label="塑料 ${plastic}%，其它 ${100 - plastic}%"></div>
+      <div class="composition-ring">${buildCompositionRingSvg(pie)}</div>
       <ul class="rescue-pie__legend">
         ${pie.slices
           .map(
             (s, i) =>
-              `<li><span class="rescue-pie__swatch ${PIE_SWATCH_CLASS[i] || 'rescue-pie__swatch--secondary'}"></span><span class="rescue-pie__legend-label">${s.label}</span><span class="rescue-pie__legend-value">${s.value}%</span></li>`
+              `<li data-segment="${i === 0 ? 'plastic' : 'other'}"><span class="rescue-pie__swatch ${PIE_SWATCH_CLASS[i] || 'rescue-pie__swatch--secondary'}"></span><span class="rescue-pie__legend-label">${s.label}</span><span class="rescue-pie__legend-value">${s.value}%</span></li>`
           )
           .join('')}
       </ul>
@@ -399,6 +519,7 @@ const renderDataInsightsPanel = () => {
     </div>`;
 
   bindTrendChartInteractions(trendCard.querySelector('.trend-chart-card__canvas'), trend);
+  bindCompositionRingInteractions(compositionCard.querySelector('.composition-ring'), pie);
   renderSourcesSummary(document.querySelector('[data-rescue-sources-summary]'), data.rescueDeckSources);
 };
 

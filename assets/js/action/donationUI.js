@@ -101,10 +101,8 @@
   }
 
   function shouldPauseAutoRotate() {
-    const donationTabActive = window.OceanActionParticipationHub?.getActiveTab?.() === 'donation';
     return (
-      !donationTabActive
-      || state.hoverPaused
+      state.hoverPaused
       || state.dialogPaused
       || document.hidden
       || state.reducedMotion
@@ -211,8 +209,8 @@
               <p class="donation-project-card__impact">预计影响：${escapeHtml(project.impactGoal)}</p>
               <p class="donation-project-card__organizer">发起方：${escapeHtml(project.organizer)}</p>
               <div class="donation-project-card__actions">
-                <button class="button button-ghost" type="button" data-donation-detail="${escapeHtml(project.id)}">查看详情</button>
-                <button class="button button-primary" type="button" data-donation-support="${escapeHtml(project.id)}">支持项目</button>
+                <button class="button button-ghost" type="button" data-donation-detail="${escapeHtml(project.id)}" aria-label="查看详情">详情</button>
+                <button class="button button-primary" type="button" data-donation-support="${escapeHtml(project.id)}" aria-label="支持项目">捐助</button>
               </div>
             </div>
           </article>

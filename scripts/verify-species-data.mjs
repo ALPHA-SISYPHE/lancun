@@ -2,7 +2,7 @@
  * 物种数据层验收（无 UI）
  * 运行：node scripts/verify-species-data.mjs
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
@@ -107,6 +107,11 @@ for (const item of db) {
   assert(Array.isArray(item.protection) && item.protection.length >= 2, `protection: ${item.id}`);
   assert(item.isUserAdded === false, `isUserAdded: ${item.id}`);
   assert(typeof item.image === 'string' && typeof item.thumbnail === 'string', `image fields: ${item.id}`);
+  assert(item.image.length > 0 && item.thumbnail.length > 0, `missing image path: ${item.id}`);
+  assert(
+    existsSync(join(ROOT, ...item.image.split('/'))),
+    `missing image file: ${item.image}`,
+  );
 }
 
 const emptySearch = context.window.LancunSearchSpecies({ speciesList: db, query: '   ' });

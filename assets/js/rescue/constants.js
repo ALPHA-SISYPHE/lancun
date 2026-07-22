@@ -3,47 +3,48 @@ window.LANCUN_RESCUE = window.LANCUN_RESCUE || {};
 const NOAA_BASE = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
 const NOAA_DOCS = 'https://api.tidesandcurrents.noaa.gov/api/prod';
 const OPENAQ_DOCS = 'https://docs.openaq.org/';
+const OPENAQ_PROXY = '/api/rescue/openaq';
 const FETCH_TIMEOUT_MS = 8000;
 
 const LIVE_CONFIG = [
   {
     id: 'A',
     label: '切萨皮克湾',
-    lat: 38.33,
-    lon: -76.45,
-    metricLabel: '溶解氧 DO',
-    metricKey: 'dissolvedOxygen',
-    unit: 'mg/L',
+    lat: 39.27,
+    lon: -76.58,
+    metricLabel: '潮位',
+    metricKey: 'waterLevel',
+    unit: 'm',
     type: 'noaa',
     station: '8574680',
-    product: 'dissolved_oxygen',
-    evaluate: (v) => (v < 2 ? 'alert' : v < 5 ? 'watch' : 'ok'),
+    product: 'water_level',
+    evaluate: (v) => (v > 2 ? 'alert' : v > 1.2 ? 'watch' : 'ok'),
   },
   {
     id: 'B',
     label: '旧金山湾',
     lat: 37.81,
     lon: -122.47,
-    metricLabel: 'pH',
-    metricKey: 'ph',
-    unit: '',
+    metricLabel: '气压',
+    metricKey: 'airPressure',
+    unit: 'hPa',
     type: 'noaa',
     station: '9414290',
-    product: 'ph',
-    evaluate: (v) => (v < 7.6 ? 'alert' : v < 7.8 ? 'watch' : 'ok'),
+    product: 'air_pressure',
+    evaluate: (v) => (v < 1000 || v > 1035 ? 'alert' : v < 1010 ? 'watch' : 'ok'),
   },
   {
     id: 'C',
     label: '墨西哥湾近岸',
     lat: 27.76,
     lon: -82.63,
-    metricLabel: '盐度',
-    metricKey: 'salinity',
-    unit: 'PSU',
+    metricLabel: '水温',
+    metricKey: 'temperature',
+    unit: '°C',
     type: 'noaa',
     station: '8726520',
-    product: 'salinity',
-    evaluate: (v) => (v < 20 || v > 40 ? 'watch' : 'ok'),
+    product: 'water_temperature',
+    evaluate: (v) => (v > 32 ? 'alert' : v > 30 ? 'watch' : 'ok'),
   },
   {
     id: 'D',
@@ -59,9 +60,9 @@ const LIVE_CONFIG = [
 ];
 
 const STRIP_METRICS = [
-  { key: 'ph', label: 'pH', unit: '', digits: 2 },
-  { key: 'temperature', label: '温度', unit: '°C', digits: 1 },
-  { key: 'salinity', label: '盐度', unit: 'PSU', digits: 1 },
+  { key: 'waterLevel', label: '潮位', unit: 'm', digits: 2 },
+  { key: 'airPressure', label: '气压', unit: 'hPa', digits: 1 },
+  { key: 'temperature', label: '水温', unit: '°C', digits: 1 },
   { key: 'pm25', label: 'PM2.5', unit: 'µg/m³', digits: 1 },
 ];
 
@@ -105,13 +106,16 @@ const latestNoaaValue = (payload) => {
   return { value: Number(last.v), time: last.t };
 };
 
-const noaaStationUrl = (station, product) =>
-  `${NOAA_BASE}?date=latest&station=${station}&product=${product}&units=metric&time_zone=gmt&format=json`;
+const noaaStationUrl = (station, product) => {
+  const datum = product === 'water_level' ? '&datum=MLLW' : '';
+  return `${NOAA_BASE}?date=today&station=${station}&product=${product}&units=metric&time_zone=gmt&format=json${datum}`;
+};
 
 Object.assign(window.LANCUN_RESCUE, {
   NOAA_BASE,
   NOAA_DOCS,
   OPENAQ_DOCS,
+  OPENAQ_PROXY,
   FETCH_TIMEOUT_MS,
   LIVE_CONFIG,
   STRIP_METRICS,

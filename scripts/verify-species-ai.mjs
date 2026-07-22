@@ -39,6 +39,7 @@ async function checkPageStates(page) {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(`file:///${PAGE}`, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => typeof window.LancunAIIdentificationLab !== 'undefined');
+  await page.waitForFunction(() => window.LancunAIIdentificationLab?.getUIState?.() === 'matched');
   await page.waitForTimeout(400);
 
   const initial = await page.evaluate(() => ({
@@ -46,6 +47,9 @@ async function checkPageStates(page) {
     upload: !!document.querySelector('[data-ai-upload-zone]'),
     input: !!document.querySelector('[data-ai-file-input]'),
     start: !!document.querySelector('[data-ai-start]'),
+    uploadBtn: !!document.querySelector('[data-ai-upload]'),
+    noReselect: !document.querySelector('[data-ai-reselect]'),
+    noClear: !document.querySelector('[data-ai-clear]'),
     quota: !!document.querySelector('[data-species-quota]'),
     badge: !!document.querySelector('[data-ai-state-badge]'),
     uploadCol: !!document.querySelector('[data-ai-upload-col]'),
@@ -58,6 +62,10 @@ async function checkPageStates(page) {
     shellCols: getComputedStyle(document.querySelector('.ai-lab-shell')).gridTemplateColumns.split(' ').length,
     uiState: window.LancunAIIdentificationLab?.getUIState?.() || '',
     badgeText: document.querySelector('[data-ai-state-badge]')?.textContent?.trim() || '',
+    matchName: document.querySelector('[data-ai-match-name]')?.textContent?.trim() || '',
+    previewVisible: !document.querySelector('[data-upload-preview]')?.hidden,
+    previewImg: !!document.querySelector('[data-ai-preview-img]')?.src,
+    previewImgHeight: document.querySelector('[data-ai-preview-img]')?.offsetHeight || 0,
   }));
 
   const preview = await page.evaluate(async () => {
@@ -207,6 +215,9 @@ const ok =
   pageResult.initial.upload &&
   pageResult.initial.input &&
   pageResult.initial.start &&
+  pageResult.initial.uploadBtn &&
+  pageResult.initial.noReselect &&
+  pageResult.initial.noClear &&
   pageResult.initial.quota &&
   pageResult.initial.badge &&
   pageResult.initial.uploadCol &&
@@ -218,7 +229,13 @@ const ok =
   pageResult.initial.shellCols >= 2 &&
   pageResult.initial.shellHeight >= 360 &&
   pageResult.initial.shellHeight <= 520 &&
-  pageResult.initial.uiState === 'idle' &&
+  pageResult.initial.uiState === 'matched' &&
+  pageResult.initial.badgeText === '已匹配' &&
+  pageResult.initial.matchName.includes('\u4e2d\u534e\u767d\u6d77\u8c5a') &&
+  pageResult.initial.previewVisible &&
+  pageResult.initial.previewImg &&
+  pageResult.initial.previewImgHeight >= 90 &&
+  pageResult.initial.previewImgHeight <= 130 &&
   pageResult.preview.uiState === 'preview' &&
   pageResult.preview.previewVisible &&
   pageResult.preview.previewImg &&

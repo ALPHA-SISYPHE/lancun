@@ -560,77 +560,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   color: #c45a3a;
   background: rgba(196, 90, 58, 0.08);
 }
-.account-settings-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 115;
-  display: grid;
-  place-items: center;
-  padding: 1.25rem;
-  background: var(--deep-soft, rgba(3, 20, 38, 0.68));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-.account-settings-overlay[hidden] { display: none; }
-body.account-settings-open { overflow: hidden; }
-.account-settings-panel {
-  position: relative;
-  width: min(280px, 92vw);
-  padding: 1.15rem 1.15rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.38);
-  border-radius: var(--radius);
-  background: var(--frost-panel, rgba(242, 248, 250, 0.62));
-  backdrop-filter: blur(20px) saturate(130%);
-  -webkit-backdrop-filter: blur(20px) saturate(130%);
-  color: var(--account-ink, #08233D);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    0 8px 28px rgba(3, 20, 38, 0.14);
-}
-.account-settings-panel__close {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  color: rgba(8, 35, 61, 0.72);
-  cursor: pointer;
-  font-size: 1.25rem;
-  line-height: 1;
-  appearance: none;
-  transition: background-color var(--duration-ui) var(--ease-ui), color var(--duration-ui) var(--ease-ui);
-}
-.account-settings-panel__close:hover,
-.account-settings-panel__close:focus-visible {
-  background: rgba(255, 255, 255, 0.55);
-  color: var(--account-ink, #08233D);
-  outline: none;
-}
-.account-settings-panel__eyebrow {
-  margin: 0 0 0.25rem;
-  color: var(--cyan, #55D6C2);
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.account-settings-panel__title {
-  margin: 0 0 0.45rem;
-  font-size: 1rem;
-  font-weight: 800;
-}
-.account-settings-panel__lead {
-  margin: 0 0 0.85rem;
-  color: rgba(8, 35, 61, 0.72);
-  font-size: 0.78rem;
-  line-height: 1.45;
-}
-.account-settings-panel__ok { width: 100%; }
 .auth-modal-overlay {
   position: fixed;
   inset: 0;
@@ -692,7 +621,9 @@ body.auth-modal-open { overflow: hidden; }
   flex-direction: column;
   justify-content: center;
   padding: clamp(1.75rem, 4vw, 2.5rem);
-  background: linear-gradient(165deg, rgba(3, 20, 38, 0.88) 0%, rgba(4, 22, 39, 0.74) 100%);
+  background:
+    linear-gradient(165deg, rgba(3, 20, 38, 0.82) 0%, rgba(4, 22, 39, 0.62) 100%),
+    url('../media/ocean/pacific.jpg') center / cover no-repeat;
   color: var(--text-light, #F2F8FA);
 }
 .auth-modal__brand-eyebrow {

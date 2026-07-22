@@ -14,7 +14,7 @@ const checks = [
   ['globe hint dismiss hook', () => html.includes('data-globe-scene-hint') && eco.includes('lancun-globe-hint-dismiss')],
   ['ocean index rail', () => html.includes('data-ocean-index') && eco.includes('ocean-index-rail__item')],
   ['continue explore links', () => html.includes('home-continue') && html.includes('pages/species.html')],
-  ['footer explore links', () => html.includes('home-footer__links')],
+  ['no home footer', () => !html.includes('home-footer')],
   ['ESC reset overview', () => preview.includes("event.key !== 'Escape'")],
   ['ocean preview API', () => preview.includes('LANCUN_oceanPreview')],
   ['globe grab cursor', () => controls.includes("cursor = 'grab'")],
@@ -22,6 +22,8 @@ const checks = [
   ['index select event', () => preview.includes('lancun-ocean-index-select')],
   ['hint updated copy', () => html.includes('拖动地球 · 点击 + 探索五大洋')],
   ['section indicator styles', () => css.includes('.home-section-indicator')],
+  ['home body bg override', () => css.includes('body.home-page::before') && css.includes('display: none')],
+  ['no hero bottom fade', () => !css.includes('.hero-ocean-intro::after')],
 ];
 
 let failed = 0;

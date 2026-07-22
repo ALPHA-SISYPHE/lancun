@@ -5,6 +5,7 @@
     STATUS_LABELS,
     NOAA_DOCS,
     OPENAQ_DOCS,
+    OPENAQ_PROXY,
     formatNum,
     lonLatToSvg,
     fetchJson,
@@ -38,24 +39,22 @@
         sourceUrl: mock?.sourceUrl || NOAA_DOCS,
         statusLevel: mock?.statusLevel || 'ok',
         metrics: {
-          ph: display.ph ?? null,
+          waterLevel: display.waterLevel ?? null,
+          airPressure: display.airPressure ?? null,
           temperature: display.temperature ?? null,
-          salinity: display.salinity ?? null,
           pm25: display.pm25 ?? null,
-          dissolvedOxygen: display.dissolvedOxygen ?? null,
         },
         trends: {
-          ph: trends.ph || 'flat',
+          waterLevel: trends.waterLevel || 'flat',
+          airPressure: trends.airPressure || 'flat',
           temperature: trends.temperature || 'flat',
-          salinity: trends.salinity || 'flat',
           pm25: trends.pm25 || 'flat',
         },
         metricDemo: {
-          ph: cfg.metricKey !== 'ph',
-          temperature: true,
-          salinity: cfg.metricKey !== 'salinity',
+          waterLevel: cfg.metricKey !== 'waterLevel',
+          airPressure: cfg.metricKey !== 'airPressure',
+          temperature: cfg.metricKey !== 'temperature',
           pm25: cfg.metricKey !== 'pm25',
-          dissolvedOxygen: cfg.metricKey !== 'dissolvedOxygen',
         },
       });
     });
@@ -143,42 +142,22 @@
       return;
     }
 
-    const { config, live, updatedAt, sourceUrl, statusLevel, metrics, metricDemo } = state;
+    const { config, live, updatedAt, sourceUrl, statusLevel } = state;
     const level = statusLevel || 'ok';
-    const detailRows = [
-      { key: 'ph', label: 'pH', value: metrics.ph, demo: metricDemo.ph, unit: '' },
-      { key: 'temperature', label: '温度', value: metrics.temperature, demo: metricDemo.temperature, unit: '°C' },
-      { key: 'salinity', label: '盐度', value: metrics.salinity, demo: metricDemo.salinity, unit: 'PSU' },
-      { key: 'pm25', label: 'PM2.5', value: metrics.pm25, demo: metricDemo.pm25, unit: 'µg/m³' },
-    ];
 
-    host.className = 'station-panel';
+    host.className = 'station-panel monitor-station-bar';
     host.innerHTML = `
-      <div class="station-panel__head">
-        <div>
-          <h3>${config.label}</h3>
-          <p class="station-panel__coords">${formatLonLat(config.lat, config.lon)}</p>
-        </div>
-        <span class="status-pill status-pill--${level}">${STATUS_LABELS[level]}</span>
+      <div class="station-panel__primary">
+        <h3>${config.label}</h3>
+        <p class="station-panel__coords">${formatLonLat(config.lat, config.lon)}</p>
+        <p class="station-panel__meta">
+          ${live ? '实时' : '暂无实时数据，展示最近一次观测'} · ${updatedAt || '—'}
+        </p>
       </div>
-      <p class="station-panel__meta">
-        ${live ? '实时' : '暂无实时数据，展示最近一次观测'} · ${updatedAt || '—'}
-      </p>
-      <dl class="station-panel__metrics">
-        ${detailRows
-          .map(
-            (row) => `
-          <div class="station-panel__row">
-            <dt>${row.label}</dt>
-            <dd>
-              ${formatMetricValue(row.key, row.value)}${row.value != null && row.unit ? ` ${row.unit}` : ''}
-              ${row.demo || row.value == null ? '<small>最近一次观测</small>' : ''}
-            </dd>
-          </div>`
-          )
-          .join('')}
-      </dl>
-      <a class="station-panel__source" href="${sourceUrl}" target="_blank" rel="noopener noreferrer">NOAA / OpenAQ</a>`;
+      <div class="station-panel__aside">
+        <span class="status-pill status-pill--${level}">${STATUS_LABELS[level]}</span>
+        <a class="station-panel__source" href="${sourceUrl}" target="_blank" rel="noopener noreferrer">NOAA / OpenAQ</a>
+      </div>`;
     host.setAttribute('aria-busy', 'false');
   };
 
@@ -301,18 +280,16 @@
   const fetchOpenAqPoint = async (config) => {
     const mock = getMockPoint(config.id);
     try {
-      const url = `https://api.openaq.org/v2/latest?coordinates=${config.lat},${config.lon}&radius=50000&limit=1&parameter=pm25`;
+      const url = `${OPENAQ_PROXY}?lat=${config.lat}&lon=${config.lon}`;
       const payload = await fetchJson(url);
-      const result = payload?.results?.[0];
-      const measurement = result?.measurements?.find((m) => m.parameter === 'pm25');
-      if (!measurement) throw new Error('OpenAQ empty');
-      const value = Number(measurement.value);
+      if (payload?.value == null || Number.isNaN(Number(payload.value))) throw new Error('OpenAQ empty');
+      const value = Number(payload.value);
       const level = config.evaluate(value);
       return {
         value,
         statusLevel: level,
-        updatedAt: measurement.lastUpdated || result.lastUpdated || '—',
-        sourceUrl: OPENAQ_DOCS,
+        updatedAt: payload.updatedAt ? `${payload.updatedAt} UTC` : '—',
+        sourceUrl: payload.sourceUrl || OPENAQ_DOCS,
         live: true,
       };
     } catch {

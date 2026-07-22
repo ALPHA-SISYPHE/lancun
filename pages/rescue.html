@@ -134,8 +134,6 @@
 
             </nav>
 
-            <button type="button" class="pollution-hero__data-link" data-rescue-data-sources-open>公开数据说明</button>
-
           </div>
 
         </div>
@@ -176,6 +174,7 @@
             <main id="live-monitoring" class="live-monitor-stage">
               <div class="monitor-toolbar" data-rescue-status-filter role="group" aria-label="监测点状态筛选"></div>
               <div class="monitor-window">
+                <header class="station-panel monitor-station-bar" data-rescue-station-detail aria-live="polite" aria-busy="true"></header>
                 <div class="monitor-map" aria-label="监测点分布示意地图">
                   <svg class="monitor-map__svg" data-rescue-map viewBox="0 0 800 400" role="img" aria-label="全球监测点分布示意">
                     <defs>
@@ -196,7 +195,6 @@
                     <g data-rescue-map-pins></g>
                   </svg>
                 </div>
-                <aside class="station-panel" data-rescue-station-detail aria-live="polite" aria-busy="true"></aside>
                 <div class="monitor-metrics" data-rescue-metric-strip aria-label="当前站点核心实时指标"></div>
               </div>
             </main>

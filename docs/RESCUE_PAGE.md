@@ -130,17 +130,17 @@ v1.0 草案中监测点 A–D（纽约水温、切萨皮克潮位、佛罗里达
 
 | 排名 | 数据源 | 可实现性 | 本轮 | 备注 |
 |------|--------|----------|------|------|
-| 1 | NOAA CO-OPS datagetter | 免密钥、JSON；`product=dissolved_oxygen` | **采用**（监测点 A：溶解氧） | 站 `8574680`；与 ocean 不同站+product |
-| 2 | NOAA CO-OPS datagetter | 同 API，换 `product=ph` | **采用**（监测点 B：pH） | 站 `9414290` |
-| 3 | NOAA CO-OPS datagetter | 同 API，换 `product=salinity` | **采用**（监测点 C：盐度） | 站 `8726520` |
-| 4 | OpenAQ API v3 | 免密钥；CORS 有风险 | **采用**（监测点 D：沿海 PM2.5） | 与 ocean 完全不同 API |
+| 1 | NOAA CO-OPS datagetter | 免密钥、JSON；`product=water_level` | **采用**（监测点 A：潮位） | 站 `8574680`；`date=today` + `datum=MLLW` |
+| 2 | NOAA CO-OPS datagetter | 同 API，`product=air_pressure` | **采用**（监测点 B：气压） | 站 `9414290` |
+| 3 | NOAA CO-OPS datagetter | 同 API，`product=water_temperature` | **采用**（监测点 C：水温） | 站 `8726520` |
+| 4 | OpenAQ API v3 | 需 API Key；经同源代理 | **采用**（监测点 D：沿海 PM2.5） | `/api/rescue/openaq`；Vercel 环境变量 `OPENAQ_API_KEY` |
 | — | NOAA datagetter 水温/潮位 @8518750 | 高 | **不采用** | ocean 页已占用 |
 | — | Coral Watch `southeast_florida` | 高 | **不采用** | ocean 页已占用 |
 | — | NOAA Coral Reef Watch 白化 | 中高 | **不采用** | 与 ocean 珊瑚 live 叙事重复 |
 | 5 | EMODnet | 欧区、作业相关性低 | 不采用 | 备选 mock 参考 |
 | 6 | 国家海洋预报中心 / CNEMC | 无稳定免跨域 REST | 不采用 | 静态或后续模拟，不纳入 §3.2 live |
 
-### 4.3 NOAA CO-OPS 水质监测（监测点 A、B、C）
+### 4.3 NOAA CO-OPS 监测（监测点 A、B、C）
 
 | 字段 | 内容 |
 |------|------|
@@ -148,10 +148,10 @@ v1.0 草案中监测点 A–D（纽约水温、切萨皮克潮位、佛罗里达
 | 端点 | `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter` |
 | 密钥 | 免密钥 |
 | CORS | 官方说明支持浏览器跨域；若环境失败则走降级 |
-| 监测点 A | `…&date=latest&station=8574680&product=dissolved_oxygen&units=metric&time_zone=gmt&format=json` |
-| 监测点 B | `…&date=latest&station=9414290&product=ph&units=metric&time_zone=gmt&format=json` |
-| 监测点 C | `…&date=latest&station=8726520&product=salinity&units=metric&time_zone=gmt&format=json` |
-| 备选站 | 若某站当日无 WQ 数据，实现轮可在同 `product` 的 NOAA 备选站中替换，须回写 `DATA_SOURCES.md` |
+| 监测点 A | `…&date=today&station=8574680&product=water_level&datum=MLLW&units=metric&time_zone=gmt&format=json` |
+| 监测点 B | `…&date=today&station=9414290&product=air_pressure&units=metric&time_zone=gmt&format=json` |
+| 监测点 C | `…&date=today&station=8726520&product=water_temperature&units=metric&time_zone=gmt&format=json` |
+| 核验说明 | `dissolved_oxygen` / `ph` **非** datagetter 合法 product（2026-07-22 实测）；已改用上表可通组合 |
 
 ### 4.4 OpenAQ API（监测点 D）
 
@@ -159,10 +159,9 @@ v1.0 草案中监测点 A–D（纽约水温、切萨皮克潮位、佛罗里达
 |------|------|
 | 文档 | https://docs.openaq.org/ |
 | 用途 | 洛杉矶沿海代表站 **PM2.5** 最新观测（陆海污染间接压力） |
-| 密钥 | 不需要（v3 公开端点；实现轮对照当前文档） |
-| 参数 | 按 lat/lon 或 location id 取最新 `pm25` 观测 |
-| CORS | 可能存在跨域限制；失败则走降级 |
-| 降级 | 失败 → `rescueLiveMock` + 演示提示；地图 pin 仍可读 |
+| 密钥 | **需要** OpenAQ v3 API Key（免费注册）；存 Vercel `OPENAQ_API_KEY`，**不入库** |
+| 代理 | 浏览器请求 `/api/rescue/openaq?lat=…&lon=…`（Vercel Serverless 转发 v3） |
+| 降级 | 无 Key 或上游失败 → `rescueLiveMock` + 演示提示；A/B/C NOAA 仍可实时 |
 
 ### 4.5 不采用的 live 源（去重说明）
 
@@ -174,13 +173,13 @@ v1.0 草案中监测点 A–D（纽约水温、切萨皮克潮位、佛罗里达
 
 ### 4.6 技术强制条款
 
-1. 纯前端 `fetch`；不新增后端代理（除非用户日后明确要求并改宪法）。
-2. `rescue_sta.md` 中 Vite 代理示例**仅作脚注**；本仓库默认静态站点路径与 ocean 页相同。
-3. 失败（网络、CORS、超时、非 JSON、当日无 WQ 数据）必须降级 `mock-data.js` 中 `rescueLiveMock`，并显示「当前为演示数据」和/或「上次成功时间」。
+1. NOAA 监测点 A/B/C 仍用纯前端 `fetch` 直连 datagetter（`date=today`）。
+2. **例外（2026-07-22）**：OpenAQ v3 仅允许 Vercel Serverless 代理 `/api/rescue/openaq`；Key 存环境变量，不入库。
+3. 失败（网络、CORS、超时、非 JSON、当日无数据、无 OpenAQ Key）必须按监测点降级 `rescueLiveMock`，并显示「暂无实时数据」与 mock 时间戳。
 4. 实时接口 **不得** 成为演示唯一数据来源；断网须完整可演示。
-5. API Key 不得入库。
+5. API Key 不得入库（含 `.gitignore` 忽略 `.env`）。
 6. 所有正式数字登记到 [`DATA_SOURCES.md`](DATA_SOURCES.md)。
-7. §3.2 四监测点 **不得** 与 [`OCEAN_PAGE.md`](OCEAN_PAGE.md) 附录 A.1 出现相同 API + 站号 + product 组合。
+7. §3.2 四监测点 **不得** 与 [`OCEAN_PAGE.md`](OCEAN_PAGE.md) 附录 A.1 出现相同 API + 站号 + product 组合（本页使用 `8574680`/`9414290`/`8726520`，与 ocean `8518750` 不同）。
 
 ---
 
@@ -298,22 +297,22 @@ v1.0 草案中监测点 A–D（纽约水温、切萨皮克潮位、佛罗里达
 
 | ID | 中文标签 | 地图位置（lat, lon） | 指标 | API | 站号/参数 | 叙事 | 状态 |
 |----|----------|----------------------|------|-----|-----------|------|------|
-| A | 切萨皮克湾 | 38.33, -76.45 | 溶解氧 DO | NOAA datagetter | `8574680`, `product=dissolved_oxygen`, `date=latest` | 低氧/富营养化压力 | 已锁定 |
-| B | 旧金山湾 | 37.81, -122.47 | pH | NOAA datagetter | `9414290`, `product=ph`, `date=latest` | 近岸酸化监测 | 已锁定 |
-| C | 墨西哥湾近岸 | 27.76, -82.63 | 盐度 | NOAA datagetter | `8726520`, `product=salinity`, `date=latest` | 径流/淡水脉冲异常 | 已锁定 |
-| D | 洛杉矶沿海 | 33.94, -118.40 | PM2.5 | OpenAQ API v3 | 按 lat/lon 或 location id 取最新 `pm25` | 沿海工业/交通间接压力 | 已锁定 |
+| A | 切萨皮克湾 | 39.27, -76.58 | 潮位 | NOAA datagetter | `8574680`, `product=water_level`, `datum=MLLW`, `date=today` | 海湾水位/径流压力 | 已锁定 |
+| B | 旧金山湾 | 37.81, -122.47 | 气压 | NOAA datagetter | `9414290`, `product=air_pressure`, `date=today` | 近岸大气与风暴关联 | 已锁定 |
+| C | 墨西哥湾近岸 | 27.76, -82.63 | 水温 | NOAA datagetter | `8726520`, `product=water_temperature`, `date=today` | 近岸热异常 | 已锁定 |
+| D | 洛杉矶沿海 | 33.94, -118.40 | PM2.5 | OpenAQ API v3（经 `/api/rescue/openaq`） | lat/lon 近 LA，`parameters_id=2` | 沿海颗粒物 | 已锁定 |
 
 ### B.3 降级 mock 字段（实现轮）
 
-`rescueLiveMock.points[]` 每项至少含：`id`, `label`, `lat`, `lon`, `value`, `unit`, `metric`（如 `dissolved_oxygen` / `ph` / `salinity` / `pm25`）, `status`, `updatedAt`, `sourceUrl`, `isDemo: true`。
+`rescueLiveMock.points[]` 每项至少含：`id`, `label`, `lat`, `lon`, `value`, `unit`, `metric`（如 `water_level` / `air_pressure` / `water_temperature` / `pm25`）, `status`, `updatedAt`, `sourceUrl`, `isDemo: true`。
 
 示例 mock 量级（实现轮写入 `mock-data.js`，须标注演示）：
 
 | id | label | value | unit |
 |----|-------|-------|------|
-| A | 切萨皮克湾 | 4.2 | mg/L |
-| B | 旧金山湾 | 7.8 | — |
-| C | 墨西哥湾近岸 | 32.5 | PSU |
+| A | 切萨皮克湾 | 0.72 | m |
+| B | 旧金山湾 | 1013.5 | hPa |
+| C | 墨西哥湾近岸 | 29.4 | °C |
 | D | 洛杉矶沿海 | 18 | µg/m³ |
 
 ---

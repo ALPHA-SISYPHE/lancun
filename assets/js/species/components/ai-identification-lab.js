@@ -300,6 +300,68 @@ window.LancunAIIdentificationLab = (function aiIdentificationLab() {
     setUIState('idle');
   }
 
+  const AI_DEMO_SPECIES_ID = 'chinese-white-dolphin';
+  const AI_DEMO_IMAGE = '../assets/media/species/chinese-white-dolphin.jpg';
+  const AI_DEMO_CONFIDENCE = 88;
+
+  async function loadDemoScenario() {
+    const species = getDatabase().find((s) => s.id === AI_DEMO_SPECIES_ID);
+    if (!species) return;
+
+    let url = AI_DEMO_IMAGE;
+    let file = null;
+
+    try {
+      const res = await fetch(AI_DEMO_IMAGE);
+      if (res.ok) {
+        const blob = await res.blob();
+        file = new File([blob], 'chinese-white-dolphin-demo.jpg', {
+          type: blob.type || 'image/jpeg',
+        });
+        url = URL.createObjectURL(blob);
+      }
+    } catch {
+      /* file:// 或离线环境：仍用相对路径展示预览 */
+    }
+
+    if (file) {
+      setPreviewFile(file, url);
+    } else {
+      uploadedFile = null;
+      previewUrl = url;
+      const img = document.querySelector('[data-ai-preview-img]');
+      const name = document.querySelector('[data-ai-preview-name]');
+      if (img) {
+        img.src = url;
+        img.alt = species.chineseName;
+      }
+      if (name) name.textContent = 'chinese-white-dolphin-demo.jpg';
+      document.querySelector('[data-upload-idle]')?.setAttribute('hidden', '');
+      document.querySelector('[data-upload-preview]')?.removeAttribute('hidden');
+    }
+
+    const result = normalizeRecognitionResult(
+      {
+        chineseName: species.chineseName,
+        englishName: species.englishName,
+        scientificName: species.scientificName,
+        confidence: AI_DEMO_CONFIDENCE,
+        speciesId: species.id,
+        brief: species.description,
+      },
+      { demoMode: true, previewUrl: url },
+    );
+
+    lastResult = result;
+    renderMatched(species, result, 'exact');
+
+    const demo = document.querySelector('[data-ai-demo-note]');
+    if (demo) {
+      demo.hidden = false;
+      demo.textContent = '演示样本 · 点击上传可替换演示样本';
+    }
+  }
+
   function acceptFile(file) {
     if (!file || !/^image\/(jpeg|png)$/i.test(file.type)) {
       const msg = document.querySelector('[data-ai-error-msg]');
@@ -360,11 +422,9 @@ window.LancunAIIdentificationLab = (function aiIdentificationLab() {
       if (uploadedFile) runRecognition(uploadedFile);
     });
 
-    document.querySelector('[data-ai-reselect]')?.addEventListener('click', () => {
+    document.querySelector('[data-ai-upload]')?.addEventListener('click', () => {
       input?.click();
     });
-
-    document.querySelector('[data-ai-clear]')?.addEventListener('click', clearUpload);
 
     document.querySelector('[data-ai-retry]')?.addEventListener('click', () => {
       if (uploadedFile) runRecognition(uploadedFile);
@@ -402,7 +462,7 @@ window.LancunAIIdentificationLab = (function aiIdentificationLab() {
     };
 
     fetchQuotaStatus();
-    setUIState('idle');
+    loadDemoScenario();
   }
 
   return {
@@ -412,6 +472,7 @@ window.LancunAIIdentificationLab = (function aiIdentificationLab() {
     getApiBase: apiBase,
     setPreviewFile,
     runRecognition,
+    loadDemoScenario,
     getUIState: () => {
       const visible = document.querySelector('[data-recognition-panel] [data-ai-state]:not([hidden])');
       return visible?.getAttribute('data-ai-state') || 'idle';

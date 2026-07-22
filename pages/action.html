@@ -218,7 +218,6 @@
         <div class="action-shell participation-hub__inner">
           <header class="participation-header">
             <h2 id="participation-hub-title">参与中心</h2>
-            <p>志愿报名与公益支持集中在此，右侧可浏览对应往期成果。</p>
           </header>
 
           <div class="participation-tabs" role="tablist" aria-label="参与中心">
@@ -264,14 +263,12 @@
                 <header class="mission-board-head">
                   <div>
                     <h3 id="mission-board-title" class="participation-panel-title">志愿活动</h3>
-                    <p class="participation-panel-lead">每次展示 3 个精选任务，支持换一批与详情报名。</p>
                   </div>
                   <div class="mission-board-tools">
                     <button class="button button-ghost" type="button" data-mission-refresh>换一批</button>
                     <span class="mission-board-tools__hint" data-mission-auto-hint>每 12 秒自动换新</span>
                   </div>
                 </header>
-                <p class="action-disclaimer">本页面为课程作业模拟，不产生真实报名效力。</p>
                 <p class="action-volunteer-hint" data-volunteer-login-hint hidden>请先登录后报名</p>
                 <p class="status-message" data-volunteer-status aria-live="polite"></p>
                 <div class="mission-card-grid volunteer-card-grid" data-mission-card-grid aria-live="polite"></div>
@@ -286,7 +283,6 @@
                 <header class="impact-head impact-head--compact">
                   <div>
                     <h3 id="impact-story-title" class="participation-panel-title">志愿往期成果</h3>
-                    <p class="impact-head__hint" data-impact-auto-hint-volunteer>一次展示一条 · 每 8 秒自动切换</p>
                   </div>
                   <p class="impact-carousel__counter" data-impact-counter-volunteer aria-live="polite">01 / 09</p>
                 </header>
@@ -305,7 +301,6 @@
             id="participation-panel-donation"
             data-participation-panel="donation"
             aria-labelledby="participation-tab-donation"
-            hidden
           >
             <div class="participation-content__main">
               <section
@@ -317,14 +312,12 @@
                 <header class="mission-board-head">
                   <div>
                     <h3 id="support-harbor-title" class="participation-panel-title">公益项目</h3>
-                    <p class="participation-panel-lead">每次展示 3 个支持项目，点击查看详情并完成模拟支持。</p>
                   </div>
                   <div class="mission-board-tools">
                     <button class="button button-ghost" type="button" data-donation-refresh>换一批</button>
                     <span class="mission-board-tools__hint" data-donation-auto-hint>每 12 秒自动换新</span>
                   </div>
                 </header>
-                <p class="action-disclaimer">本页面为课程作业模拟，不产生真实支付效力。</p>
                 <p class="action-donation-hint" data-donation-login-hint hidden>请先登录后再提交支持</p>
                 <p class="status-message" data-donation-status aria-live="polite"></p>
                 <div class="donation-card-grid" data-donation-card-grid aria-live="polite"></div>
@@ -339,7 +332,6 @@
                 <header class="impact-head impact-head--compact">
                   <div>
                     <h3 id="impact-story-donation-title" class="participation-panel-title">公益往期成果</h3>
-                    <p class="impact-head__hint" data-impact-auto-hint-donation>一次展示一条 · 每 8 秒自动切换</p>
                   </div>
                   <p class="impact-carousel__counter" data-impact-counter-donation aria-live="polite">01 / 09</p>
                 </header>
@@ -356,29 +348,31 @@
 
       <!-- 4. PersonalActionArchive -->
       <section id="personal-action-archive" class="action-module action-module--archive" aria-labelledby="personal-archive-title">
-        <div class="personal-archive-strip">
-          <div class="archive-strip__intro">
-            <h2 id="personal-archive-title">个人行动档案</h2>
-            <p>你的打卡、证书、报名与公益支持记录会保存在本地设备。</p>
+        <div class="action-shell">
+          <div class="personal-archive-strip">
+            <div class="archive-strip__intro">
+              <h2 id="personal-archive-title">个人行动档案</h2>
+              <p>你的打卡、证书、报名与公益支持记录会保存在本地设备。</p>
+            </div>
+            <nav class="archive-strip__entries" aria-label="个人行动档案入口">
+              <button class="archive-strip__entry" type="button" data-archive-history>
+                <span class="archive-strip__label">打卡记录</span>
+                <strong class="archive-strip__count" data-archive-stat-checkins>0 次</strong>
+              </button>
+              <button class="archive-strip__entry" type="button" data-archive-badges>
+                <span class="archive-strip__label">已获勋章</span>
+                <strong class="archive-strip__count" data-archive-stat-badges>0 枚</strong>
+              </button>
+              <button class="archive-strip__entry" type="button" data-archive-volunteer-records>
+                <span class="archive-strip__label">志愿报名</span>
+                <strong class="archive-strip__count" data-archive-stat-volunteer>0 次</strong>
+              </button>
+              <button class="archive-strip__entry" type="button" data-archive-donations>
+                <span class="archive-strip__label">公益支持</span>
+                <strong class="archive-strip__count" data-archive-stat-donations>0 次</strong>
+              </button>
+            </nav>
           </div>
-          <nav class="archive-strip__entries" aria-label="个人行动档案入口">
-            <button class="archive-strip__entry" type="button" data-archive-history>
-              <span class="archive-strip__label">打卡记录</span>
-              <strong class="archive-strip__count" data-archive-stat-checkins>0 次</strong>
-            </button>
-            <button class="archive-strip__entry" type="button" data-archive-badges>
-              <span class="archive-strip__label">已获勋章</span>
-              <strong class="archive-strip__count" data-archive-stat-badges>0 枚</strong>
-            </button>
-            <button class="archive-strip__entry" type="button" data-archive-volunteer-records>
-              <span class="archive-strip__label">志愿报名</span>
-              <strong class="archive-strip__count" data-archive-stat-volunteer>0 次</strong>
-            </button>
-            <button class="archive-strip__entry" type="button" data-archive-donations>
-              <span class="archive-strip__label">公益支持</span>
-              <strong class="archive-strip__count" data-archive-stat-donations>0 次</strong>
-            </button>
-          </nav>
         </div>
       </section>
     </main>
@@ -440,7 +434,7 @@
       <div class="checkin-badge-grid" data-checkin-badges-grid></div>
     </dialog>
 
-    <dialog class="action-dialog volunteer-detail-dialog volunteer-mission-dossier" data-volunteer-detail-dialog aria-labelledby="volunteer-detail-title">
+    <dialog class="action-dialog action-dialog--hub-light volunteer-detail-dialog volunteer-mission-dossier" data-volunteer-detail-dialog aria-labelledby="volunteer-detail-title">
       <header class="action-dialog-header">
         <h2 id="volunteer-detail-title" data-volunteer-detail-title>任务档案</h2>
         <button class="action-dialog-close" type="button" data-volunteer-detail-close aria-label="关闭">×</button>
@@ -483,7 +477,7 @@
       </footer>
     </dialog>
 
-    <dialog class="action-dialog volunteer-register-dialog" data-volunteer-register-dialog aria-labelledby="volunteer-register-heading">
+    <dialog class="action-dialog action-dialog--hub-light volunteer-register-dialog" data-volunteer-register-dialog aria-labelledby="volunteer-register-heading">
       <header class="action-dialog-header">
         <h2 id="volunteer-register-heading" data-volunteer-register-title>活动报名</h2>
         <button class="action-dialog-close" type="button" data-volunteer-register-close aria-label="关闭">×</button>
@@ -533,7 +527,7 @@
       </form>
     </dialog>
 
-    <dialog class="action-dialog volunteer-success-dialog" data-volunteer-success-dialog aria-labelledby="volunteer-success-title">
+    <dialog class="action-dialog action-dialog--hub-light volunteer-success-dialog" data-volunteer-success-dialog aria-labelledby="volunteer-success-title">
       <div class="volunteer-success-panel">
         <h2 id="volunteer-success-title">报名成功！</h2>
         <p>你已经加入本次海洋行动任务。</p>
@@ -552,7 +546,7 @@
       <div class="volunteer-records-list" data-volunteer-records-list></div>
     </dialog>
 
-    <dialog class="action-dialog donation-detail-dialog" data-donation-detail-dialog aria-labelledby="donation-detail-title">
+    <dialog class="action-dialog action-dialog--hub-light donation-detail-dialog" data-donation-detail-dialog aria-labelledby="donation-detail-title">
       <header class="action-dialog-header">
         <h2 id="donation-detail-title">公益项目详情</h2>
         <button class="action-dialog-close" type="button" data-donation-detail-close aria-label="关闭">×</button>
@@ -598,7 +592,7 @@
       </div>
     </dialog>
 
-    <dialog class="action-dialog impact-detail-dialog impact-report-card" data-impact-detail-dialog aria-labelledby="impact-detail-title">
+    <dialog class="action-dialog action-dialog--hub-light impact-detail-dialog impact-report-card" data-impact-detail-dialog aria-labelledby="impact-detail-title">
       <header class="action-dialog-header">
         <p class="impact-detail-eyebrow">Impact Report</p>
         <h2 id="impact-detail-title" data-impact-detail-title>往期成果报告</h2>
@@ -628,7 +622,7 @@
       </footer>
     </dialog>
 
-    <dialog class="action-dialog donation-thanks-dialog" data-donation-thanks-dialog aria-labelledby="donation-thanks-title">
+    <dialog class="action-dialog action-dialog--hub-light donation-thanks-dialog" data-donation-thanks-dialog aria-labelledby="donation-thanks-title">
       <div class="donation-thanks-card">
         <p class="donation-thanks-card__eyebrow">Blue Action Receipt</p>
         <h2 id="donation-thanks-title">感谢你的支持</h2>

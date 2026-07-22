@@ -87,6 +87,12 @@
         const target = map[key];
         if (!target) return;
         event.preventDefault();
+        if (key === 'globe' && typeof window.LANCUN_scrollToHomeGlobeSection === 'function') {
+          window.LANCUN_scrollToHomeGlobeSection({
+            behavior: motionReduced() ? 'auto' : 'smooth',
+          });
+          return;
+        }
         target.scrollIntoView({
           behavior: motionReduced() ? 'auto' : 'smooth',
           block: 'start',

@@ -134,14 +134,9 @@
       return (window.IMPACT_STORIES ?? []).filter((item) => item.relatedType === state.typeFilter);
     }
 
-    function isTabActive() {
-      return window.OceanActionParticipationHub?.getActiveTab?.() === state.tabKey;
-    }
-
     function shouldPause() {
       return (
-        !isTabActive()
-        || state.hoverPaused
+        state.hoverPaused
         || document.hidden
         || state.reducedMotion
         || isImpactDetailOpen()
@@ -223,7 +218,7 @@
 
     function startAuto() {
       stopAuto();
-      if (state.reducedMotion || !isTabActive()) return;
+      if (state.reducedMotion) return;
       state.timer = window.setInterval(() => {
         if (!shouldPause()) go(1);
       }, 8000);
@@ -269,15 +264,17 @@
     };
   }
 
-  function setActiveTab(tabKey) {
+  function refreshAllCarousels() {
     instances.forEach((instance) => {
       instance.stopAuto();
       instance.updateAutoHint();
-      if (instance.tabKey === tabKey) {
-        instance.renderSlide();
-        if (!instance.shouldPause()) instance.startAuto();
-      }
+      instance.renderSlide();
+      if (!instance.shouldPause()) instance.startAuto();
     });
+  }
+
+  function setActiveTab() {
+    refreshAllCarousels();
   }
 
   function bindImpactDetailDialog() {
@@ -307,7 +304,6 @@
         root: '[data-impact-carousel-volunteer]',
         card: '[data-impact-card-volunteer]',
         counter: '[data-impact-counter-volunteer]',
-        hint: '[data-impact-auto-hint-volunteer]',
         prev: '[data-impact-prev-volunteer]',
         next: '[data-impact-next-volunteer]',
       }),
@@ -318,7 +314,6 @@
         root: '[data-impact-carousel-donation]',
         card: '[data-impact-card-donation]',
         counter: '[data-impact-counter-donation]',
-        hint: '[data-impact-auto-hint-donation]',
         prev: '[data-impact-prev-donation]',
         next: '[data-impact-next-donation]',
       }),
@@ -335,11 +330,11 @@
       if (document.hidden) {
         instances.forEach((instance) => instance.stopAuto());
       } else {
-        setActiveTab(window.OceanActionParticipationHub?.getActiveTab?.() || 'volunteer');
+        refreshAllCarousels();
       }
     });
 
-    setActiveTab('volunteer');
+    refreshAllCarousels();
   }
 
   document.addEventListener('DOMContentLoaded', setupImpactCarousels);

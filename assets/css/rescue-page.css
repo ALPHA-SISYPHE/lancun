@@ -180,6 +180,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 1.25rem;
   background: transparent;
   padding-block: 5rem 1rem;
 }
@@ -207,8 +208,6 @@
 .pollution-hero__copy--tail {
   grid-column: 1;
   grid-row: 2;
-  position: relative;
-  z-index: 2;
 }
 
 .pollution-hero__inner > .pressure-panel {
@@ -240,6 +239,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem 1.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .pollution-hero__anchors a {
@@ -255,25 +255,6 @@
 .pollution-hero__anchors a:hover,
 .pollution-hero__anchors a:focus-visible {
   border-color: #fff;
-  outline: none;
-}
-
-.pollution-hero__data-link {
-  margin-top: 1rem;
-  padding: 0;
-  font: inherit;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.72);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
-  cursor: pointer;
-}
-
-.pollution-hero__data-link:hover,
-.pollution-hero__data-link:focus-visible {
-  color: #fff;
   outline: none;
 }
 
@@ -343,7 +324,7 @@
 .status-ribbon,
 .pollution-hero__status-ribbon {
   max-width: 1180px;
-  margin: -20px auto 0;
+  margin: 0 auto;
   position: relative;
   z-index: 1;
   display: grid;
@@ -739,10 +720,10 @@
 .pollution-insight-panel .trend-chart-card,
 .pollution-insight-panel .composition-card,
 .pollution-insight-panel .source-structure-card {
-  background: var(--insight-card-bg);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--insight-divider);
   border-radius: 4px;
-  box-shadow: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .trend-chart-card {
@@ -859,6 +840,68 @@
   height: 112px;
   min-width: 112px;
   min-height: 112px;
+  background: conic-gradient(
+    var(--insight-blue) 0 var(--ring-plastic),
+    rgba(85, 214, 194, 0.55) var(--ring-plastic) 100%
+  );
+}
+
+.pollution-insight-panel .composition-ring {
+  width: 112px;
+  height: 112px;
+  min-width: 112px;
+  min-height: 112px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+}
+
+.pollution-insight-panel .composition-ring__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.pollution-insight-panel .composition-ring__segment {
+  transition: transform 0.22s ease, filter 0.22s ease;
+  transform-box: view-box;
+  transform-origin: 50px 50px;
+  cursor: pointer;
+  outline: none;
+  pointer-events: all;
+}
+
+.pollution-insight-panel .composition-ring__segment--plastic .composition-ring__path {
+  fill: var(--insight-blue);
+}
+
+.pollution-insight-panel .composition-ring__segment--other .composition-ring__path {
+  fill: rgba(85, 214, 194, 0.55);
+}
+
+.pollution-insight-panel .composition-ring__segment.is-active {
+  transform: translate(var(--pop-x, 0), var(--pop-y, 0)) scale(1.06);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+}
+
+.pollution-insight-panel .composition-card .rescue-pie__legend li.is-active {
+  color: rgba(242, 248, 250, 0.88);
+}
+
+.pollution-insight-panel .composition-card .rescue-pie__legend li.is-active .rescue-pie__legend-value {
+  color: rgba(242, 248, 250, 0.95);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pollution-insight-panel .composition-ring__segment {
+    transition: none;
+  }
+
+  .pollution-insight-panel .composition-ring__segment.is-active {
+    transform: none;
+    filter: brightness(1.15);
+  }
 }
 
 .composition-card .rescue-pie__ring::after {
@@ -941,12 +984,24 @@
   border-radius: 1px;
 }
 
+.pollution-insight-panel .insight-source-bars .chart-row:nth-child(1) .chart-fill {
+  background: var(--insight-blue);
+}
+
+.pollution-insight-panel .insight-source-bars .chart-row:nth-child(2) .chart-fill {
+  background: var(--insight-teal);
+}
+
+.pollution-insight-panel .insight-source-bars .chart-row:nth-child(3) .chart-fill {
+  background: var(--insight-amber);
+}
+
 .pollution-insight-panel .rescue-pie__swatch--primary {
   background: var(--insight-blue);
 }
 
 .pollution-insight-panel .rescue-pie__swatch--secondary {
-  background: var(--insight-ring-other);
+  background: rgba(85, 214, 194, 0.72);
 }
 
 .pollution-insight-panel .rescue-pie__swatch {
@@ -1170,6 +1225,10 @@
   stroke-width: 1;
 }
 
+.pollution-insight-panel .rescue-trend__area {
+  fill: rgba(77, 163, 255, 0.08);
+}
+
 .pollution-insight-panel .rescue-trend__line {
   fill: none;
   stroke: var(--insight-blue);
@@ -1178,15 +1237,29 @@
 
 .pollution-insight-panel .rescue-trend__dot {
   fill: var(--insight-blue);
+  stroke: rgba(242, 248, 250, 0.35);
+  stroke-width: 1.5;
 }
 
 .pollution-insight-panel .rescue-trend__dot.is-active {
   fill: var(--insight-blue);
+  stroke: rgba(242, 248, 250, 0.72);
 }
 
 .pollution-insight-panel .rescue-trend__label {
   fill: var(--insight-text);
   font-size: 12px;
+}
+
+.pollution-insight-panel .rescue-trend__tick {
+  fill: rgba(242, 248, 250, 0.45);
+  font-size: 10px;
+}
+
+.pollution-insight-panel .rescue-trend__unit {
+  fill: rgba(242, 248, 250, 0.42);
+  font-size: 10px;
+  letter-spacing: 0.06em;
 }
 
 .pollution-insight-panel .chart-tooltip {
@@ -1732,6 +1805,9 @@
 /* ——— Monitor window (inside Command Deck) ——— */
 .monitor-window {
   position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(340px, 1fr) auto;
   min-height: 500px;
   background: rgba(3, 18, 34, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -1739,28 +1815,29 @@
   box-sizing: border-box;
 }
 
-.monitor-window::after {
+.monitor-map {
+  position: relative;
+  min-height: 340px;
+  overflow: hidden;
+}
+
+.monitor-map::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 1;
   background: linear-gradient(
-    90deg,
-    rgba(3, 18, 34, 0.22) 0%,
-    rgba(3, 18, 34, 0.02) 42%,
-    rgba(3, 18, 34, 0.18) 100%
+    180deg,
+    rgba(3, 18, 34, 0.12) 0%,
+    rgba(3, 18, 34, 0.02) 38%,
+    rgba(3, 18, 34, 0.14) 100%
   );
 }
 
-.monitor-map {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  min-height: 500px;
-}
-
 .monitor-map__svg {
+  position: relative;
+  z-index: 2;
   width: 100%;
   height: 100%;
   display: block;
@@ -1861,20 +1938,14 @@
   --station-frost-ink: #08233d;
   --station-frost-muted: rgba(8, 35, 61, 0.58);
   --station-frost-line: rgba(8, 35, 61, 0.12);
-  position: absolute;
-  top: 36px;
-  right: 36px;
-  width: 300px;
-  max-width: calc(100% - 72px);
-  z-index: 3;
-  background: var(--station-frost-bg);
+  position: relative;
+  flex: 0 0 auto;
+  z-index: 1;
+  background: transparent;
   color: var(--station-frost-ink);
-  padding: 24px 26px;
-  border: 1px solid var(--station-frost-border);
-  max-height: calc(100% - 72px);
+  padding: 20px 22px 16px;
+  border: none;
   overflow: hidden;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   box-sizing: border-box;
 }
 
@@ -1912,7 +1983,7 @@
 }
 
 .station-panel__meta {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.65rem;
   font-size: 0.7rem;
   color: var(--station-frost-muted);
   line-height: 1.45;
@@ -1957,7 +2028,7 @@
 
 .station-panel__source {
   display: inline-block;
-  margin-top: 0.65rem;
+  margin-top: 0;
   font-size: 0.7rem;
   color: var(--station-frost-muted);
   text-decoration: none;
@@ -1971,36 +2042,38 @@
 }
 
 .monitor-metrics {
-  --metric-frost-bg: rgba(234, 245, 247, 0.58);
-  --metric-frost-border: rgba(255, 255, 255, 0.3);
+  --metric-frost-bg: transparent;
+  --metric-frost-border: transparent;
   --metric-frost-ink: #08233d;
   --metric-frost-muted: rgba(8, 35, 61, 0.58);
   --metric-frost-line: rgba(7, 30, 48, 0.12);
-  position: absolute;
-  left: 36px;
-  bottom: 30px;
-  right: auto;
-  width: min(640px, calc(100% - 420px));
+  position: relative;
+  margin-top: auto;
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 0;
-  z-index: 3;
-  background: var(--metric-frost-bg);
-  border: 1px solid var(--metric-frost-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  z-index: 1;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--metric-frost-line);
   box-sizing: border-box;
 }
 
 .monitor-metrics__cell {
   background: transparent;
-  padding: 16px 18px;
+  padding: 14px 16px;
   color: var(--metric-frost-ink);
   border-right: 1px solid var(--metric-frost-line);
+  border-bottom: 1px solid var(--metric-frost-line);
 }
 
-.monitor-metrics__cell:last-child {
+.monitor-metrics__cell:nth-child(2n) {
   border-right: none;
+}
+
+.monitor-metrics__cell:nth-child(n + 3) {
+  border-bottom: none;
 }
 
 .monitor-metrics__cell.is-active-metric {
@@ -2882,7 +2955,8 @@ body.source-drawer-open {
 @media (max-width: 56rem) {
   .pollution-hero {
     min-height: auto;
-    padding-block: 5.5rem 0;
+    padding-block: 5.5rem 1rem;
+    gap: 1rem;
   }
 
   .pollution-hero__inner {
@@ -2969,7 +3043,8 @@ body.source-drawer-open {
   .monitor-window {
     min-height: 0;
     display: grid;
-    grid-template-rows: minmax(240px, 32vh) auto auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(240px, 32vh) auto;
     overflow-x: hidden;
   }
 
@@ -2977,29 +3052,21 @@ body.source-drawer-open {
     position: relative;
     grid-row: 1;
     min-height: 240px;
-    z-index: 0;
+  }
+
+  .monitor-sidebar {
+    grid-row: 2;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   .station-panel {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: auto;
-    max-width: none;
-    max-height: none;
-    padding: 20px 22px;
-    border: none;
-    border-top: 1px solid var(--station-frost-line);
+    padding: 20px 22px 14px;
+    border-top: none;
   }
 
   .monitor-metrics {
-    position: relative;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    width: 100%;
-    max-width: none;
-    overflow-x: hidden;
+    margin-top: 0;
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -3014,6 +3081,14 @@ body.source-drawer-open {
 
   .monitor-metrics__cell:nth-child(-n + 2) {
     border-bottom: 1px solid var(--metric-frost-line);
+  }
+
+  .monitor-metrics__cell:nth-child(2n) {
+    border-right: none;
+  }
+
+  .monitor-metrics__cell:nth-child(n + 3) {
+    border-bottom: none;
   }
 
   .source-solution-shell {

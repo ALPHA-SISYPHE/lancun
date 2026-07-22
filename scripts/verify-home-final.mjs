@@ -23,7 +23,22 @@ const checks = [
   ['mobile index horizontal scroll', () => css.includes('overflow-x: auto') && css.includes('.ocean-index-rail')],
   ['mobile pin 40px+', () => css.includes('min-width: 2.5rem')],
   ['reduced motion hooks', () => css.includes("html[data-reduced-motion='true']")],
-  ['home css v85', () => html.includes('home.css?v=85')],
+  ['home css v96', () => html.includes('home.css?v=96')],
+  ['hero content framed', () => html.includes('hero-content--framed') && css.includes('.hero-content--framed::before')],
+  ['hero lxgw font cdn', () => html.includes('lxgw-wenkai-screen-webfont')],
+  ['hero lxgw font css', () => css.includes('LXGW WenKai Screen')],
+  ['hero lframe strengthened', () => css.includes('border-top: 2px solid rgba(255, 255, 255, 0.62)') && css.includes('clamp(3.75rem, 10vw, 5.75rem)')],
+  ['home two-screen hero lock', () => css.includes('body.home-page #hero-intro.hero-ocean-intro') && css.includes('var(--home-screen, 100svh)')],
+  ['home two-screen explore lock', () => css.includes('body.home-page #ocean-explore.ocean-globe-explorer.ocean-explore') && css.includes('var(--home-screen, 100svh)')],
+  ['home screen height sync', () => hero.includes('syncHomeScreenHeight') && hero.includes('--home-screen')],
+  ['home hero pin by scrollY', () => hero.includes('isHomeHeroPinned') && hero.includes('syncHeroPinState')],
+  ['home globe scroll max', () => hero.includes('scrollHeight - doc.clientHeight')],
+  ['home globe scroll snap', () => hero.includes('scrollend') || hero.includes('setTimeout(snap')],
+  ['no home footer', () => !html.includes('home-footer')],
+  ['home body bg override', () => css.includes('body.home-page::before') && css.includes('display: none')],
+  ['no hero bottom fade', () => !css.includes('.hero-ocean-intro::after')],
+  ['hero media pin css', () => css.includes('hero-media-unpinned') && css.includes('object-position: center top')],
+  ['hero media pin js', () => hero.includes('is-hero-media-pinned') && hero.includes('hero-media-unpinned')],
 ];
 
 let failed = 0;

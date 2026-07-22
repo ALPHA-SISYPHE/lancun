@@ -138,16 +138,18 @@
 | 核验结论 | **未找到可核验的官方 REST API** |
 | 锁定替代 | **Coral Watch API**：https://api.coral.tsr.lol/ |
 | 用途 | 第一节看板 **1–3**：SST、热应力、白化相关（见附录 A） |
+| CORS | 上游 **无** `Access-Control-Allow-Origin`；生产环境经同源代理 `/api/ocean/coral`（Vercel Serverless） |
 | 禁止 | 把接口响应 **伪造** 成「修复面积 / 存活率」 |
 | 降级 | 失败 → 本地 mock +「演示数据」提示 |
 
 ### 4.4 技术强制条款
 
-1. 纯前端 `fetch`；不新增后端代理（除非日后用户明确要求并改宪法）。
-2. 失败（网络、CORS、无 Key、超时、非 JSON）必须降级本地 mock，并显示「当前为演示数据」和/或「上次成功时间」。
-3. 实时接口 **不得** 成为作业唯一数据来源；本地降级数据必须完整可演示。
-4. 所有正式数字登记到 [`DATA_SOURCES.md`](DATA_SOURCES.md)。
-5. API Key 不得入库；`.gitignore` 忽略密钥文件。
+1. NOAA 等支持 CORS 的接口仍用纯前端 `fetch` 直连。
+2. **例外（2026-07-22）**：Coral Watch 仅允许 Vercel Serverless 代理 `/api/ocean/coral`，因上游无浏览器 CORS；本地 `npx serve` 无代理时 Coral 3 卡降级，NOAA 3 卡仍可实时。
+3. 失败（网络、CORS、无 Key、超时、非 JSON）必须按数据源降级本地 mock，并显示「本地演示」状态。
+4. 实时接口 **不得** 成为作业唯一数据来源；本地降级数据必须完整可演示。
+5. 所有正式数字登记到 [`DATA_SOURCES.md`](DATA_SOURCES.md)。
+6. API Key 不得入库；`.gitignore` 忽略密钥文件。
 
 ### 4.5 第二、三节静态数据（A.2 / A.3）
 

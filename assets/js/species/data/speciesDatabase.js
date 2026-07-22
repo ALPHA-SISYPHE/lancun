@@ -79,8 +79,8 @@ window.LANCUN_SPECIES_DB = [
       "atlantic",
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/humpback-whale.jpg",
+    "thumbnail": "assets/media/species/humpback-whale.jpg",
     "description": "以复杂歌声与跃水行为著称的大型须鲸。",
     "threats": [
       "bycatch",
@@ -107,8 +107,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/north-atlantic-right-whale.jpg",
+    "thumbnail": "assets/media/species/north-atlantic-right-whale.jpg",
     "description": "极度濒危的露脊鲸，船撞与渔具缠绕为主要威胁。",
     "threats": [
       "bycatch",
@@ -138,8 +138,8 @@ window.LANCUN_SPECIES_DB = [
       "arctic",
       "southern"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/orca.jpg",
+    "thumbnail": "assets/media/species/orca.jpg",
     "description": "顶级海洋捕食者，种群结构复杂，部分地方种群受威胁。",
     "threats": [
       "noise",
@@ -288,8 +288,8 @@ window.LANCUN_SPECIES_DB = [
       "indian",
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/whale-shark.jpg",
+    "thumbnail": "assets/media/species/whale-shark.jpg",
     "description": "世界上最大的鱼类，滤食性温和巨兽。",
     "threats": [
       "overfishing",
@@ -317,8 +317,8 @@ window.LANCUN_SPECIES_DB = [
       "atlantic",
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/basking-shark.jpg",
+    "thumbnail": "assets/media/species/basking-shark.jpg",
     "description": "第二大鲨鱼，温和滤食，种群恢复缓慢。",
     "threats": [
       "bycatch",
@@ -347,8 +347,8 @@ window.LANCUN_SPECIES_DB = [
       "indian",
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/manta-ray.jpg",
+    "thumbnail": "assets/media/species/manta-ray.jpg",
     "description": "大型滤食性鳐鱼，清洁站行为极具生态魅力。",
     "threats": [
       "overfishing",
@@ -377,8 +377,8 @@ window.LANCUN_SPECIES_DB = [
       "atlantic",
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/hammerhead-shark.jpg",
+    "thumbnail": "assets/media/species/hammerhead-shark.jpg",
     "description": "头型独特的鲨鱼，常集群活动，对过度捕捞敏感。",
     "threats": [
       "overfishing",
@@ -407,8 +407,8 @@ window.LANCUN_SPECIES_DB = [
       "indian",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/dugong.jpg",
+    "thumbnail": "assets/media/species/dugong.jpg",
     "description": "以海草为食的温和海兽，海草床健康指示种。",
     "threats": [
       "habitat-loss",
@@ -436,8 +436,8 @@ window.LANCUN_SPECIES_DB = [
       "atlantic",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/manatee.jpg",
+    "thumbnail": "assets/media/species/manatee.jpg",
     "description": "行动缓慢的草食性海兽，易受船只撞击与栖息地退化影响。",
     "threats": [
       "habitat-loss",
@@ -465,8 +465,8 @@ window.LANCUN_SPECIES_DB = [
       "pacific",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/sea-otter.jpg",
+    "thumbnail": "assets/media/species/sea-otter.jpg",
     "description": "维持近岸海藻林生态系统平衡的关键捕食者。",
     "threats": [
       "climate",
@@ -494,8 +494,8 @@ window.LANCUN_SPECIES_DB = [
       "pacific",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/hawaiian-monk-seal.jpg",
+    "thumbnail": "assets/media/species/hawaiian-monk-seal.jpg",
     "description": "全球最为稀有的鳍足类之一，依赖孤立岛链繁殖。",
     "threats": [
       "habitat-loss",
@@ -523,8 +523,8 @@ window.LANCUN_SPECIES_DB = [
       "arctic",
       "polar"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/walrus.jpg",
+    "thumbnail": "assets/media/species/walrus.jpg",
     "description": "依赖海冰与浅滩觅食的北极鳍足类，对气候变化敏感。",
     "threats": [
       "climate",
@@ -668,8 +668,8 @@ window.LANCUN_SPECIES_DB = [
       "coastal",
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/sea-anemone.jpg",
+    "thumbnail": "assets/media/species/sea-anemone.jpg",
     "description": "常见刺胞动物，与小丑鱼等形成著名共生关系。",
     "threats": [
       "habitat-loss",
@@ -697,8 +697,8 @@ window.LANCUN_SPECIES_DB = [
       "coral-reef",
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/clownfish.jpg",
+    "thumbnail": "assets/media/species/clownfish.jpg",
     "description": "与海葵共生的珊瑚礁明星物种，依赖健康礁体。",
     "threats": [
       "habitat-loss",
@@ -727,8 +727,8 @@ window.LANCUN_SPECIES_DB = [
       "pacific",
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/napoleon-wrasse.jpg",
+    "thumbnail": "assets/media/species/napoleon-wrasse.jpg",
     "description": "大型隆头鱼，珊瑚礁顶级捕食者之一。",
     "threats": [
       "overfishing",
@@ -757,8 +757,8 @@ window.LANCUN_SPECIES_DB = [
       "atlantic",
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/yellowfin-tuna.jpg",
+    "thumbnail": "assets/media/species/yellowfin-tuna.jpg",
     "description": "高速远洋鱼类，全球渔业重要目标种。",
     "threats": [
       "overfishing",
@@ -815,8 +815,8 @@ window.LANCUN_SPECIES_DB = [
       "coastal",
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/seahorse.jpg",
+    "thumbnail": "assets/media/species/seahorse.jpg",
     "description": "独特的卵生由雄性育幼，对栖息地质量敏感。",
     "threats": [
       "habitat-loss",
@@ -873,8 +873,8 @@ window.LANCUN_SPECIES_DB = [
       "deep-sea",
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/nautilus.jpg",
+    "thumbnail": "assets/media/species/nautilus.jpg",
     "description": "活化石头足类，生长缓慢，壳体贸易威胁显著。",
     "threats": [
       "overfishing",
@@ -902,8 +902,8 @@ window.LANCUN_SPECIES_DB = [
       "pacific",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/horseshoe-crab.jpg",
+    "thumbnail": "assets/media/species/horseshoe-crab.jpg",
     "description": "古老节肢动物，繁殖依赖完整潮间带栖息地。",
     "threats": [
       "habitat-loss",
@@ -931,8 +931,8 @@ window.LANCUN_SPECIES_DB = [
       "coastal",
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/starfish.jpg",
+    "thumbnail": "assets/media/species/starfish.jpg",
     "description": "常见棘皮动物，部分种类对珊瑚礁生态有重要影响。",
     "threats": [
       "habitat-loss",
@@ -960,8 +960,8 @@ window.LANCUN_SPECIES_DB = [
       "southern",
       "polar"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/emperor-penguin.jpg",
+    "thumbnail": "assets/media/species/emperor-penguin.jpg",
     "description": "南极标志性海鸟，依赖稳定海冰繁殖。",
     "threats": [
       "climate",
@@ -989,8 +989,8 @@ window.LANCUN_SPECIES_DB = [
       "southern",
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/albatross.jpg",
+    "thumbnail": "assets/media/species/albatross.jpg",
     "description": "翼展极大的远洋海鸟，易受延绳钓副渔获与塑料影响。",
     "threats": [
       "bycatch",
@@ -1017,8 +1017,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/black-footed-albatross.jpg",
+    "thumbnail": "assets/media/species/black-footed-albatross.jpg",
     "description": "北太平洋远洋海鸟，对塑料误吞与副渔获敏感。",
     "threats": [
       "plastic",
@@ -1045,8 +1045,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-036--.jpg",
+    "thumbnail": "assets/media/species/species-036--.jpg",
     "description": "太平洋银鲳是太平洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -1073,8 +1073,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-037--.jpg",
+    "thumbnail": "assets/media/species/species-037--.jpg",
     "description": "大西洋带鱼是大西洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",
@@ -1101,8 +1101,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-038--.jpg",
+    "thumbnail": "assets/media/species/species-038--.jpg",
     "description": "印度洋鲷鱼是印度洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "habitat-loss",
@@ -1129,8 +1129,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "deep-sea"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-039--.jpg",
+    "thumbnail": "assets/media/species/species-039--.jpg",
     "description": "深海石斑是深海海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "climate",
@@ -1157,8 +1157,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-040--.jpg",
+    "thumbnail": "assets/media/species/species-040--.jpg",
     "description": "珊瑚礁比目鱼是珊瑚礁海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "acidification",
@@ -1185,8 +1185,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-041--.jpg",
+    "thumbnail": "assets/media/species/species-041--.jpg",
     "description": "近岸沙丁鱼是近岸海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "overfishing",
@@ -1213,8 +1213,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "polar"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-042--.jpg",
+    "thumbnail": "assets/media/species/species-042--.jpg",
     "description": "极地飞鱼是极地海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "noise",
@@ -1241,8 +1241,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "southern"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-043--.jpg",
+    "thumbnail": "assets/media/species/species-043--.jpg",
     "description": "南大洋刺尾鱼是南大洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -1269,8 +1269,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "arctic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-044--.jpg",
+    "thumbnail": "assets/media/species/species-044--.jpg",
     "description": "北冰洋笛鲷是北冰洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",
@@ -1298,8 +1298,8 @@ window.LANCUN_SPECIES_DB = [
       "coral-reef",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-045--.jpg",
+    "thumbnail": "assets/media/species/species-045--.jpg",
     "description": "礁区鲻鱼是礁区海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "habitat-loss",
@@ -1327,8 +1327,8 @@ window.LANCUN_SPECIES_DB = [
       "pacific",
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-046--.jpg",
+    "thumbnail": "assets/media/species/species-046--.jpg",
     "description": "远洋章鱼是远洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "climate",
@@ -1355,8 +1355,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-047--.jpg",
+    "thumbnail": "assets/media/species/species-047--.jpg",
     "description": "太平洋乌贼是太平洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "acidification",
@@ -1383,8 +1383,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-048--.jpg",
+    "thumbnail": "assets/media/species/species-048--.jpg",
     "description": "大西洋海龙是大西洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "overfishing",
@@ -1411,8 +1411,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-049--.jpg",
+    "thumbnail": "assets/media/species/species-049--.jpg",
     "description": "印度洋海胆是印度洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "noise",
@@ -1439,8 +1439,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "deep-sea"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-050--.jpg",
+    "thumbnail": "assets/media/species/species-050--.jpg",
     "description": "深海海参是深海海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -1467,8 +1467,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-051--.jpg",
+    "thumbnail": "assets/media/species/species-051--.jpg",
     "description": "珊瑚礁龙虾是珊瑚礁海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",
@@ -1495,8 +1495,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-052--.jpg",
+    "thumbnail": "assets/media/species/species-052--.jpg",
     "description": "近岸扇贝是近岸海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "habitat-loss",
@@ -1523,8 +1523,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "polar"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-053--.jpg",
+    "thumbnail": "assets/media/species/species-053--.jpg",
     "description": "极地牡蛎是极地海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "climate",
@@ -1551,8 +1551,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "southern"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-054--.jpg",
+    "thumbnail": "assets/media/species/species-054--.jpg",
     "description": "南大洋砗磲是南大洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "acidification",
@@ -1579,8 +1579,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "arctic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-055--.jpg",
+    "thumbnail": "assets/media/species/species-055--.jpg",
     "description": "北冰洋藤壶是北冰洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "overfishing",
@@ -1608,8 +1608,8 @@ window.LANCUN_SPECIES_DB = [
       "coral-reef",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-056--.jpg",
+    "thumbnail": "assets/media/species/species-056--.jpg",
     "description": "礁区软珊瑚是礁区海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "noise",
@@ -1637,8 +1637,8 @@ window.LANCUN_SPECIES_DB = [
       "pacific",
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-057--.jpg",
+    "thumbnail": "assets/media/species/species-057--.jpg",
     "description": "远洋柳珊瑚是远洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -1665,8 +1665,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-058--.jpg",
+    "thumbnail": "assets/media/species/species-058--.jpg",
     "description": "太平洋灯笼鱼是太平洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",
@@ -1693,8 +1693,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-059--.jpg",
+    "thumbnail": "assets/media/species/species-059--.jpg",
     "description": "大西洋鮟鱇是大西洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "habitat-loss",
@@ -1721,8 +1721,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-060--.jpg",
+    "thumbnail": "assets/media/species/species-060--.jpg",
     "description": "印度洋宽吻海豚是印度洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "climate",
@@ -1749,8 +1749,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "deep-sea"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-061--.jpg",
+    "thumbnail": "assets/media/species/species-061--.jpg",
     "description": "深海江豚是深海海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "acidification",
@@ -1777,8 +1777,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-062--.jpg",
+    "thumbnail": "assets/media/species/species-062--.jpg",
     "description": "珊瑚礁小须鲸是珊瑚礁海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "overfishing",
@@ -1805,8 +1805,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-063--.jpg",
+    "thumbnail": "assets/media/species/species-063--.jpg",
     "description": "近岸蠵龟是近岸海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "noise",
@@ -1833,8 +1833,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "polar"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-064--.jpg",
+    "thumbnail": "assets/media/species/species-064--.jpg",
     "description": "极地丽龟是极地海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -1861,8 +1861,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "southern"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-065--.jpg",
+    "thumbnail": "assets/media/species/species-065--.jpg",
     "description": "南大洋平背龟是南大洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",
@@ -1889,8 +1889,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "arctic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-066--.jpg",
+    "thumbnail": "assets/media/species/species-066--.jpg",
     "description": "北冰洋银鲳是北冰洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "habitat-loss",
@@ -1918,8 +1918,8 @@ window.LANCUN_SPECIES_DB = [
       "coral-reef",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-067--.jpg",
+    "thumbnail": "assets/media/species/species-067--.jpg",
     "description": "礁区带鱼是礁区海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "climate",
@@ -1947,8 +1947,8 @@ window.LANCUN_SPECIES_DB = [
       "pacific",
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-068--.jpg",
+    "thumbnail": "assets/media/species/species-068--.jpg",
     "description": "远洋鲷鱼是远洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "acidification",
@@ -1975,8 +1975,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-069--.jpg",
+    "thumbnail": "assets/media/species/species-069--.jpg",
     "description": "太平洋石斑是太平洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "overfishing",
@@ -2003,8 +2003,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-070--.jpg",
+    "thumbnail": "assets/media/species/species-070--.jpg",
     "description": "大西洋比目鱼是大西洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "noise",
@@ -2031,8 +2031,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-071--.jpg",
+    "thumbnail": "assets/media/species/species-071--.jpg",
     "description": "印度洋沙丁鱼是印度洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -2059,8 +2059,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "deep-sea"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-072--.jpg",
+    "thumbnail": "assets/media/species/species-072--.jpg",
     "description": "深海飞鱼是深海海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",
@@ -2087,8 +2087,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-073--.jpg",
+    "thumbnail": "assets/media/species/species-073--.jpg",
     "description": "珊瑚礁刺尾鱼是珊瑚礁海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "habitat-loss",
@@ -2115,8 +2115,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-074--.jpg",
+    "thumbnail": "assets/media/species/species-074--.jpg",
     "description": "近岸笛鲷是近岸海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "climate",
@@ -2143,8 +2143,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "polar"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-075--.jpg",
+    "thumbnail": "assets/media/species/species-075--.jpg",
     "description": "极地鲻鱼是极地海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "acidification",
@@ -2171,8 +2171,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "southern"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-076--.jpg",
+    "thumbnail": "assets/media/species/species-076--.jpg",
     "description": "南大洋章鱼是南大洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "overfishing",
@@ -2199,8 +2199,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "arctic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-077--.jpg",
+    "thumbnail": "assets/media/species/species-077--.jpg",
     "description": "北冰洋乌贼是北冰洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "noise",
@@ -2228,8 +2228,8 @@ window.LANCUN_SPECIES_DB = [
       "coral-reef",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-078--.jpg",
+    "thumbnail": "assets/media/species/species-078--.jpg",
     "description": "礁区海龙是礁区海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -2257,8 +2257,8 @@ window.LANCUN_SPECIES_DB = [
       "pacific",
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-079--.jpg",
+    "thumbnail": "assets/media/species/species-079--.jpg",
     "description": "远洋海胆是远洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",
@@ -2285,8 +2285,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-080--.jpg",
+    "thumbnail": "assets/media/species/species-080--.jpg",
     "description": "太平洋海参是太平洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "habitat-loss",
@@ -2313,8 +2313,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-081--.jpg",
+    "thumbnail": "assets/media/species/species-081--.jpg",
     "description": "大西洋龙虾是大西洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "climate",
@@ -2341,8 +2341,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-082--.jpg",
+    "thumbnail": "assets/media/species/species-082--.jpg",
     "description": "印度洋扇贝是印度洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "acidification",
@@ -2369,8 +2369,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "deep-sea"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-083--.jpg",
+    "thumbnail": "assets/media/species/species-083--.jpg",
     "description": "深海牡蛎是深海海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "overfishing",
@@ -2397,8 +2397,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-084--.jpg",
+    "thumbnail": "assets/media/species/species-084--.jpg",
     "description": "珊瑚礁砗磲是珊瑚礁海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "noise",
@@ -2425,8 +2425,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-085--.jpg",
+    "thumbnail": "assets/media/species/species-085--.jpg",
     "description": "近岸藤壶是近岸海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -2453,8 +2453,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "polar"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-086--.jpg",
+    "thumbnail": "assets/media/species/species-086--.jpg",
     "description": "极地软珊瑚是极地海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",
@@ -2481,8 +2481,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "southern"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-087--.jpg",
+    "thumbnail": "assets/media/species/species-087--.jpg",
     "description": "南大洋柳珊瑚是南大洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "habitat-loss",
@@ -2509,8 +2509,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "arctic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-088--.jpg",
+    "thumbnail": "assets/media/species/species-088--.jpg",
     "description": "北冰洋灯笼鱼是北冰洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "climate",
@@ -2538,8 +2538,8 @@ window.LANCUN_SPECIES_DB = [
       "coral-reef",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-089--.jpg",
+    "thumbnail": "assets/media/species/species-089--.jpg",
     "description": "礁区鮟鱇是礁区海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "acidification",
@@ -2567,8 +2567,8 @@ window.LANCUN_SPECIES_DB = [
       "pacific",
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-090--.jpg",
+    "thumbnail": "assets/media/species/species-090--.jpg",
     "description": "远洋宽吻海豚是远洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "overfishing",
@@ -2595,8 +2595,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "pacific"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-091--.jpg",
+    "thumbnail": "assets/media/species/species-091--.jpg",
     "description": "太平洋江豚是太平洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "noise",
@@ -2623,8 +2623,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "atlantic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-092--.jpg",
+    "thumbnail": "assets/media/species/species-092--.jpg",
     "description": "大西洋小须鲸是大西洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -2651,8 +2651,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "indian"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-093--.jpg",
+    "thumbnail": "assets/media/species/species-093--.jpg",
     "description": "印度洋蠵龟是印度洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",
@@ -2679,8 +2679,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "deep-sea"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-094--.jpg",
+    "thumbnail": "assets/media/species/species-094--.jpg",
     "description": "深海丽龟是深海海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "habitat-loss",
@@ -2707,8 +2707,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coral-reef"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-095--.jpg",
+    "thumbnail": "assets/media/species/species-095--.jpg",
     "description": "珊瑚礁平背龟是珊瑚礁海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "climate",
@@ -2735,8 +2735,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-096--.jpg",
+    "thumbnail": "assets/media/species/species-096--.jpg",
     "description": "近岸银鲳是近岸海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "acidification",
@@ -2763,8 +2763,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "polar"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-097--.jpg",
+    "thumbnail": "assets/media/species/species-097--.jpg",
     "description": "极地带鱼是极地海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "overfishing",
@@ -2791,8 +2791,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "southern"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-098--.jpg",
+    "thumbnail": "assets/media/species/species-098--.jpg",
     "description": "南大洋鲷鱼是南大洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "noise",
@@ -2819,8 +2819,8 @@ window.LANCUN_SPECIES_DB = [
     "ocean": [
       "arctic"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-099--.jpg",
+    "thumbnail": "assets/media/species/species-099--.jpg",
     "description": "北冰洋石斑是北冰洋海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "plastic",
@@ -2848,8 +2848,8 @@ window.LANCUN_SPECIES_DB = [
       "coral-reef",
       "coastal"
     ],
-    "image": "",
-    "thumbnail": "",
+    "image": "assets/media/species/species-100--.jpg",
+    "thumbnail": "assets/media/species/species-100--.jpg",
     "description": "礁区比目鱼是礁区海域代表性档案物种，用于检索与分组展示演示。",
     "threats": [
       "bycatch",

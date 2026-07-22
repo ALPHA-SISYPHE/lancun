@@ -1,4 +1,5 @@
-const OCEAN2_CORAL_URL = 'https://api.coral.tsr.lol/stations/southeast_florida/current';
+const OCEAN2_CORAL_URL = '/api/ocean/coral';
+const OCEAN2_CORAL_SOURCE = 'https://api.coral.tsr.lol/stations/southeast_florida/current';
 const OCEAN2_NOAA_BASE = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
 const OCEAN2_STATION = '8518750';
 const OCEAN2_COVER_LABELS = {
@@ -138,7 +139,7 @@ const ocean2SetMetric = (id, value) => {
 };
 
 const ocean2RenderMetricSkeleton = () => {
-  const sourceCoral = OCEAN2_CORAL_URL;
+  const sourceCoral = OCEAN2_CORAL_SOURCE;
   const sourceNoaa = 'https://tidesandcurrents.noaa.gov/';
   const items = [
     ['sst', 'Coral Temperature', '—', '°C', '正在读取', true, '珊瑚礁周边的表层热量', sourceCoral],
@@ -151,35 +152,54 @@ const ocean2RenderMetricSkeleton = () => {
   document.querySelector('[data-metrics]').innerHTML = items.map(([id, title, value, unit, state, live, note, href]) => ocean2Metric({ id, title, value, unit, state, live, note, href })).join('');
 };
 
-const ocean2ApplyMock = () => {
+const ocean2ApplyCoralMock = () => {
   const mock = window.LANCUN_DATA?.oceanDashboardMock;
   if (!mock) return;
   ocean2SetMetric('sst', { value: ocean2Format(mock.coral.sst.value), unit: mock.coral.sst.unit, state: '本地演示 · Coral Watch', live: false, note: '珊瑚礁周边的表层热量' });
   ocean2SetMetric('stress', { value: ocean2Format(mock.coral.heatStress.dhw), unit: mock.coral.heatStress.dhwUnit, state: '本地演示 · Coral Watch', live: false, note: mock.coral.heatStress.stressLabel });
   ocean2SetMetric('bleaching', { value: ocean2Format(mock.coral.bleaching.baa, 2), unit: '指数', state: '本地演示 · Coral Watch', live: false, note: `阈值 ${mock.coral.bleaching.threshold} ${mock.coral.bleaching.thresholdUnit}` });
+};
+
+const ocean2ApplyNoaaMock = () => {
+  const mock = window.LANCUN_DATA?.oceanDashboardMock;
+  if (!mock) return;
   ocean2SetMetric('tide', { value: ocean2Format(mock.noaa.tide.value, 2), unit: mock.noaa.tide.unit, state: '本地演示 · NOAA', live: false, note: '相对当地潮位基准' });
   ocean2SetMetric('temp', { value: ocean2Format(mock.noaa.waterTemp.value), unit: mock.noaa.waterTemp.unit, state: '本地演示 · NOAA', live: false, note: '沿海站点即时读数' });
   ocean2SetMetric('pressure', { value: ocean2Format(mock.noaa.windPressure.pressure), unit: mock.noaa.windPressure.pressureUnit, state: '本地演示 · NOAA', live: false, note: `风速 ${ocean2Format(mock.noaa.windPressure.wind)} ${mock.noaa.windPressure.windUnit}` });
 };
 
-const ocean2LoadLive = async () => {
-  const coral = await ocean2Fetch(OCEAN2_CORAL_URL);
-  const current = coral.current || {};
-  ocean2SetMetric('sst', { value: ocean2Format(current.sst_max, 2), unit: '°C', state: '实时 · Coral Watch', live: true, note: current.date ? `观测于 ${current.date}` : '珊瑚礁周边的表层热量' });
-  ocean2SetMetric('stress', { value: ocean2Format(current.dhw, 2), unit: '°C·周', state: '实时 · Coral Watch', live: true, note: `热应力：${current.stress_level || '待判定'}` });
-  ocean2SetMetric('bleaching', { value: ocean2Format(current.baa_7day_max, 2), unit: '指数', state: '实时 · Coral Watch', live: true, note: `阈值 ${ocean2Format(coral.bleaching_threshold, 1)} °C` });
+const ocean2LoadCoralMetrics = async () => {
+  try {
+    const coral = await ocean2Fetch(OCEAN2_CORAL_URL);
+    const current = coral.current || {};
+    ocean2SetMetric('sst', { value: ocean2Format(current.sst_max, 2), unit: '°C', state: '实时 · Coral Watch', live: true, note: current.date ? `观测于 ${current.date}` : '珊瑚礁周边的表层热量' });
+    ocean2SetMetric('stress', { value: ocean2Format(current.dhw, 2), unit: '°C·周', state: '实时 · Coral Watch', live: true, note: `热应力：${current.stress_level || '待判定'}` });
+    ocean2SetMetric('bleaching', { value: ocean2Format(current.baa_7day_max, 2), unit: '指数', state: '实时 · Coral Watch', live: true, note: `阈值 ${ocean2Format(coral.bleaching_threshold, 1)} °C` });
+  } catch {
+    ocean2ApplyCoralMock();
+  }
+};
 
-  const [tidePayload, tempPayload, pressurePayload] = await Promise.all([
-    ocean2Fetch(`${ocean2NoaaUrl('water_level')}&datum=MLLW`),
-    ocean2Fetch(ocean2NoaaUrl('water_temperature')),
-    ocean2Fetch(ocean2NoaaUrl('air_pressure')),
-  ]);
-  const tide = ocean2Last(tidePayload);
-  const temperature = ocean2Last(tempPayload);
-  const pressure = ocean2Last(pressurePayload);
-  ocean2SetMetric('tide', { value: ocean2Format(tide.value, 2), unit: 'm', state: '实时 · NOAA', live: true, note: `更新 ${tide.time} UTC` });
-  ocean2SetMetric('temp', { value: ocean2Format(temperature.value), unit: '°C', state: '实时 · NOAA', live: true, note: `更新 ${temperature.time} UTC` });
-  ocean2SetMetric('pressure', { value: ocean2Format(pressure.value), unit: 'hPa', state: '实时 · NOAA', live: true, note: `更新 ${pressure.time} UTC` });
+const ocean2LoadNoaaMetrics = async () => {
+  try {
+    const [tidePayload, tempPayload, pressurePayload] = await Promise.all([
+      ocean2Fetch(`${ocean2NoaaUrl('water_level')}&datum=MLLW`),
+      ocean2Fetch(ocean2NoaaUrl('water_temperature')),
+      ocean2Fetch(ocean2NoaaUrl('air_pressure')),
+    ]);
+    const tide = ocean2Last(tidePayload);
+    const temperature = ocean2Last(tempPayload);
+    const pressure = ocean2Last(pressurePayload);
+    ocean2SetMetric('tide', { value: ocean2Format(tide.value, 2), unit: 'm', state: '实时 · NOAA', live: true, note: `更新 ${tide.time} UTC` });
+    ocean2SetMetric('temp', { value: ocean2Format(temperature.value), unit: '°C', state: '实时 · NOAA', live: true, note: `更新 ${temperature.time} UTC` });
+    ocean2SetMetric('pressure', { value: ocean2Format(pressure.value), unit: 'hPa', state: '实时 · NOAA', live: true, note: `更新 ${pressure.time} UTC` });
+  } catch {
+    ocean2ApplyNoaaMock();
+  }
+};
+
+const ocean2LoadLive = async () => {
+  await Promise.all([ocean2LoadCoralMetrics(), ocean2LoadNoaaMetrics()]);
 };
 
 const ocean2Refresh = async () => {
@@ -190,8 +210,7 @@ const ocean2Refresh = async () => {
   metrics?.setAttribute('aria-busy', 'true');
   metrics?.classList.add('is-refreshing');
   refreshBtn?.classList.add('is-refreshing');
-  try { await ocean2LoadLive(); }
-  catch { ocean2ApplyMock(); }
+  await ocean2LoadLive();
   metrics?.setAttribute('aria-busy', 'false');
   metrics?.classList.remove('is-refreshing');
   refreshBtn?.classList.remove('is-refreshing');
@@ -345,6 +364,30 @@ const ocean2HashOcean = ({ scroll = false } = {}) => {
   ocean2ApplyOceanDeepLink({ scroll });
 };
 
+let ocean2DialogScrollY = 0;
+
+const ocean2FreezeBodyScroll = () => {
+  ocean2DialogScrollY = window.scrollY;
+  document.body.classList.add('ocean2-dialog-open');
+  document.body.style.top = `-${ocean2DialogScrollY}px`;
+};
+
+const ocean2UnfreezeBodyScroll = () => {
+  document.body.classList.remove('ocean2-dialog-open');
+  document.body.style.top = '';
+  const root = document.documentElement;
+  const prev = root.style.scrollBehavior;
+  root.style.scrollBehavior = 'auto';
+  window.scrollTo(0, ocean2DialogScrollY);
+  root.style.scrollBehavior = prev;
+};
+
+const ocean2ShowDialog = (dialog) => {
+  ocean2FreezeBodyScroll();
+  if (!dialog.open) dialog.showModal();
+  dialog.querySelector('[data-close-dialog]')?.focus({ preventScroll: true });
+};
+
 const ocean2OpenOceanProfile = (id) => {
   const profile = ocean2GetProfile(id);
   if (!profile) return;
@@ -368,7 +411,7 @@ const ocean2OpenOceanProfile = (id) => {
       <dt>保护重点</dt><dd>${profile.protectionFocus}</dd>
     </dl>
     <p class="ocean2-dialog__source">数据来源：${profile.source}</p>`;
-  dialog.showModal();
+  ocean2ShowDialog(dialog);
 };
 
 const ocean2DataSourcesHtml = () => `
@@ -398,7 +441,7 @@ const ocean2OpenDataSourcesModal = () => {
   dialog.querySelector('[data-dialog-eyebrow]').textContent = '数据来源';
   dialog.querySelector('[data-dialog-title]').textContent = '公开观测与登记资料';
   dialog.querySelector('[data-dialog-content]').innerHTML = ocean2DataSourcesHtml();
-  dialog.showModal();
+  ocean2ShowDialog(dialog);
 };
 
 const ocean2OpenDialog = (kind) => {
@@ -520,7 +563,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelector('[data-ocean-panel]')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-ocean-detail]');
-    if (button) ocean2OpenOceanProfile(button.dataset.oceanDetail);
+    if (button) {
+      event.preventDefault();
+      ocean2OpenOceanProfile(button.dataset.oceanDetail);
+    }
   });
 
   document.querySelector('[data-ocean-panel]')?.addEventListener('keydown', (event) => {
@@ -541,6 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('[data-close-dialog]')?.addEventListener('click', ocean2CloseDialog);
   document.querySelector('[data-dialog]')?.addEventListener('close', () => {
     document.querySelector('[data-dialog]')?.classList.remove('ocean2-dialog--profile', 'ocean2-dialog--sources');
+    ocean2UnfreezeBodyScroll();
   });
   document.querySelectorAll('[data-view]').forEach((button) => button.addEventListener('click', () => {
     const table = button.dataset.view === 'table';

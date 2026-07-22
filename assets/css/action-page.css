@@ -215,16 +215,16 @@ body.action-page .button-ghost:focus-visible {
   position: relative;
   z-index: 1;
   isolation: isolate;
-  min-height: clamp(520px, 52vh, 600px);
+  min-height: clamp(420px, 42vh, 520px);
   display: grid;
   align-items: center;
-  padding-block: 5rem 0;
+  padding-block: clamp(3rem, 6vw, 4.5rem) 0;
 }
 
 .action-hero__content {
   position: relative;
   z-index: 2;
-  padding-bottom: 8rem;
+  padding-bottom: 4.5rem;
   grid-column: 1;
 }
 
@@ -232,7 +232,7 @@ body.action-page .button-ghost:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
   gap: clamp(2rem, 5vw, 4rem);
-  align-items: end;
+  align-items: start;
 }
 
 .action-hero__scrim {
@@ -265,7 +265,7 @@ body.action-page .button-ghost:focus-visible {
 }
 
 .action-hero h1 {
-  margin: 0 0 0.9rem;
+  margin: 0 0 1rem;
   font-size: clamp(2.1rem, 4vw, 3.25rem);
   font-weight: 600;
   letter-spacing: -0.03em;
@@ -276,7 +276,7 @@ body.action-page .button-ghost:focus-visible {
 }
 
 .action-hero__lead {
-  margin: 0 0 1.35rem;
+  margin: 0 0 1.25rem;
   max-width: 42ch;
   font-size: clamp(0.9375rem, 1.5vw, 1.05rem);
   color: var(--text-muted);
@@ -306,6 +306,7 @@ body.action-page .button-ghost:focus-visible {
 }
 
 .action-hero__aside {
+  align-self: start;
   padding: 1.15rem 1.2rem;
   border-radius: 8px;
 }
@@ -640,7 +641,7 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
 
 .participation-hub__inner {
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .participation-header,
@@ -976,10 +977,11 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
 }
 
 .donation-project-card__body {
-  display: grid;
-  gap: 0.65rem;
-  padding: 0.85rem 0.9rem 1rem;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.85rem 0.9rem 0.85rem;
+  min-height: 0;
 }
 
 .donation-project-card__body h3 {
@@ -988,6 +990,11 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
   font-weight: 600;
   line-height: 1.35;
   color: var(--text-light);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
 }
 
 .donation-project-card__raised-head {
@@ -1023,20 +1030,31 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
   font-size: 0.75rem;
   line-height: 1.5;
   color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.25rem;
+  flex-shrink: 0;
 }
 
 .donation-project-card__actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
+  align-items: stretch;
   margin-top: auto;
+  flex-shrink: 0;
 }
 
 .donation-project-card__actions .button {
-  flex: 1 1 auto;
+  width: 100%;
+  min-height: 2.25rem;
   min-width: 0;
-  padding-inline: 0.65rem;
+  padding-inline: 0.5rem;
   font-size: 0.8125rem;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .donation-detail-dialog {
@@ -1148,9 +1166,10 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
 }
 
 .mission-card__body {
-  display: grid;
-  grid-template-rows: auto auto auto 1fr auto;
+  display: flex;
+  flex-direction: column;
   gap: 0;
+  min-height: 0;
   background: rgba(3, 18, 34, 0.28);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -1158,8 +1177,9 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
 .mission-card__info,
 .mission-card__slots,
 .mission-card__impact {
-  padding: 0.75rem 0.95rem;
+  padding: 0.65rem 0.85rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
 }
 
 .mission-card__tag {
@@ -1182,6 +1202,11 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
   font-weight: 600;
   line-height: 1.35;
   color: var(--text-light);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
 }
 
 .mission-card__meta {
@@ -1192,6 +1217,10 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
   gap: 0.2rem;
   font-size: 0.75rem;
   color: var(--text-muted);
+}
+
+.mission-card__slots {
+  min-height: 2.5rem;
 }
 
 .mission-card__slots-label {
@@ -1212,6 +1241,11 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
   font-size: 0.8125rem;
   line-height: 1.5;
   color: rgba(242, 248, 250, 0.88);
+  min-height: 3.35rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .mission-card__impact::before {
@@ -1226,22 +1260,23 @@ body.action-page .daily-medal-preview.action-panel--light .daily-medal-preview__
 }
 
 .mission-card__actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
-  padding: 0.75rem 0.95rem 0.95rem;
+  align-items: stretch;
+  padding: 0.65rem 0.85rem 0.85rem;
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
-.mission-card__actions .button-ghost {
-  flex: 0 1 auto;
-  min-height: 2.5rem;
+.mission-card__actions .button {
+  width: 100%;
+  min-height: 2.25rem;
+  min-width: 0;
+  padding-inline: 0.5rem;
   font-size: 0.8125rem;
-}
-
-.mission-card__actions .button-primary {
-  flex: 1 1 8rem;
-  min-height: 2.5rem;
-  font-size: 0.8125rem;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .mission-card__actions .button:disabled {
@@ -2345,13 +2380,13 @@ body.action-page .button-ghost {
 }
 
 .action-module--archive {
+  margin-top: var(--section-gap);
   margin-bottom: 1.25rem;
 }
 
 .personal-archive-strip {
-  max-width: var(--action-max);
-  margin: 0 auto;
-  padding: clamp(1rem, 2vw, 1.25rem) var(--action-gutter);
+  width: 100%;
+  padding: clamp(1rem, 2vw, 1.25rem) 0;
   background: var(--deep-panel);
   backdrop-filter: blur(12px) saturate(115%);
   -webkit-backdrop-filter: blur(12px) saturate(115%);
@@ -2694,6 +2729,315 @@ body.action-page .daily-streak-hero.action-panel--light {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 0.5rem;
+}
+
+/* —— ParticipationHub 浅色弹窗 —— */
+.action-dialog.action-dialog--hub-light {
+  overflow: visible;
+  max-height: none;
+  padding: 1.25rem 1.5rem 1.35rem;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border: 1px solid var(--line-dark);
+  color: var(--ink);
+  box-shadow: 0 20px 48px rgba(3, 18, 34, 0.18);
+}
+
+.action-dialog.action-dialog--hub-light::backdrop {
+  background: rgba(3, 18, 34, 0.28);
+  backdrop-filter: blur(2px);
+}
+
+.action-dialog--hub-light .action-dialog-header {
+  margin-bottom: 0.75rem;
+}
+
+.action-dialog--hub-light .action-dialog-header h2 {
+  color: var(--ink);
+  font-size: 1.125rem;
+}
+
+.action-dialog--hub-light .action-dialog-close {
+  color: rgba(8, 35, 61, 0.55);
+}
+
+.action-dialog--hub-light .action-dialog-close:hover,
+.action-dialog--hub-light .action-dialog-close:focus-visible {
+  color: var(--ink);
+}
+
+.action-dialog--hub-light input:not([type='checkbox']):not([type='file']):not([type='radio']),
+.action-dialog--hub-light select,
+.action-dialog--hub-light textarea {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(7, 30, 48, 0.14);
+  color: var(--ink);
+}
+
+.action-dialog--hub-light input:not([type='checkbox']):not([type='file']):not([type='radio']):focus,
+.action-dialog--hub-light select:focus,
+.action-dialog--hub-light textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 1px rgba(85, 214, 194, 0.35);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.action-dialog--hub-light .field label,
+.action-dialog--hub-light .support-amount-fieldset legend {
+  color: var(--ink);
+}
+
+.action-dialog--hub-light .button-ghost {
+  border-color: rgba(7, 30, 48, 0.18);
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--ink);
+}
+
+.action-dialog--hub-light .button-ghost:hover,
+.action-dialog--hub-light .button-ghost:focus-visible {
+  border-color: rgba(7, 30, 48, 0.28);
+  background: rgba(13, 31, 40, 0.06);
+  color: var(--ink);
+}
+
+.action-dialog--hub-light .volunteer-success-panel h2 {
+  color: var(--ink);
+}
+
+.action-dialog--hub-light .volunteer-success-panel p {
+  margin-bottom: 1rem;
+  color: rgba(8, 35, 61, 0.62);
+}
+
+.action-dialog--hub-light.volunteer-success-dialog {
+  border-top: 2px solid rgba(223, 174, 77, 0.45);
+}
+
+.action-dialog--hub-light.donation-thanks-dialog {
+  padding: 1.25rem 1.5rem 1.35rem;
+  border: 1px solid var(--line-dark);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.action-dialog--hub-light .donation-thanks-card {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.action-dialog--hub-light .donation-thanks-card::before {
+  display: none;
+}
+
+.action-dialog--hub-light .donation-thanks-card__lead {
+  color: rgba(8, 35, 61, 0.62);
+}
+
+.action-dialog--hub-light .donation-thanks-card__details {
+  border-left-color: var(--blue);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.action-dialog--hub-light .donation-thanks-card__details dt {
+  color: rgba(8, 35, 61, 0.55);
+}
+
+.action-dialog--hub-light .volunteer-detail-meta,
+.action-dialog--hub-light .impact-detail-meta {
+  border-color: var(--line-dark);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.action-dialog--hub-light .volunteer-detail-meta dt,
+.action-dialog--hub-light .impact-detail-meta dt {
+  color: rgba(8, 35, 61, 0.55);
+}
+
+.action-dialog--hub-light .volunteer-detail-meta dd,
+.action-dialog--hub-light .impact-detail-meta dd {
+  color: var(--ink);
+}
+
+.action-dialog--hub-light .volunteer-detail-block p,
+.action-dialog--hub-light .volunteer-detail-desc,
+.action-dialog--hub-light .impact-detail-block p,
+.action-dialog--hub-light .impact-detail-detail p {
+  color: rgba(8, 35, 61, 0.72);
+}
+
+.action-dialog--hub-light .volunteer-detail-block--impact {
+  background: rgba(234, 245, 247, 0.55);
+  border-color: rgba(85, 214, 194, 0.22);
+}
+
+.action-dialog--hub-light .impact-detail-organizer {
+  background: rgba(234, 245, 247, 0.55);
+  border-color: rgba(85, 214, 194, 0.22);
+  color: var(--ink);
+}
+
+.action-dialog--hub-light .support-harbor-form {
+  gap: 0.5rem;
+  padding: 0.75rem 0.85rem;
+  border-color: var(--line-dark);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+}
+
+.action-dialog--hub-light .support-harbor-form input,
+.action-dialog--hub-light .support-harbor-form select,
+.action-dialog--hub-light .support-harbor-form textarea {
+  min-height: 36px;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(7, 30, 48, 0.14);
+  color: var(--ink);
+}
+
+.action-dialog--hub-light .support-pill {
+  border-color: rgba(7, 30, 48, 0.14);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+}
+
+.action-dialog--hub-light .support-anonymous {
+  color: rgba(8, 35, 61, 0.62);
+}
+
+.action-dialog--hub-light .support-submit {
+  width: auto;
+  min-height: 40px;
+}
+
+.action-dialog--hub-light .volunteer-register-form {
+  gap: 0.5rem;
+  padding-top: 0;
+}
+
+.action-dialog--hub-light .volunteer-register-form input,
+.action-dialog--hub-light .volunteer-register-form select,
+.action-dialog--hub-light .volunteer-register-form textarea {
+  min-height: 36px;
+}
+
+.action-dialog--hub-light .volunteer-register-form textarea {
+  min-height: 2.5rem;
+}
+
+.action-dialog--hub-light .donation-detail-layout {
+  gap: 0.65rem;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .action-dialog--hub-light .volunteer-register-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .action-dialog--hub-light .volunteer-register-form .field:nth-child(7),
+  .action-dialog--hub-light .volunteer-register-form .action-dialog-footer {
+    grid-column: 1 / -1;
+  }
+
+  .action-dialog--hub-light .volunteer-detail-layout,
+  .action-dialog--hub-light .impact-detail-layout {
+    max-height: none;
+    overflow: visible;
+    gap: 0.65rem;
+  }
+
+  .action-dialog--hub-light .volunteer-detail-cover,
+  .action-dialog--hub-light .impact-detail-cover {
+    max-height: 140px;
+    aspect-ratio: 16 / 9;
+  }
+
+  .action-dialog--hub-light .volunteer-detail-desc,
+  .action-dialog--hub-light .impact-detail-block p,
+  .action-dialog--hub-light .impact-detail-detail {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .action-dialog--hub-light.donation-detail-dialog {
+    width: min(92vw, 52rem);
+    max-height: none;
+    overflow: visible;
+  }
+
+  .action-dialog--hub-light.donation-detail-dialog .donation-detail-layout {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: start;
+  }
+
+  .action-dialog--hub-light.donation-detail-dialog .donation-detail-cover {
+    grid-column: 1;
+    max-height: 110px;
+    aspect-ratio: 16 / 9;
+  }
+
+  .action-dialog--hub-light.donation-detail-dialog .support-project-panel {
+    grid-column: 1;
+  }
+
+  .action-dialog--hub-light.donation-detail-dialog .support-harbor-form {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: stretch;
+  }
+
+  .action-dialog--hub-light .support-harbor-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .action-dialog--hub-light .support-harbor-form > .field-error,
+  .action-dialog--hub-light .support-harbor-form > .support-amount-fieldset,
+  .action-dialog--hub-light .support-harbor-form > [data-donation-custom-wrap],
+  .action-dialog--hub-light .support-harbor-form > .support-anonymous,
+  .action-dialog--hub-light .support-harbor-form > .field:has(#donate-message),
+  .action-dialog--hub-light .support-harbor-form > .action-dialog-footer {
+    grid-column: 1 / -1;
+  }
+
+  .action-dialog--hub-light .support-harbor-form > .field:has(#donate-name) {
+    grid-column: 1;
+    grid-row: 5;
+  }
+
+  .action-dialog--hub-light .support-harbor-form > .field:has(#donate-email) {
+    grid-column: 2;
+    grid-row: 5;
+  }
+
+  .action-dialog--hub-light .support-harbor-form > .support-anonymous {
+    grid-row: 6;
+  }
+
+  .action-dialog--hub-light .support-harbor-form > .field:has(#donate-message) {
+    grid-row: 7;
+  }
+
+  .action-dialog--hub-light .support-harbor-form > .action-dialog-footer {
+    grid-row: 8;
+  }
+}
+
+@media (max-width: 767px) {
+  .action-dialog.action-dialog--hub-light {
+    max-height: 90dvh;
+    overflow: auto;
+  }
+
+  .action-dialog--hub-light .volunteer-detail-layout,
+  .action-dialog--hub-light .impact-detail-layout {
+    max-height: min(55vh, 420px);
+    overflow: auto;
+  }
 }
 
 /* —— 电子证书 —— */
@@ -3050,6 +3394,52 @@ body.action-page .daily-streak-hero.action-panel--light {
   color: var(--text-muted);
 }
 
+/* —— ParticipationHub：桌面卡片按钮横排（grid 已在基类定义） —— */
+@media (min-width: 768px) {
+  .mission-card__actions,
+  .donation-project-card__actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* —— ParticipationHub：桌面双栏等高 —— */
+@media (min-width: 1200px) {
+  .participation-content {
+    align-items: stretch;
+  }
+
+  .participation-content__aside {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .participation-content__aside .impact-story-module--aside {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .impact-carousel--aside {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    min-height: 0;
+  }
+
+  .impact-carousel--aside .impact-carousel__nav {
+    align-self: center;
+    flex-shrink: 0;
+  }
+
+  .impact-story-module--aside .impact-story-card {
+    flex: 1;
+    max-height: none;
+    min-height: 0;
+    min-width: 0;
+  }
+}
+
 /* —— 响应式 —— */
 @media (max-width: 1199px) {
   .action-hero__inner {
@@ -3078,7 +3468,7 @@ body.action-page .daily-streak-hero.action-panel--light {
   .personal-archive-strip {
     grid-template-columns: 1fr;
     gap: 1.25rem;
-    padding: 24px 22px;
+    padding: 1.5rem 0;
   }
 
   .archive-strip__entries {
@@ -3105,7 +3495,11 @@ body.action-page .daily-streak-hero.action-panel--light {
 @media (max-width: 767px) {
   .action-hero {
     min-height: auto;
-    padding-block: 5.5rem 2.5rem;
+    padding-block: clamp(3.5rem, 10vw, 4.5rem) 1.75rem;
+  }
+
+  .action-hero__content {
+    padding-bottom: 3rem;
   }
 
   .daily-action-dock__wrap {
@@ -3253,14 +3647,20 @@ body.action-page .daily-streak-hero.action-panel--light {
   }
 
   .personal-archive-strip {
-    padding: 20px 18px;
+    padding: 1.25rem 0;
   }
 
   .archive-strip__entries {
     grid-template-columns: 1fr;
   }
 
-  .mission-card__actions .button {
+  .mission-card__actions,
+  .donation-project-card__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .mission-card__actions .button,
+  .donation-project-card__actions .button {
     width: 100%;
   }
 

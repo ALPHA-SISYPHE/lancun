@@ -23,7 +23,7 @@
 
 | 维度 | v2 / 现状（阶段 6 已交付） | v3 brief（本轮方向） |
 |------|---------------------------|----------------------|
-| 页面结构 | 七模块全部纵向堆叠；底部 1 个全页成果轮播 | 仍禁止加长；压缩纵向堆叠；志愿与公益各自带往期成果轮播 |
+| 页面结构 | 七模块全部纵向堆叠；底部 1 个全页成果轮播 | 仍禁止加长；ParticipationHub **志愿+公益同页同显**，Tab 作锚点滚动；各自侧栏往期成果轮播 |
 | Hero / 打卡 | dock 负 margin 叠在 Hero 上 | **禁止 Hero 文案被下方模块遮挡**；须修 overlap / z-index |
 | 公益支持 | 页内 48/52 叙事 + 长表单 | 与志愿一致：**3 项目/批轮播卡片** → 详情 dialog → dialog 内捐款表单 |
 | 公益数据 | `donationProjects.js` 现约 6 条 | **≥9 条** mock（实现留待后续阶段） |
@@ -213,7 +213,11 @@
 | 最大内容宽度 | `max-width: 1180px`；`margin: 0 auto` |
 | 桌面左右安全边距 | `padding-left/right: 48px`（可用 `clamp` 映射） |
 | Section 间距 | 紧凑优先；**不得因新增轮播/详情而加长总页高** |
-| Hero 高度 | 克制；**Hero 主文案不得被 dock 遮挡** |
+| Hero 高度 | 克制（`min-height: clamp(420px, 42vh, 520px)`）；**Hero 主文案不得被 dock 遮挡**；「今日状态」aside 与左侧标题区 **顶部对齐**（`align-items: start`） |
+| ParticipationHub 卡片 | ≥768px：志愿卡 **详情 / 报名**、公益卡 **详情 / 捐助** 单行横排（grid 1:1 等宽）；≤767px 竖排全宽；三卡 **底栏按钮贴底对齐**；标题/摘要 **最多 2 行**（line-clamp）；≥1200px 右侧往期面板与左侧主栏 **等高底边对齐**；卡片按钮用 `aria-label` 保留完整语义 |
+| ParticipationHub 弹窗 | Hub 交互 dialog 统一 `action-dialog--hub-light`：白底半透明面板 + 轻遮罩；表单类弹窗桌面 **紧凑双列、无滚动优先** |
+| 个人行动档案 | 包在 `action-shell` 内与 Hub **同宽**；与上方 Hub 保持 `section-gap` 段间距 |
+| 往期成果侧栏 | **不展示**「一次展示一条 / 8 秒切换」等小字；保留标题与 `01 / 09` 计数 |
 | 主功能面板 | 尽量让用户在较少滚动中完成行动 |
 | 正文 | **15px – 16px**；`line-height: 1.65 – 1.75` |
 | 辅助文字 | **12px – 13px**；不能过淡，必须可读 |
@@ -240,7 +244,7 @@
 | 10 | 志愿报名表单 | ✓ |
 | 11 | 志愿报名记录 localStorage 保存 | ✓ `ocean-action-volunteer-registrations` |
 | 12 | 公益支持项目数据库，至少 9 条 mock 数据 | ✓ `data/donationProjects.js`（9 条） |
-| 13 | 公益支持每次展示 3 条轮播卡片 | ✓ ParticipationHub 公益 Tab |
+| 13 | 公益支持每次展示 3 条轮播卡片 | ✓ ParticipationHub 公益区（与志愿区同页同显） |
 | 14 | 公益项目详情弹窗 | ✓ `data-donation-detail-dialog` |
 | 15 | 捐款表单在详情弹窗中出现 | ✓ dialog 内嵌表单 |
 | 16 | 捐款记录 localStorage 保存 | ✓ `ocean-action-donations` |

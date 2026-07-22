@@ -137,6 +137,29 @@ window.OceanAuthStorage = (function oceanAuthStorage() {
     syncLegacyAuthBridge(null);
   }
 
+  function updateCurrentUserProfile(next) {
+    const current = getCurrentUser();
+    if (!current) return null;
+    const users = getUsers();
+    const index = users.findIndex((user) => user?.id === current.id);
+    if (index < 0) return null;
+
+    const existing = users[index];
+    const updated = {
+      ...existing,
+      displayName: String(next?.displayName ?? existing.displayName).trim().slice(0, 24) || existing.displayName,
+      rolePreference: String(next?.rolePreference ?? existing.rolePreference).trim() || existing.rolePreference,
+      email: String(next?.email ?? existing.email ?? '').trim().slice(0, 120),
+      avatarText: String(next?.avatarText ?? existing.avatarText ?? '').trim().slice(0, 1)
+        || String(next?.displayName ?? existing.displayName ?? '澜').trim().slice(0, 1),
+    };
+    users[index] = updated;
+    saveUsers(users);
+    const safe = setCurrentUser(updated);
+    syncLegacyAuthBridge(updated);
+    return safe;
+  }
+
   function generateUserId() {
     return `guardian_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   }
@@ -243,6 +266,7 @@ window.OceanAuthStorage = (function oceanAuthStorage() {
     getCurrentUser,
     setCurrentUser,
     clearCurrentUser,
+    updateCurrentUserProfile,
     generateUserId,
     isUsernameTaken,
     registerUser,

@@ -33,7 +33,7 @@
 | 数据主题 | 计划用途 | 来源 | 状态 |
 |---|---|---|---|
 | 海洋之美或生态基础数据 | 首页核心数据 | 待验证 | 待收集 |
-| 第一节看板 1–3：SST / 热应力 / 白化 | `ocean.html` §3.1 卡 1–3 | Coral Watch `…/stations/southeast_florida/current` | 已锁定，见 `OCEAN_PAGE.md` 附录 A.1 |
+| 第一节看板 1–3：SST / 热应力 / 白化 | `ocean.html` §3.1 卡 1–3 | Coral Watch `…/stations/southeast_florida/current`（生产经 `/api/ocean/coral` 代理） | 已锁定，见 `OCEAN_PAGE.md` 附录 A.1 |
 | 第一节看板 4–6：潮位 / 水温 / 风压 | `ocean.html` §3.1 卡 4–6 | NOAA datagetter，站 `8518750` | 已锁定，见 `OCEAN_PAGE.md` 附录 A.1 |
 | 第二节：碳汇 / 热量 / 氧气 / 蓝碳 + CO₂ 趋势 | `ocean.html` §3.2 | IPCC / NOAA / UNEP；折线 NOAA GCB 摘要 | 已锁定，见附录 A.2；数据在 `mock-data.js` |
 | 第三节：五大洋面积 / 深度 / 生态亮点 | `ocean.html` §3.3 每洋小看板 | NOAA / FAO / IUCN / NSIDC 等 | 已锁定，见附录 A.3；数据在 `mock-data.js` |
@@ -43,10 +43,10 @@
 | 海水酸化 / 珊瑚白化 | `rescue.html` 卡 4–5 + 科普 | NOAA；IPCC AR6 | 已锁定，见 A.1 |
 | 中国近岸优良水质 | `rescue.html` §3.1 次级指标 | 生态环境部 2023 海洋公报 | 已锁定，见 A.1 |
 | 海洋塑料污染指数趋势 | `rescue.html` §3.1 折线 | UNEP / ICC 综合估算（占位） | v1.3；2019–2023 待核对 |
-| 动态监测 A | `rescue.html` §3.2 | NOAA datagetter `8574680`, `product=dissolved_oxygen` | 已锁定，见 `RESCUE_PAGE.md` B.2 v1.1 |
-| 动态监测 B | `rescue.html` §3.2 | NOAA datagetter `9414290`, `product=ph` | 已锁定 |
-| 动态监测 C | `rescue.html` §3.2 | NOAA datagetter `8726520`, `product=salinity` | 已锁定 |
-| 动态监测 D | `rescue.html` §3.2 | OpenAQ API v3，洛杉矶沿海 PM2.5 | 已锁定 |
+| 动态监测 A | `rescue.html` §3.2 | NOAA datagetter `8574680`, `product=water_level`, `date=today` | 已锁定，见 `RESCUE_PAGE.md` B.2 |
+| 动态监测 B | `rescue.html` §3.2 | NOAA datagetter `9414290`, `product=air_pressure` | 已锁定 |
+| 动态监测 C | `rescue.html` §3.2 | NOAA datagetter `8726520`, `product=water_temperature` | 已锁定 |
+| 动态监测 D | `rescue.html` §3.2 | OpenAQ v3 经 `/api/rescue/openaq`；Vercel `OPENAQ_API_KEY` | 已锁定 |
 | 污染源四类科普 + 4 行表格 | `rescue.html` §3.3 | ICC / 生态环境部 / NOAA / IPCC；文案占位见 `mock-data.js` → `rescuePollutionPanels` | 已锁定 UI（附录 E）；文案占位非永久锁定 |
 | 历年变化趋势 | 折线图（rescue 页） | 海洋塑料污染指数 5 年点（2019–2023 占位） | v1.3，见 RESCUE A.3 |
 | 受影响物种 | 生物档案 | 待验证 | 待收集 |
@@ -173,6 +173,16 @@
 - 授权：Pexels License — 免费使用，需保留摄影师与 Pexels 出处。
 - 获取日期：2026-07-19
 - 本地路径：`assets/media/species/`（宽 1600px 压缩 JPEG）
+- **2026-07-22 扩充：** 档案库已扩展至 100 条物种；除上表 12 张早期 Pexels 图外，其余 `{id}.jpg` 由 [`scripts/fetch-species-images.mjs`](../scripts/fetch-species-images.mjs) 从 **Wikimedia Commons** 批量下载（旗舰种优先学名匹配，演示种按类别/后缀匹配相近物种摄影）。逐条出处、作者、许可见 [`data/species-image-sources.json`](../data/species-image-sources.json)。许可以 **CC BY-SA / Public Domain** 为主；页面展示为课程演示用途。
+
+## 登录/注册弹窗 · 品牌面板海洋摄影
+
+| 本地文件 | 用途 | 来源 | 使用位置 |
+|---|---|---|---|
+| `assets/media/ocean/pacific.jpg` | 守护者账户弹窗左侧背景 | 五大洋摄影集（站内已有） | `assets/css/base.css` `.auth-modal__brand` |
+
+- 实现：深色渐变遮罩 + `background-size: cover`，保证文案可读。
+- 获取日期：2026-07-22
 
 ## 呼救页污染源侧栏图（Pexels）
 
@@ -364,7 +374,7 @@ v2.3 光池/caustics 已废弃，不再作为装饰规范。
 |---|---|---|---|
 | Protected Planet API v4 | 需要 | **非第一节 MVP** | 后续扩展；非商业用途声明 |
 | NOAA CO-OPS Data API | 通常不需要 | 看板 4–6：潮位、水温、风/气压 | 站 `8518750`；官方文档称支持 CORS |
-| Coral Watch API | 不需要 | 看板 1–3：SST、热应力、白化相关 | 站 `southeast_florida`；禁止伪造修复面积为实时字段 |
+| Coral Watch API | 不需要 | 看板 1–3：SST、热应力、白化相关 | 站 `southeast_florida`；浏览器无 CORS，Vercel 经 `/api/ocean/coral` 代理 |
 
 ## 「海在呼救」数据策略（摘要）
 
@@ -385,10 +395,10 @@ v2.3 光池/caustics 已废弃，不再作为装饰规范。
 
 | 点 | 指标 | API |
 |----|------|-----|
-| A 切萨皮克湾 | 溶解氧 DO | NOAA datagetter，站 `8574680`, `product=dissolved_oxygen` |
-| B 旧金山湾 | pH | NOAA datagetter，站 `9414290`, `product=ph` |
-| C 墨西哥湾近岸 | 盐度 | NOAA datagetter，站 `8726520`, `product=salinity` |
-| D 洛杉矶沿海 | PM2.5 | OpenAQ API v3（lat/lon 或 location id） |
+| A 切萨皮克湾 | 潮位 | NOAA datagetter，站 `8574680`, `product=water_level`, `datum=MLLW` |
+| B 旧金山湾 | 气压 | NOAA datagetter，站 `9414290`, `product=air_pressure` |
+| C 墨西哥湾近岸 | 水温 | NOAA datagetter，站 `8726520`, `product=water_temperature` |
+| D 洛杉矶沿海 | PM2.5 | OpenAQ v3 经 `/api/rescue/openaq`；Key 存 Vercel 环境变量 |
 
 ### §3.3 污染源科普（附录 C/E 摘要）
 

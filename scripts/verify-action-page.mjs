@@ -5,7 +5,7 @@
 import { chromium } from 'playwright';
 
 const BASE = process.env.BASE_URL || 'http://127.0.0.1:5500';
-const SCROLL_HEIGHT_MAX = 5000;
+const SCROLL_HEIGHT_MAX = 6200;
 const VIEWPORTS = [
   { label: '1440x900', width: 1440, height: 900 },
   { label: '1536x864', width: 1536, height: 864 },
@@ -67,6 +67,24 @@ const hubNest = await page.evaluate(() => {
 });
 if (hubNest.ok) pass('participation hub contains volunteer, harbor and dual impact');
 else fail('participation hub contains volunteer, harbor and dual impact', hubNest);
+
+const dualHub = await page.evaluate(() => ({
+  donationPanelVisible: document.querySelector('#participation-panel-donation')?.hidden === false,
+  volunteerPanelVisible: document.querySelector('#participation-panel-volunteer')?.hidden === false,
+  donationCards: document.querySelectorAll('.donation-project-card').length,
+  removedCopy: !document.body.textContent.includes('志愿报名与公益支持集中在此')
+    && !document.body.textContent.includes('不产生真实报名效力')
+    && !document.body.textContent.includes('不产生真实支付效力'),
+}));
+if (dualHub.donationPanelVisible && dualHub.volunteerPanelVisible) {
+  pass('volunteer and donation panels visible together');
+} else {
+  fail('volunteer and donation panels visible together', dualHub);
+}
+if (dualHub.donationCards === 3) pass('donation shows 3 cards alongside volunteer');
+else fail('donation shows 3 cards alongside volunteer', { donationCards: dualHub.donationCards });
+if (dualHub.removedCopy) pass('participation hub trimmed copy removed');
+else fail('participation hub trimmed copy removed', dualHub);
 
 const heroClear = await page.evaluate(() => {
   const shell = document.querySelector('.daily-action-shell');
@@ -177,10 +195,7 @@ if (volunteerImpactDetail.open && volunteerImpactDetail.title) {
 await page.locator('[data-impact-detail-close]').click();
 await page.waitForFunction(() => !document.querySelector('[data-impact-detail-dialog][open]'));
 
-await page.evaluate(() => window.OceanActionParticipationHub.setActiveTab('donation'));
-await page.waitForFunction(
-  () => window.OceanActionParticipationHub?.getActiveTab?.() === 'donation',
-);
+await page.locator('[data-impact-card-donation]').scrollIntoViewIfNeeded();
 await page.locator('[data-impact-card-donation]').click();
 const donationImpactDetail = await page.evaluate(() => {
   const dialog = document.querySelector('[data-impact-detail-dialog]');

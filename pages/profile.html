@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../assets/css/base.css?v=77" />
     <link rel="stylesheet" href="../assets/css/modules.css" />
-    <link rel="stylesheet" href="../assets/css/profile-dashboard.css?v=77" />
+    <link rel="stylesheet" href="../assets/css/profile-dashboard.css?v=87" />
     <script src="../assets/js/hero.js" defer></script>
     <script src="../assets/js/mock-data.js" defer></script>
     <script src="../assets/js/utils/authStorage.js" defer></script>
@@ -30,121 +30,285 @@
       <nav id="primary-navigation" class="primary-navigation" aria-label="主导航"><a href="../index.html">首页</a><a href="ocean.html">我们的海洋</a><a href="rescue.html">海在呼救</a><a href="species.html">生物档案</a><a href="action.html">行动中心</a></nav>
       <div class="header-actions" data-user-menu-host data-profile-href="profile.html"></div>
     </header>
-    <main id="main-content" class="page-stage">
-      <section class="profile-guest-empty page-intro--dark" data-profile-guest>
-        <p class="eyebrow">我的界面</p>
-        <h1>尚未登录</h1>
-        <p>点击右上角头像「澜」登录或注册。账户、积分与行动记录仅保存在当前浏览器。</p>
+    <main id="main-content" class="guardian-profile-page">
+
+      <section class="profile-guest-empty" data-profile-guest>
+        <p class="eyebrow">Ocean Guardian Profile</p>
+        <h1>开启你的海洋守护档案</h1>
+        <p>登录后，打卡、志愿报名与公益支持将沉淀为仅属于当前浏览器的守护记录。</p>
         <button class="button button-primary" type="button" data-open-user-menu>登录 / 注册</button>
       </section>
 
-      <div class="dashboard-shell page-island" data-profile-app hidden>
-        <div class="dashboard-layout">
-          <aside class="dashboard-sidebar" aria-label="我的界面导航">
-            <div class="dashboard-sidebar__top"><a href="../index.html">← 返回站点</a></div>
-            <nav class="dashboard-nav-group">
-              <p class="dashboard-nav-label">我的守护</p>
-              <button type="button" class="dashboard-nav-item is-active" data-dashboard-nav="overview">概览</button>
-              <button type="button" class="dashboard-nav-item" data-dashboard-nav="actions">行动记录</button>
-              <button type="button" class="dashboard-nav-item" data-dashboard-nav="checkin">打卡进度</button>
-            </nav>
-            <nav class="dashboard-nav-group">
-              <p class="dashboard-nav-label">账户与设置</p>
-              <button type="button" class="dashboard-nav-item" data-dashboard-nav="profile">个人资料</button>
-              <button type="button" class="dashboard-nav-item" data-dashboard-nav="display">显示与播放</button>
-              <button type="button" class="dashboard-nav-item" data-dashboard-nav="security">登录与安全</button>
-            </nav>
-            <nav class="dashboard-nav-group">
-              <p class="dashboard-nav-label">快捷入口</p>
-              <a class="dashboard-nav-item" href="action.html">保护行动中心</a>
-              <a class="dashboard-nav-item" href="ocean.html">我们的海洋</a>
-              <button type="button" class="dashboard-nav-item" data-dashboard-nav="data">本地数据说明</button>
-            </nav>
-            <div class="dashboard-sidebar__profile">
-              <div class="avatar" data-avatar>澜</div>
-              <div><strong data-profile-name>守护者</strong><small data-profile-role>公众守护者</small></div>
-            </div>
-          </aside>
+      <section class="profile-shell" data-profile-app hidden aria-label="我的海洋守护档案">
+        <header class="profile-shell__header">
+          <p class="eyebrow">Ocean Guardian Profile</p>
+          <h1 class="profile-shell__title">我的海洋守护档案</h1>
+        </header>
+        <aside class="profile-sidebar dashboard-sidebar" aria-label="守护档案导航">
+          <label class="profile-mobile-nav">
+            <span>浏览守护档案</span>
+            <select data-dashboard-select aria-label="选择守护档案页面">
+              <option value="overview">概览</option>
+              <option value="actions">行动记录</option>
+              <option value="checkin">打卡进度</option>
+              <option value="badges">勋章墙</option>
+              <option value="volunteer">志愿报名</option>
+              <option value="support">公益支持</option>
+              <option value="profile">个人资料</option>
+              <option value="display">显示与播放</option>
+              <option value="data">本地数据</option>
+              <option value="security">登录与安全</option>
+            </select>
+          </label>
+          <div class="profile-sidebar__top dashboard-sidebar__top"><a href="../index.html">← 返回站点</a></div>
 
-          <div class="dashboard-main">
-            <section class="dashboard-view is-active" data-dashboard-view="overview">
+          <nav class="dashboard-nav-group" aria-label="我的守护">
+            <p class="dashboard-nav-label">我的守护</p>
+            <button type="button" class="dashboard-nav-item is-active" data-dashboard-nav="overview">概览</button>
+            <button type="button" class="dashboard-nav-item" data-dashboard-nav="actions">行动记录</button>
+            <button type="button" class="dashboard-nav-item" data-dashboard-nav="checkin">打卡进度</button>
+            <button type="button" class="dashboard-nav-item" data-dashboard-nav="badges">勋章墙</button>
+          </nav>
+
+          <nav class="dashboard-nav-group" aria-label="参与记录">
+            <p class="dashboard-nav-label">参与记录</p>
+            <button type="button" class="dashboard-nav-item" data-dashboard-nav="volunteer">志愿报名</button>
+            <button type="button" class="dashboard-nav-item" data-dashboard-nav="support">公益支持</button>
+          </nav>
+
+          <nav class="dashboard-nav-group" aria-label="账户与偏好">
+            <p class="dashboard-nav-label">账户与偏好</p>
+            <button type="button" class="dashboard-nav-item" data-dashboard-nav="profile">个人资料</button>
+            <button type="button" class="dashboard-nav-item" data-dashboard-nav="display">显示与播放</button>
+            <button type="button" class="dashboard-nav-item" data-dashboard-nav="data">本地数据</button>
+            <button type="button" class="dashboard-nav-item" data-dashboard-nav="security">登录与安全</button>
+          </nav>
+
+          <div class="profile-identity-card dashboard-sidebar__profile">
+            <div class="avatar" data-avatar>A</div>
+            <div><strong data-profile-name>AlphaSisyphe</strong><small data-profile-role>公益守护者</small></div>
+          </div>
+        </aside>
+
+        <div class="profile-content dashboard-main" data-profile-scroll-root tabindex="0" aria-label="守护档案内容">
+          <section id="profile-section-overview" class="dashboard-view is-active" data-dashboard-view="overview">
+            <div class="profile-view-heading">
+              <p class="eyebrow">Guardian Overview</p>
               <h2>概览</h2>
-              <p class="lead">你在澜海的守护足迹，仅保存在本机浏览器。</p>
-              <div class="dashboard-cards">
-                <article class="dashboard-card"><strong data-stat="points">0</strong><span>当前积分</span></article>
-                <article class="dashboard-card"><strong data-stat="actions">0</strong><span>累计行动次数</span></article>
-                <article class="dashboard-card"><strong data-stat="checkins">0</strong><span>本月打卡天数</span></article>
+              <p class="lead">你在澜海留下的守护足迹，仅保存在当前浏览器。</p>
+            </div>
+
+            <section class="guardian-summary-card" aria-labelledby="guardian-summary-title">
+              <div class="guardian-summary-card__avatar avatar" data-avatar>A</div>
+              <div class="guardian-summary-card__identity">
+                <p class="eyebrow">Guardian Summary</p>
+                <h2 id="guardian-summary-title" data-profile-name>AlphaSisyphe</h2>
+                <p><span data-profile-role>公益守护者</span><span class="guardian-summary-card__divider" aria-hidden="true"></span><span>当前等级：<strong data-overview-level>潮汐初心者</strong></span></p>
+                <small>本地数据状态：仅保存在当前浏览器</small>
+              </div>
+              <div class="guardian-summary-card__actions">
+                <button class="button button-secondary" type="button" data-profile-overview-target="profile">编辑资料</button>
+                <a class="button button-primary" href="action.html">前往行动中心</a>
               </div>
             </section>
 
-            <section class="dashboard-view" data-dashboard-view="actions">
-              <h2>行动记录</h2>
-              <p class="lead">来自行动中心打卡等行为，按时间倒序展示。</p>
-              <div class="actions-table-wrap">
-                <table class="actions-table">
-                  <thead><tr><th scope="col">行动类型</th><th scope="col">时间</th></tr></thead>
-                  <tbody data-actions-table-body></tbody>
-                </table>
+            <section class="profile-overview-section" aria-labelledby="action-metrics-title">
+              <div class="profile-section-heading">
+                <p class="eyebrow">Action Metrics</p>
+                <h2 id="action-metrics-title">行动统计</h2>
+                <p>每一项数据都来自当前浏览器内的守护记录。</p>
               </div>
+              <div class="metrics-grid">
+                <article class="dashboard-card stat-card"><strong data-stat="points">0</strong><span>当前积分</span></article>
+                <article class="dashboard-card stat-card"><strong data-stat="actions">0</strong><span>累计行动次数</span></article>
+                <article class="dashboard-card stat-card"><strong data-stat="checkins">0</strong><span>本月打卡天数</span></article>
+                <article class="dashboard-card stat-card"><strong data-overview-stat="volunteers">0</strong><span>志愿报名次数</span></article>
+                <article class="dashboard-card stat-card"><strong data-overview-stat="support">0</strong><span>公益支持次数</span></article>
+                <article class="dashboard-card stat-card"><strong data-overview-stat="badges">0</strong><span>已获勋章数</span></article>
+              </div>
+              <p class="profile-metrics-hint" data-overview-metrics-hint hidden>尚未记录行动数据，从一次打卡开始建立你的守护档案。</p>
             </section>
 
-            <section class="dashboard-view" data-dashboard-view="checkin">
-              <h2>打卡进度</h2>
-              <p class="lead">本月已打卡日期会高亮显示。完整打卡请前往行动中心。</p>
-              <div class="calendar-grid" data-profile-calendar aria-label="本月打卡日历"></div>
-              <a class="button button-primary" href="action.html">前往行动中心打卡</a>
+            <section class="profile-overview-section" aria-labelledby="recent-activity-title">
+              <div class="profile-section-heading">
+                <p class="eyebrow">Recent Activity</p>
+                <h2 id="recent-activity-title">最近行动</h2>
+                <p>打卡、志愿报名和公益支持会按最新时间汇集在此。</p>
+              </div>
+              <div class="profile-card activity-timeline" data-overview-activity-timeline aria-live="polite"></div>
             </section>
 
-            <section class="dashboard-view" data-dashboard-view="profile">
-              <h2>个人资料</h2>
-              <p class="lead">课程演示用本地账户，信息只读展示。</p>
-              <ul class="profile-detail-list">
-                <li><span>显示昵称</span><strong data-profile-name>—</strong></li>
-                <li><span>用户名</span><strong data-profile-username>—</strong></li>
-                <li><span>身份偏好</span><strong data-profile-role>—</strong></li>
-                <li><span>邮箱</span><strong data-profile-email>—</strong></li>
-                <li><span>注册时间</span><strong data-profile-created>—</strong></li>
+            <section class="profile-overview-section" aria-labelledby="next-step-title">
+              <div class="profile-section-heading">
+                <p class="eyebrow">Next Step</p>
+                <h2 id="next-step-title">下一步建议</h2>
+                <p>从一个小行动开始，让守护足迹继续向前。</p>
+              </div>
+              <div class="next-step-grid" data-overview-next-steps></div>
+            </section>
+
+            <article class="profile-card profile-overview-note">
+              <p class="eyebrow">Archive Status</p>
+              <h2>每一次微小行动，都会成为守护海洋的证据。</h2>
+              <p>行动记录仅存放在当前浏览器。前往行动中心，开启下一次守护行动。</p>
+              <a class="button button-secondary" href="action.html">前往行动中心</a>
+            </article>
+          </section>
+
+          <section id="profile-section-actions" class="dashboard-view" data-dashboard-view="actions">
+            <div class="profile-view-heading"><p class="eyebrow">Action Log</p><h2>行动记录</h2><p class="lead">每一次环保打卡都会按时间倒序归档在这里。</p></div>
+            <div class="profile-records-layout">
+              <aside class="profile-record-filters" aria-label="行动记录筛选">
+                <p class="eyebrow">筛选记录</p>
+                <button type="button" class="is-active" data-profile-action-filter="all">全部</button>
+                <button type="button" data-profile-action-filter="month">本月</button>
+                <button type="button" data-profile-action-filter="week">本周</button>
+                <button type="button" data-profile-action-filter="certificate">有证书</button>
+              </aside>
+              <div class="profile-record-list" data-profile-actions-list aria-live="polite"></div>
+            </div>
+          </section>
+
+          <section id="profile-section-checkin" class="dashboard-view" data-dashboard-view="checkin">
+            <div class="profile-view-heading"><p class="eyebrow">Daily Tide</p><h2>打卡进度</h2><p class="lead">日复一日的守护，会在海洋档案里留下清晰潮痕。</p></div>
+            <section class="checkin-metrics-grid" aria-label="打卡数据概览">
+              <article class="checkin-metric-card"><span>当前连续打卡</span><strong data-checkin-stat="current-streak">0</strong><small>天</small></article>
+              <article class="checkin-metric-card"><span>最长连续打卡</span><strong data-checkin-stat="longest-streak">0</strong><small>天</small></article>
+              <article class="checkin-metric-card"><span>本月打卡天数</span><strong data-checkin-stat="month-days">0</strong><small>天</small></article>
+              <article class="checkin-metric-card"><span>累计打卡次数</span><strong data-checkin-stat="total-days">0</strong><small>次</small></article>
+              <article class="checkin-metric-card"><span>累计行动分钟</span><strong data-checkin-stat="duration">0</strong><small>分钟</small></article>
+              <article class="checkin-metric-card"><span>今日状态</span><strong class="checkin-metric-card__status" data-checkin-stat="today-status">待打卡</strong><small>今日行动</small></article>
+            </section>
+            <section class="profile-card checkin-week-strip" aria-labelledby="checkin-week-title">
+              <div class="checkin-section-heading"><p class="eyebrow">Seven Day Rhythm</p><h3 id="checkin-week-title">最近 7 日打卡</h3></div>
+              <div data-profile-checkin-week aria-label="最近七日打卡状态"></div>
+            </section>
+            <section class="profile-card checkin-heatmap-card" aria-labelledby="checkin-heatmap-title">
+              <div class="checkin-section-heading"><p class="eyebrow">Monthly Trace</p><h3 id="checkin-heatmap-title">本月打卡热力图</h3></div>
+              <div class="checkin-heatmap-legend"><span><i></i>未打卡</span><span><i></i>已打卡</span><span><i></i>今天</span></div>
+              <div class="checkin-heatmap" data-profile-checkin-heatmap aria-label="本月打卡热力图"></div>
+            </section>
+            <a class="button button-primary" href="action.html">前往行动中心打卡</a>
+          </section>
+
+          <section id="profile-section-badges" class="dashboard-view" data-dashboard-view="badges">
+            <div class="profile-view-heading"><p class="eyebrow">Honor Archive</p><h2>勋章墙</h2><p class="lead">连续的日常行动，将在这里凝结为守护荣誉。</p></div>
+            <div class="badge-grid" data-profile-badge-grid aria-live="polite"></div>
+            <a class="button button-primary" href="action.html">前往行动中心打卡</a>
+          </section>
+
+          <section id="profile-section-volunteer" class="dashboard-view" data-dashboard-view="volunteer">
+            <div class="profile-view-heading"><p class="eyebrow">Field Participation</p><h2>志愿报名</h2><p class="lead">你报名的海岸行动和志愿任务将归档在这里。</p></div>
+            <p class="profile-record-notice">报名记录仅保存在当前浏览器，不产生真实报名效力。</p>
+            <div class="profile-record-list" data-profile-volunteer-list aria-live="polite"></div>
+            <a class="button button-primary" href="action.html">前往行动中心</a>
+          </section>
+
+          <section id="profile-section-support" class="dashboard-view" data-dashboard-view="support">
+            <div class="profile-view-heading"><p class="eyebrow">Public Support</p><h2>公益支持</h2><p class="lead">每一份本地模拟支持记录，都会在这里留下项目足迹。</p></div>
+            <p class="profile-record-notice">公益支持为课程项目模拟，不产生真实支付行为。</p>
+            <div class="profile-record-list" data-profile-support-list aria-live="polite"></div>
+            <a class="button button-primary" href="action.html">前往行动中心</a>
+          </section>
+
+          <section id="profile-section-profile" class="dashboard-view" data-dashboard-view="profile">
+            <div class="profile-view-heading"><p class="eyebrow">Guardian Identity</p><h2>个人资料</h2><p class="lead">资料仅保存在当前浏览器，用来完善你的海洋守护档案。</p></div>
+            <div class="profile-settings-split">
+              <form class="profile-card profile-settings-form" data-profile-settings-form>
+                <div class="profile-settings-form__heading"><h3>编辑守护档案</h3><p>带 <span aria-hidden="true">*</span> 的内容将用于本页身份展示。</p></div>
+                <label class="profile-field"><span>显示昵称 *</span><input name="displayName" type="text" maxlength="24" required autocomplete="nickname" /></label>
+                <label class="profile-field"><span>身份偏好 *</span><select name="role" required><option value="公益守护者">公益守护者</option><option value="学生观察员">学生观察员</option><option value="海洋志愿者">海洋志愿者</option><option value="数据记录者">数据记录者</option></select></label>
+                <label class="profile-field"><span>个人宣言</span><textarea name="motto" rows="3" maxlength="120" placeholder="写下一句与你和海洋有关的话。"></textarea></label>
+                <div class="profile-settings-form__short-fields">
+                  <label class="profile-field"><span>头像首字母</span><input name="avatarText" type="text" maxlength="1" aria-describedby="profile-avatar-hint" /></label>
+                  <label class="profile-field"><span>邮箱（可选）</span><input name="email" type="email" autocomplete="email" /></label>
+                </div>
+                <p id="profile-avatar-hint" class="profile-field-hint">使用一个字符作为个人档案头像。</p>
+                <div class="profile-settings-form__actions"><button class="button button-primary" type="submit">保存个人资料</button><p class="status-message" data-profile-settings-status aria-live="polite"></p></div>
+              </form>
+              <aside class="profile-card profile-preview-card" aria-label="个人资料预览">
+                <p class="eyebrow">Profile Preview</p>
+                <div class="profile-preview-card__avatar" data-profile-preview-avatar>A</div>
+                <h3 data-profile-preview-name>守护者</h3>
+                <p class="profile-preview-card__role" data-profile-preview-role>公益守护者</p>
+                <blockquote data-profile-preview-motto>“守护海洋，从每一次微小行动开始。”</blockquote>
+                <dl><div><dt>用户名</dt><dd data-profile-username>—</dd></div><div><dt>档案邮箱</dt><dd data-profile-email>未填写</dd></div><div><dt>加入时间</dt><dd data-profile-created>—</dd></div></dl>
+              </aside>
+            </div>
+          </section>
+
+          <section id="profile-section-display" class="dashboard-view" data-dashboard-view="display">
+            <div class="profile-view-heading"><p class="eyebrow">Viewing Preference</p><h2>显示与播放</h2><p class="lead">选择更适合你的浏览方式；设置保存在本机，并在当前页面即时反映。</p></div>
+            <form class="profile-card display-prefs-form" data-display-prefs-form>
+              <div class="preference-row"><div><h3>背景视频播放</h3><p>关闭后，当前档案页停止播放背景视频。</p></div><label class="pref-switch"><input type="checkbox" name="videoBackground" /><span>开启</span></label></div>
+              <div class="preference-row"><div><h3>减少动态效果</h3><p>降低视觉过渡；系统“减少动态”仍会优先。</p></div><label class="pref-switch"><input type="checkbox" name="reduceMotion" /><span>开启</span></label></div>
+              <fieldset class="preference-fieldset"><legend>页面主题</legend><div class="preference-options"><label><input type="radio" name="theme" value="deep" checked /><span>深海模式</span></label><label><input type="radio" name="theme" value="frost" /><span>霜白模式</span></label></div></fieldset>
+              <fieldset class="preference-fieldset"><legend>字体大小</legend><div class="preference-options"><label><input type="radio" name="fontSize" value="standard" checked /><span>标准</span></label><label><input type="radio" name="fontSize" value="large" /><span>稍大</span></label></div></fieldset>
+              <fieldset class="preference-fieldset"><legend>地球自转速度</legend><div class="preference-options preference-options--three"><label><input type="radio" name="globeSpeed" value="slow" /><span>慢</span></label><label><input type="radio" name="globeSpeed" value="normal" checked /><span>标准</span></label><label><input type="radio" name="globeSpeed" value="off" /><span>关闭</span></label></div></fieldset>
+              <p class="status-message" data-display-prefs-status aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section id="profile-section-data" class="dashboard-view" data-dashboard-view="data">
+            <div class="profile-view-heading"><p class="eyebrow">Local Archive</p><h2>本地数据</h2><p class="lead">你的行动记录、打卡进度、报名和公益支持记录仅保存在当前浏览器，不会上传服务器。</p></div>
+            <section class="data-summary-grid" data-profile-data-summary aria-live="polite"></section>
+            <section class="profile-card data-transfer-panel"><div><p class="eyebrow">Portable Archive</p><h3>导入与导出</h3><p>导出当前用户的六类档案数据。导入会覆盖同类本地档案，但不会影响登录账户。</p></div><div class="data-transfer-panel__actions"><button class="button button-secondary" type="button" data-profile-data-export>导出 JSON</button><button class="button button-primary" type="button" data-profile-data-import>导入 JSON</button><input type="file" accept="application/json,.json" data-profile-data-file hidden /></div><p class="status-message" data-profile-data-status aria-live="polite"></p></section>
+            <section class="profile-card data-danger-panel"><p class="eyebrow">Local Archive Control</p><h3>清理本地档案数据</h3><p>清理只作用于当前登录用户的档案数据，不会删除账户登录信息。每项操作都会再次确认。</p><div class="data-danger-panel__actions"><button type="button" data-profile-data-clear="checkins">清空打卡记录</button><button type="button" data-profile-data-clear="volunteers">清空报名记录</button><button type="button" data-profile-data-clear="donations">清空公益支持记录</button><button type="button" data-profile-data-clear="all">清空全部本地档案数据</button></div></section>
+          </section>
+
+          <section id="profile-section-security" class="dashboard-view" data-dashboard-view="security">
+            <div class="profile-view-heading"><p class="eyebrow">Local Identity</p><h2>登录与安全</h2><p class="lead">当前账户状态用于本地展示与交互模拟。行动记录和设置仅保存在当前浏览器。</p></div>
+            <section class="security-local-note profile-card" aria-label="本地模拟说明"><span class="security-local-note__mark" aria-hidden="true">◎</span><div><strong>这是课程项目的本地身份模拟</strong><p>这里没有服务器账户、云端认证或真实交易流程；所有状态只在当前浏览器中保存。</p></div></section>
+            <section class="security-info-grid" data-profile-security-info aria-live="polite"></section>
+            <section class="security-guidance-card profile-card">
+              <p class="eyebrow">Safety Notes</p><h3>使用建议</h3>
+              <ul>
+                <li>不要在公共设备长期保存个人数据。</li>
+                <li>可以在本地数据页导出或清空自己的记录。</li>
+                <li>清空浏览器缓存可能导致本地记录丢失。</li>
               </ul>
             </section>
-
-            <section class="dashboard-view" data-dashboard-view="display">
-              <h2>显示与播放</h2>
-              <p class="lead">控制首页背景视频与页面动效。设置保存在本机浏览器。</p>
-              <form class="display-prefs-form" data-display-prefs-form>
-                <div class="field field--full">
-                  <label class="pref-toggle">
-                    <input type="checkbox" name="videoBackground" checked />
-                    <span>启用首页背景视频（关闭后仅显示摄影静帧）</span>
-                  </label>
-                </div>
-                <div class="field field--full">
-                  <label class="pref-toggle">
-                    <input type="checkbox" name="reduceMotion" />
-                    <span>减少页面动效（含下潜过渡与 Hero 缓动；系统「减少动态」也会生效）</span>
-                  </label>
-                </div>
-                <p class="status-message" data-display-prefs-status></p>
-              </form>
-            </section>
-
-            <section class="dashboard-view" data-dashboard-view="security">
-              <h2>登录与安全</h2>
-              <p class="lead">退出登录不会删除本地档案；清除数据将删除账户与全部记录。</p>
-              <div class="dashboard-quick-links">
-                <button class="button button-secondary" type="button" data-logout>退出登录</button>
-                <button class="text-button" type="button" data-profile-clear>清除本地账户与记录</button>
+            <section class="security-actions-card profile-card">
+              <div><p class="eyebrow">Local Controls</p><h3>本地身份操作</h3><p>退出只结束当前浏览器的本地身份状态；清空身份资料会永久删除当前浏览器中的模拟账户、个人资料和显示偏好，但保留行动档案。</p></div>
+              <div class="security-actions-card__actions">
+                <button class="button button-secondary" type="button" data-logout>退出本地身份</button>
+                <button class="security-clear-button" type="button" data-profile-clear>清空本地身份资料</button>
+                <button class="button button-primary" type="button" data-profile-security-data>前往本地数据管理</button>
               </div>
+              <p class="status-message" data-profile-security-status aria-live="polite"></p>
             </section>
-
-            <section class="dashboard-view" data-dashboard-view="data">
-              <h2>本地数据说明</h2>
-              <p class="lead">本项目使用 localStorage 模拟登录、积分、打卡与行动记录，不连接真实服务器。密码以明文保存在浏览器中，仅用于课程作业演示，请勿使用真实密码。</p>
-              <p>站点内展示用污染与物种等数据为示例/mock，正式交付时将按 docs/DATA_SOURCES.md 标注来源。</p>
-            </section>
-          </div>
+          </section>
         </div>
-      </div>
+      </section>
+
+      <dialog class="profile-record-dialog" data-profile-volunteer-detail aria-labelledby="profile-volunteer-detail-title">
+        <div class="profile-record-dialog__inner">
+          <button class="profile-record-dialog__close" type="button" data-profile-dialog-close aria-label="关闭">×</button>
+          <p class="eyebrow">Volunteer Record</p>
+          <h2 id="profile-volunteer-detail-title">志愿报名详情</h2>
+          <div data-profile-volunteer-detail-content></div>
+        </div>
+      </dialog>
+
+      <dialog class="profile-record-dialog" data-profile-support-thanks aria-labelledby="profile-support-thanks-title">
+        <div class="profile-record-dialog__inner">
+          <button class="profile-record-dialog__close" type="button" data-profile-dialog-close aria-label="关闭">×</button>
+          <p class="eyebrow">Local Thank You</p>
+          <h2 id="profile-support-thanks-title">感谢卡</h2>
+          <div data-profile-support-thanks-content></div>
+        </div>
+      </dialog>
+
+      <dialog class="profile-record-dialog profile-badge-dialog" data-profile-badge-detail aria-labelledby="profile-badge-detail-title">
+        <div class="profile-record-dialog__inner">
+          <button class="profile-record-dialog__close" type="button" data-profile-dialog-close aria-label="关闭">×</button>
+          <p class="eyebrow">Ocean Guardian Honor</p>
+          <h2 id="profile-badge-detail-title">勋章详情</h2>
+          <div data-profile-badge-detail-content></div>
+        </div>
+      </dialog>
+
+      <footer class="profile-footer"><span>澜存 · Ocean Guardian Profile</span><span>账户信息仅保存在当前浏览器</span></footer>
     </main>
-    <footer class="site-footer"><span>澜存</span><span>账户信息仅保存在当前浏览器</span></footer>
   </body>
 </html>

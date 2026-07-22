@@ -99,66 +99,134 @@ function initHeroKenBurns() {
   hero.classList.toggle('has-ken-burns', !shouldReduceMotion());
 }
 
+function syncHomeScreenHeight() {
+  if (document.body?.dataset?.page !== 'home') return;
+  document.documentElement.style.setProperty('--home-screen', `${window.innerHeight}px`);
+}
+
+function isHomeHeroPinned() {
+  const section = document.querySelector('[data-ocean-explore]');
+  if (!section) return window.scrollY < window.innerHeight * 0.5;
+  return window.scrollY < section.offsetTop - 1;
+}
+
+function syncHeroPinState() {
+  if (document.body.dataset.page !== 'home') return;
+  const pinned = isHomeHeroPinned();
+  document.body.classList.toggle('hero-media-unpinned', !pinned);
+  document.body.classList.toggle('is-hero-media-pinned', pinned);
+}
+
+function syncHeroVideoPlayback(hero, video, inView) {
+  if (!video || video.hidden || !video.getAttribute('src')) return;
+  if (!inView || document.hidden) {
+    video.pause();
+    return;
+  }
+  const play = video.play();
+  if (play && typeof play.catch === 'function') play.catch(() => {});
+}
+
+function getHomeGlobeScrollTop() {
+  const doc = document.documentElement;
+  const section = document.querySelector('[data-ocean-explore]');
+  syncHomeScreenHeight();
+  const maxScroll = Math.max(0, doc.scrollHeight - doc.clientHeight);
+  const sectionTop = section?.offsetTop ?? window.innerHeight;
+  return Math.max(sectionTop, maxScroll);
+}
+
+function scrollToHomeGlobeSection({ behavior = 'smooth' } = {}) {
+  const section = document.querySelector('[data-ocean-explore]');
+  if (!section) return;
+
+  document.body.classList.add('hero-media-unpinned');
+  document.body.classList.remove('is-hero-media-pinned');
+
+  syncHomeScreenHeight();
+  const top = getHomeGlobeScrollTop();
+  window.scrollTo({ top, behavior });
+
+  const snap = () => {
+    syncHomeScreenHeight();
+    window.scrollTo({ top: getHomeGlobeScrollTop(), behavior: 'auto' });
+    syncHeroPinState();
+  };
+
+  if (behavior === 'smooth') {
+    if ('onscrollend' in window) {
+      window.addEventListener('scrollend', snap, { once: true });
+    } else {
+      window.setTimeout(snap, 700);
+    }
+  } else {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(snap);
+    });
+  }
+}
+
 function initHeroScroll() {
   document.querySelectorAll('[data-scroll-target]').forEach((link) => {
     link.addEventListener('click', (event) => {
       event.preventDefault();
-      const section =
-        document.getElementById('ocean-globe-explorer') ||
-        document.querySelector('[data-ocean-explore]');
-      if (!section) return;
       const reduced = shouldReduceMotion();
-      section.scrollIntoView({
-        behavior: reduced ? 'auto' : 'smooth',
-        block: 'start',
-      });
-      if (link.dataset.scrollTarget === 'globe-focus') {
-        const stage = section.querySelector('[data-globe-scene]');
-        if (!stage) return;
-        stage.setAttribute('tabindex', '-1');
-        const focusStage = () => stage.focus({ preventScroll: true });
-        if (reduced) focusStage();
-        else window.setTimeout(focusStage, 450);
-      }
+      scrollToHomeGlobeSection({ behavior: reduced ? 'auto' : 'smooth' });
     });
   });
 }
 
-function initHeroVideoViewport() {
-  const hero = document.querySelector('.hero-ocean-intro, .video-hero');
-  const video = hero?.querySelector('.hero-video');
-  if (!hero || !video || typeof IntersectionObserver === 'undefined') return;
+function initHomeGlobeHashScroll() {
+  if (document.body?.dataset?.page !== 'home') return;
+  if (location.hash !== '#ocean-explore') return;
+  syncHomeScreenHeight();
+  requestAnimationFrame(() => scrollToHomeGlobeSection({ behavior: 'auto' }));
+}
 
-  const syncHeroVideo = (inView) => {
-    if (video.hidden || !video.getAttribute('src')) return;
-    if (!inView || document.hidden) {
-      video.pause();
-      return;
-    }
-    const play = video.play();
-    if (play && typeof play.catch === 'function') play.catch(() => {});
-  };
+function syncHeroOnScroll(hero, video) {
+  syncHeroPinState();
+  if (!hero) return;
+  const rect = hero.getBoundingClientRect();
+  const inView = rect.bottom > 0 && rect.top < window.innerHeight;
+  syncHeroVideoPlayback(hero, video, inView);
+}
+
+function initHeroVideoViewport() {
+  const hero = document.querySelector('#hero-intro, .hero-ocean-intro, .video-hero');
+  const video = hero?.querySelector('.hero-video');
+  if (!hero) return;
+
+  syncHeroOnScroll(hero, video);
+  window.addEventListener('scroll', () => syncHeroOnScroll(hero, video), { passive: true });
+  window.addEventListener('resize', () => {
+    syncHomeScreenHeight();
+    syncHeroOnScroll(hero, video);
+  });
+
+  if (typeof IntersectionObserver === 'undefined') return;
 
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry) => syncHeroVideo(entry.isIntersecting));
+      const entry = entries[0];
+      if (!entry) return;
+      syncHeroVideoPlayback(hero, video, entry.isIntersecting);
     },
-    { threshold: 0.12 },
+    { threshold: 0 },
   );
   observer.observe(hero);
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      video.pause();
+      video?.pause();
       return;
     }
-    const rect = hero.getBoundingClientRect();
-    syncHeroVideo(rect.bottom > 0 && rect.top < window.innerHeight);
+    syncHeroOnScroll(hero, video);
   });
 }
 
 window.LANCUN_getPrefs = getLancunPrefs;
 window.LANCUN_setPrefs = setLancunPrefs;
+window.LANCUN_scrollToHomeGlobeSection = scrollToHomeGlobeSection;
 window.LANCUN_applyHeroPrefs = () => {
   applyMotionPref();
   applyHeroMedia();
@@ -167,9 +235,11 @@ window.LANCUN_applyHeroPrefs = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   applyMotionPref();
+  syncHomeScreenHeight();
   applyHeroMedia();
   initHeroKenBurns();
   initHeroScroll();
+  initHomeGlobeHashScroll();
   initHeroVideoViewport();
   window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', () => {
     applyMotionPref();

@@ -1,6 +1,25 @@
 /* —— Home page tokens (HOME_REFINE_RULES §6) —— */
+html:has(body.home-page) {
+  margin: 0;
+  padding: 0;
+  background: #5a9eb8;
+}
+
 body.home-page {
   overflow-x: clip;
+  margin: 0;
+  padding: 0;
+  background-color: #02060e;
+  background-image: none;
+}
+
+body.home-page::before {
+  display: none;
+}
+
+main.home-page {
+  margin: 0;
+  padding: 0;
 }
 
 .home-page {
@@ -24,10 +43,21 @@ body.home-page {
   height: 100vh;
   height: 100svh;
   min-height: 100svh;
+  min-height: 100dvh;
   overflow: hidden;
   place-items: center;
-  background: var(--deep);
+  background: transparent;
   color: var(--text-light);
+}
+
+#hero-intro.hero-ocean-intro {
+  min-height: 100dvh;
+}
+
+body.home-page #hero-intro.hero-ocean-intro {
+  height: var(--home-screen, 100svh);
+  min-height: var(--home-screen, 100svh);
+  max-height: var(--home-screen, 100svh);
 }
 
 .hero-video,
@@ -40,9 +70,42 @@ body.home-page {
   height: 100%;
 }
 
+/* Pin hero media to viewport top while first screen is visible */
+body.home-page:not(.hero-media-unpinned) #hero-intro .hero-video,
+body.home-page:not(.hero-media-unpinned) #hero-intro .hero-poster,
+body.home-page:not(.hero-media-unpinned) #hero-intro .video-fallback,
+body.home-page:not(.hero-media-unpinned) #hero-intro .hero-overlay {
+  position: fixed;
+  top: -2px;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  width: 100vw;
+  height: calc(100dvh + 4px);
+  height: calc(100svh + 4px);
+  z-index: 0;
+}
+
+body.home-page:not(.hero-media-unpinned) #hero-intro .hero-overlay {
+  z-index: 1;
+}
+
+body.home-page.hero-media-unpinned #hero-intro .hero-video,
+body.home-page.hero-media-unpinned #hero-intro .hero-poster,
+body.home-page.hero-media-unpinned #hero-intro .video-fallback,
+body.home-page.hero-media-unpinned #hero-intro .hero-overlay {
+  visibility: hidden;
+}
+
+body.home-page:not(.hero-media-unpinned) .hero-ocean-intro.has-ken-burns .hero-poster,
+body.home-page:not(.hero-media-unpinned) .hero-ocean-intro.has-ken-burns .hero-video {
+  animation: none;
+}
+
 .hero-video,
 .hero-poster {
   object-fit: cover;
+  object-position: center top;
 }
 
 .hero-poster {
@@ -73,23 +136,11 @@ body.home-page {
   background:
     linear-gradient(
       to bottom,
-      rgba(3, 18, 34, 0.22) 0%,
-      rgba(3, 18, 34, 0.32) 42%,
+      transparent 0%,
+      rgba(3, 18, 34, 0.28) 42%,
       rgba(3, 18, 34, 0.58) 100%
     ),
     radial-gradient(80% 60% at 50% 40%, transparent 0%, rgba(3, 18, 34, 0.18) 100%);
-}
-
-.hero-ocean-intro::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  height: 12vh;
-  pointer-events: none;
-  background: linear-gradient(to bottom, transparent, rgba(3, 20, 38, 0.72));
 }
 
 .hero-ocean-intro.has-ken-burns .hero-poster,
@@ -113,6 +164,54 @@ body.home-page {
   text-align: center;
   text-wrap: balance;
   transform: translateY(-4vh);
+}
+
+.hero-content--framed {
+  padding: clamp(2.35rem, 5vw, 3rem) clamp(2.5rem, 5.5vw, 3.75rem);
+}
+
+.hero-content--framed::before,
+.hero-content--framed::after {
+  content: "";
+  position: absolute;
+  width: clamp(3.75rem, 10vw, 5.75rem);
+  height: clamp(3.75rem, 10vw, 5.75rem);
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(3, 18, 34, 0.35));
+}
+
+.hero-content--framed::before {
+  top: 0;
+  left: 0;
+  border-top: 2px solid rgba(255, 255, 255, 0.62);
+  border-left: 2px solid rgba(255, 255, 255, 0.62);
+}
+
+.hero-content--framed::after {
+  right: 0;
+  bottom: 0;
+  border-right: 2px solid rgba(255, 255, 255, 0.62);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.62);
+}
+
+.hero-content--framed .hero-title,
+.hero-content--framed .hero-subtitle,
+.hero-content--framed .hero-description {
+  font-family: "LXGW WenKai Screen", "Noto Sans SC", serif;
+  font-weight: normal;
+}
+
+.hero-content--framed .hero-title {
+  letter-spacing: 0.04em;
+  font-size: clamp(3.65rem, 7.2vw, 5.65rem);
+}
+
+.hero-content--framed .hero-subtitle {
+  letter-spacing: 0.14em;
+}
+
+.hero-content--framed .hero-description {
+  letter-spacing: 0.02em;
 }
 
 .hero-kicker {
@@ -240,6 +339,13 @@ html[data-reduced-motion='true'] .hero-enter__arrow {
 
 /* —— Home header on Hero video —— */
 .home-page .site-header {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+
+.home-page .site-header.site-header--scrolled {
   background: rgba(3, 20, 38, 0.2);
   backdrop-filter: blur(12px) saturate(125%);
   -webkit-backdrop-filter: blur(12px) saturate(125%);
@@ -267,6 +373,23 @@ html[data-reduced-motion='true'] .hero-enter__arrow {
   color: var(--text-light);
   background: var(--deep);
   scroll-margin-top: 5.9375rem;
+}
+
+body.home-page .ocean-globe-explorer.ocean-explore {
+  scroll-margin-top: 0;
+}
+
+body.home-page #ocean-explore.ocean-globe-explorer.ocean-explore {
+  height: var(--home-screen, 100svh);
+  min-height: var(--home-screen, 100svh);
+  max-height: var(--home-screen, 100svh);
+  overflow: hidden;
+}
+
+body.home-page #ocean-explore .ocean-explore__overlay {
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 .ocean-globe-explorer.ocean-explore--dark-interim {
@@ -1035,51 +1158,6 @@ html[data-reduced-motion='true'] .globe-pin,
   transition-duration: 0.01ms;
 }
 
-/* —— Light home footer —— */
-.home-footer.site-footer {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem 1rem;
-  padding-block: 0.625rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(3, 20, 38, 0.92);
-  color: rgba(242, 248, 250, 0.58);
-  font-size: 0.75rem;
-  font-weight: 300;
-  letter-spacing: 0.04em;
-}
-
-.home-footer__links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.65rem 1rem;
-}
-
-.home-footer__links a {
-  color: rgba(242, 248, 250, 0.62);
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  transition: color var(--duration-ui) var(--ease-ui), border-color var(--duration-ui) var(--ease-ui);
-}
-
-.home-footer__links a:hover,
-.home-footer__links a:focus-visible {
-  color: var(--text-light);
-  border-color: rgba(255, 255, 255, 0.35);
-  outline: none;
-}
-
-.home-footer__note {
-  opacity: 0.85;
-}
-
 @media (max-width: 58rem) {
   .globe-pin {
     width: 2.5rem;
@@ -1177,6 +1255,16 @@ html[data-reduced-motion='true'] .globe-pin,
     width: min(calc(100% - 2rem), var(--page-width));
   }
 
+  .hero-content--framed {
+    padding: clamp(1.5rem, 5vw, 2rem) clamp(1.35rem, 4.5vw, 2rem);
+  }
+
+  .hero-content--framed::before,
+  .hero-content--framed::after {
+    width: clamp(2.75rem, 12vw, 3.5rem);
+    height: clamp(2.75rem, 12vw, 3.5rem);
+  }
+
   .hero-title {
     font-size: clamp(2.5rem, 11vw, 3.5rem);
     letter-spacing: 0.06em;
@@ -1193,12 +1281,6 @@ html[data-reduced-motion='true'] .globe-pin,
   .ocean-explore__overlay {
     padding-block: var(--space-4);
     padding-bottom: var(--space-4);
-  }
-
-  .home-footer__note {
-    width: 100%;
-    text-align: center;
-    font-size: 0.6875rem;
   }
 
   .hero-cta-row {

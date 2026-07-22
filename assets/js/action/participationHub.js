@@ -1,5 +1,5 @@
 /**
- * 海洋行动中心 · ParticipationHub Tab 切换（阶段 3）
+ * 海洋行动中心 · ParticipationHub（双区同显 + Tab 锚点滚动）
  */
 (function participationHubModule() {
   const state = {
@@ -14,8 +14,9 @@
     return [...root.querySelectorAll(selector)];
   }
 
-  function setActiveTab(tabId) {
-    if (state.activeTab === tabId) return;
+  function setActiveTab(tabId, options = {}) {
+    const { scroll = true } = options;
+    if (!tabId) return;
     state.activeTab = tabId;
 
     $$('[data-participation-tab]').forEach((btn) => {
@@ -26,9 +27,13 @@
     });
 
     $$('[data-participation-panel]').forEach((panel) => {
-      const active = panel.getAttribute('data-participation-panel') === tabId;
-      panel.hidden = !active;
+      panel.hidden = false;
     });
+
+    if (scroll) {
+      const panel = $(`[data-participation-panel="${tabId}"]`);
+      panel?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
     window.OceanActionImpactCarousel?.setActiveTab?.(tabId);
     window.OceanActionVolunteerUI?.resumeAutoRotate?.();
@@ -59,7 +64,10 @@
   function setupParticipationHub() {
     if (document.body.dataset.page !== 'action') return;
     bindEvents();
-    setActiveTab('volunteer');
+    $$('[data-participation-panel]').forEach((panel) => {
+      panel.hidden = false;
+    });
+    setActiveTab('volunteer', { scroll: false });
   }
 
   document.addEventListener('DOMContentLoaded', setupParticipationHub);

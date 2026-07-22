@@ -56,7 +56,7 @@
 
 | 文件 / 区域 | 说明 |
 |-------------|------|
-| [`index.html`](../index.html) | HeroOceanIntro + OceanGlobeExplorer + home-footer |
+| [`index.html`](../index.html) | HeroOceanIntro + OceanGlobeExplorer（双视频满屏，无 footer） |
 | [`assets/css/home.css`](../assets/css/home.css) | 首页专用样式与 Token |
 | [`assets/js/hero.js`](../assets/js/hero.js) | Hero 视频与滚动引导 |
 | [`assets/js/ocean-explore-bg.js`](../assets/js/ocean-explore-bg.js) | 第二屏背景视频 |
@@ -77,13 +77,12 @@
 
 ## 3. 当前结构（目标骨架）
 
-保留两个主要 section + 轻 footer：
+保留两个全屏 section，无 footer；站点导航由顶栏 + 第二屏 `home-continue` 承担：
 
 ```html
 <main class="home-page">
   <section class="hero-ocean-intro"></section>
   <section class="ocean-globe-explorer"></section>
-  <footer class="home-footer"></footer>
 </main>
 ```
 
@@ -92,13 +91,13 @@
 | 逻辑区块 | 现行选择器 / id | 内容 |
 |----------|-----------------|------|
 | HeroOceanIntro | `.video-hero` | 全屏海面视频；LANCUN OCEAN PROTECTION / 同守澜海 / 生机永续 |
-| OceanGlobeExplorer | `#ocean-explore` / `[data-ocean-explore]` | 第二屏视频 + 左文案 + 右 WebGL 地球 |
-| home-footer | `.site-footer` | 澜存 · 海洋保护展示与互动课程项目 |
+| OceanGlobeExplorer | `#ocean-explore` / `[data-ocean-explore]` | 第二屏视频 + 左文案 + 右 WebGL 地球 + `home-continue` 探索链接 |
 
 **Section 1 — HeroOceanIntro**
 
-- 高度：`100vh`（或 `100svh`）
-- 引导：「进入海洋世界 ↓」→ 平滑滚动至 Section 2；「探索五大洋」→ 滚动至 Section 2 并聚焦地球区域
+- 高度：`var(--home-screen)`（JS 同步 `window.innerHeight`，fallback `100svh`；两屏物理高度与可滚视口一致）
+- 中间文案：`.hero-content--framed` 左上/右下 L 形框（2px、`clamp(3.75rem, 10vw, 5.75rem)` 臂长）；标题与描述用 **LXGW WenKai Screen**（jsDelivr CDN，SIL OFL；仅 Hero 展示层例外；全站基准仍为 Inter + Noto Sans SC）
+- 引导：「探索海洋世界 ↓」→ 滚至 `max(section.offsetTop, scrollHeight - clientHeight)` 并 snap；Hero pin/unpin 由 `scrollY` 控制（非 IO）；首页 `scroll-margin-top: 0`
 
 **Section 2 — OceanGlobeExplorer**
 
@@ -107,9 +106,11 @@
 - 左侧：默认总介绍文案 + **预留**海洋简介卡片区域
 - 右侧：保留现有地球模型、铅垂轴自转与拖动
 
-**Footer**
+**背景拼接**
 
-- 保持很轻，不抢第二屏视觉
+- 页面背景仅由 Hero 视频与第二屏海洋视频上下拼接组成
+- 不保留底部 footer 深色条；`body.home-page` 屏蔽全局深色渐变，避免视频边缘露出细条
+- Hero 与第二屏之间不使用底部过渡暗带（已移除 `hero-ocean-intro::after`）
 
 ---
 
@@ -200,7 +201,7 @@ Hero 遮罩参考（精修时优先）：
 | 13 | 键盘可访问性 | 部分 |
 | 14 | 移动端可用 | 待验收 |
 | 15 | 无横向溢出 | 须每阶段自检 |
-| 16 | 双 CTA：进入海洋世界 / 探索五大洋 | 待办（P1 结构精修） |
+| 16 | 单一 CTA：探索海洋世界 ↓ | **已完成** |
 
 ---
 
@@ -230,7 +231,7 @@ Hero 遮罩参考（精修时优先）：
 
 | 阶段 | 范围 | 不做 |
 |------|------|------|
-| **P1 结构 / 视觉节奏** | section 高度、双视频层、Hero 遮罩与字距、42/58 布局、左侧卡片区预留、轻 footer、双 CTA 平滑滚动 | 五大洋点击简介卡 |
+| **P1 结构 / 视觉节奏** | section 高度、双视频层、Hero 遮罩与字距、42/58 布局、左侧卡片区预留、轻 footer、单一 CTA 完整滚动 | 五大洋点击简介卡 |
 | **P2 地球交互** | 热点背面隐藏、点击高亮、hover 名称统一 | 子页跳转文案 |
 | **P3 简介卡片** | 左侧卡片切换、查看完整档案、深链 `#ocean-{id}` | 气泡 / 大陆架 |
 | **P4 验收** | 桌面 / 窄屏 / reduced-motion、Playwright 或目视清单 | — |

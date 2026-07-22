@@ -106,10 +106,6 @@ window.buildUserMenuHtml = (profileHref) => {
           <span class="account-menu__item-icon" aria-hidden="true">▦</span>
           <span>我的新增物种档案</span>
         </a>
-        <button type="button" class="account-menu__item" data-account-nav="settings" role="menuitem">
-          <span class="account-menu__item-icon" aria-hidden="true">⚙</span>
-          <span>账户设置</span>
-        </button>
         <button type="button" class="account-menu__item account-menu__item--signout" data-account-nav="logout" role="menuitem">
           <span class="account-menu__item-icon" aria-hidden="true">↩</span>
           <span>退出登录</span>
@@ -121,16 +117,6 @@ window.buildUserMenuHtml = (profileHref) => {
   </div>
 
   <p class="account-menu__toast account-menu__toast--global" data-account-menu-toast hidden aria-live="polite"></p>
-
-  <div class="account-settings-overlay" data-account-settings-modal hidden aria-hidden="true">
-    <div class="account-settings-panel" role="dialog" aria-modal="true" aria-labelledby="account-settings-title">
-      <button type="button" class="account-settings-panel__close" data-account-settings-close aria-label="关闭">&times;</button>
-      <p class="account-settings-panel__eyebrow">账户</p>
-      <h2 class="account-settings-panel__title" id="account-settings-title">账户设置</h2>
-      <p class="account-settings-panel__lead">账户设置功能将在个人信息页中完善。</p>
-      <button type="button" class="account-menu__btn account-menu__btn--primary account-settings-panel__ok" data-account-settings-close>知道了</button>
-    </div>
-  </div>
 
   <div class="auth-modal-overlay" data-auth-modal hidden aria-hidden="true">
     <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title" data-auth-modal-panel>

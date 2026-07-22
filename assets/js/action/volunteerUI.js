@@ -88,10 +88,8 @@
   }
 
   function shouldPauseAutoRotate() {
-    const volunteerTabActive = window.OceanActionParticipationHub?.getActiveTab?.() !== 'donation';
     return (
-      !volunteerTabActive
-      || state.hoverPaused
+      state.hoverPaused
       || state.dialogPaused
       || document.hidden
       || state.reducedMotion
@@ -166,10 +164,16 @@
         const full = store().isActivityFull(activity);
         const already = username && store().userHasRegistration(username, activity.id);
 
-        let registerLabel = '立即报名';
+        let registerLabel = '报名';
+        let registerAriaLabel = '立即报名';
         let registerDisabled = !loggedIn || full || already;
-        if (full) registerLabel = '名额已满';
-        else if (already) registerLabel = '已报名';
+        if (full) {
+          registerLabel = '名额已满';
+          registerAriaLabel = '名额已满';
+        } else if (already) {
+          registerLabel = '已报名';
+          registerAriaLabel = '已报名';
+        }
 
         const progressClass = ratio >= 0.95 ? 'is-critical' : ratio >= 0.85 ? 'is-warning' : '';
 
@@ -198,8 +202,8 @@
               </div>
               <p class="mission-card__impact">${escapeHtml(getImpactHighlight(activity))}</p>
               <div class="mission-card__actions">
-                <button class="button button-ghost" type="button" data-volunteer-detail="${escapeHtml(activity.id)}">查看详情</button>
-                <button class="button button-primary" type="button" data-volunteer-register="${escapeHtml(activity.id)}" ${registerDisabled ? 'disabled' : ''}>${registerLabel}</button>
+                <button class="button button-ghost" type="button" data-volunteer-detail="${escapeHtml(activity.id)}" aria-label="查看详情">详情</button>
+                <button class="button button-primary" type="button" data-volunteer-register="${escapeHtml(activity.id)}" aria-label="${escapeHtml(registerAriaLabel)}" ${registerDisabled ? 'disabled' : ''}>${registerLabel}</button>
               </div>
             </div>
           </article>

@@ -33,6 +33,10 @@ await desktop.waitForTimeout(500);
 const desktopMetrics = await desktop.evaluate(() => {
   const command = document.getElementById('pollution-command');
   const commandTop = command?.getBoundingClientRect().top ?? 9999;
+  const anchors = document.querySelector('.pollution-hero__anchors');
+  const ribbon = document.querySelector('.pollution-hero__status-ribbon');
+  const anchorsRect = anchors?.getBoundingClientRect();
+  const ribbonRect = ribbon?.getBoundingClientRect();
   return {
     pageVideo: Boolean(document.querySelector('.page-bg-video__media')),
     scrollHeight: document.documentElement.scrollHeight,
@@ -41,6 +45,7 @@ const desktopMetrics = await desktop.evaluate(() => {
     clientWidth: document.documentElement.clientWidth,
     commandTop,
     heroRibbon: document.querySelector('[data-rescue-hero-ribbon]')?.children.length ?? 0,
+    heroAnchorGap: ribbonRect && anchorsRect ? ribbonRect.top - anchorsRect.bottom : -1,
     mapPins: document.querySelectorAll('[data-rescue-map-pins] .rescue-watch__pin, [data-rescue-map-pins] circle').length,
     filterBtns: document.querySelectorAll('[data-rescue-status-filter] button').length,
     chartTabs: document.querySelectorAll('[data-chart-tab]').length,
@@ -71,10 +76,15 @@ assert(
   `top ${Math.round(desktopMetrics.commandTop)}px`,
 );
 assert('hero ribbon cells', desktopMetrics.heroRibbon >= 5, String(desktopMetrics.heroRibbon));
+assert(
+  'hero anchors clear of ribbon',
+  desktopMetrics.heroAnchorGap >= 8,
+  `${Math.round(desktopMetrics.heroAnchorGap)}px`,
+);
 assert('map pins rendered', desktopMetrics.mapPins >= 4, String(desktopMetrics.mapPins));
 assert('status filters', desktopMetrics.filterBtns >= 4, String(desktopMetrics.filterBtns));
 assert('chart tabs removed', desktopMetrics.chartTabs === 0, String(desktopMetrics.chartTabs));
-assert('data sources triggers', desktopMetrics.dataSourcesTriggers >= 4, String(desktopMetrics.dataSourcesTriggers));
+assert('data sources triggers', desktopMetrics.dataSourcesTriggers >= 3, String(desktopMetrics.dataSourcesTriggers));
 assert('footer explore links', desktopMetrics.footerLinks === 3, String(desktopMetrics.footerLinks));
 
 await desktop.locator('[data-rescue-deck-refresh]').click();
@@ -93,8 +103,10 @@ const chartInsights = await desktop.evaluate(() => {
   const panel = document.querySelector('.pollution-insight-panel');
   const grid = document.querySelector('.insight-panel-grid');
   const canvas = document.querySelector('.trend-chart-card__canvas');
-  const ring = document.querySelector('.composition-card .rescue-pie__ring');
+  const ring = document.querySelector('.composition-card .composition-ring');
   const svg = document.querySelector('.trend-chart-card__canvas .rescue-trend svg');
+  const yUnit = document.querySelector('.pollution-insight-panel .rescue-trend__unit');
+  const ringSegments = document.querySelectorAll('.composition-ring__segment');
   return {
     hasGrid: Boolean(grid),
     hasTrendCard: Boolean(document.querySelector('[data-rescue-trend-card] .rescue-trend svg')),
@@ -106,6 +118,12 @@ const chartInsights = await desktop.evaluate(() => {
     ringSize: ring?.getBoundingClientRect().width ?? 0,
     svgHeight: svg?.getBoundingClientRect().height ?? 0,
     yearLabels: document.querySelectorAll('.rescue-trend__label').length,
+    yTicks: document.querySelectorAll('.pollution-insight-panel .rescue-trend__tick').length,
+    yUnitText: yUnit?.textContent?.trim() ?? '',
+    ringSegmentCount: ringSegments.length,
+    barColors: [...document.querySelectorAll('.pollution-insight-panel .insight-source-bars .chart-fill')].map(
+      (el) => getComputedStyle(el).backgroundColor,
+    ),
     sourcesSummary: document.querySelector('[data-rescue-sources-summary]')?.textContent?.trim() ?? '',
     tabCount: document.querySelectorAll('[data-chart-tab]').length,
   };
@@ -144,20 +162,73 @@ assert(
   chartInsights.yearLabels >= 5,
   String(chartInsights.yearLabels),
 );
+assert(
+  'desktop trend y axis ticks',
+  chartInsights.yTicks >= 3,
+  String(chartInsights.yTicks),
+);
+assert('desktop trend y axis unit', chartInsights.yUnitText === '指数', chartInsights.yUnitText);
+assert(
+  'composition ring segments',
+  chartInsights.ringSegmentCount >= 2,
+  String(chartInsights.ringSegmentCount),
+);
+assert(
+  'source bar color variety',
+  new Set(chartInsights.barColors).size >= 2,
+  chartInsights.barColors.join(' | '),
+);
 assert('data insights sources summary', chartInsights.sourcesSummary.startsWith('数据参考'), chartInsights.sourcesSummary.slice(0, 48));
+
+await desktop.locator('.pollution-insight-panel').scrollIntoViewIfNeeded();
+await desktop.waitForTimeout(300);
+await desktop.locator('.composition-card .rescue-pie__legend li[data-segment="plastic"]').hover();
+await desktop.waitForTimeout(220);
+const ringHoverActive = await desktop.evaluate(
+  () => document.querySelector('.composition-ring__segment.is-active') !== null,
+);
+assert('composition ring hover pop', ringHoverActive);
 
 await desktop.locator('#live-monitoring').scrollIntoViewIfNeeded();
 await desktop.waitForTimeout(300);
 
-const desktopLiveConsole = await desktop.evaluate(() => ({
-  stationPos: getComputedStyle(document.querySelector('.station-panel')).position,
-  metricsPos: getComputedStyle(document.querySelector('.monitor-metrics')).position,
-  mapZ: getComputedStyle(document.querySelector('.monitor-map')).zIndex,
-}));
+const desktopLiveConsole = await desktop.evaluate(() => {
+  const map = document.querySelector('.monitor-map');
+  const sidebar = document.querySelector('.monitor-sidebar');
+  const stationPanel = document.querySelector('.station-panel');
+  const metricsStrip = document.querySelector('.monitor-metrics');
+  const mapRect = map?.getBoundingClientRect();
+  const sidebarRect = sidebar?.getBoundingClientRect();
+  return {
+    stationPos: stationPanel ? getComputedStyle(stationPanel).position : '',
+    metricsPos: metricsStrip ? getComputedStyle(metricsStrip).position : '',
+    monitorCols: getComputedStyle(document.querySelector('.monitor-window')).gridTemplateColumns,
+    mapSvgZ: getComputedStyle(document.querySelector('.monitor-map__svg')).zIndex,
+    sidebarWidth: sidebarRect?.width ?? 0,
+    mapWidth: mapRect?.width ?? 0,
+    metricCells: document.querySelectorAll('.monitor-metrics__cell').length,
+  };
+});
 
-assert('desktop station panel absolute', desktopLiveConsole.stationPos === 'absolute', desktopLiveConsole.stationPos);
-assert('desktop metrics strip absolute', desktopLiveConsole.metricsPos === 'absolute', desktopLiveConsole.metricsPos);
-assert('desktop monitor map above gradient', desktopLiveConsole.mapZ === '2', desktopLiveConsole.mapZ);
+assert('desktop station panel in rail', desktopLiveConsole.stationPos === 'relative', desktopLiveConsole.stationPos);
+assert('desktop metrics strip in rail', desktopLiveConsole.metricsPos === 'relative', desktopLiveConsole.metricsPos);
+assert(
+  'desktop monitor split columns',
+  desktopLiveConsole.monitorCols.includes('280px'),
+  desktopLiveConsole.monitorCols,
+);
+assert(
+  'desktop sidebar width',
+  desktopLiveConsole.sidebarWidth >= 270 && desktopLiveConsole.sidebarWidth <= 290,
+  `${Math.round(desktopLiveConsole.sidebarWidth)}px`,
+);
+assert(
+  'desktop map wider than sidebar',
+  desktopLiveConsole.mapWidth > desktopLiveConsole.sidebarWidth,
+  `${Math.round(desktopLiveConsole.mapWidth)} vs ${Math.round(desktopLiveConsole.sidebarWidth)}`,
+);
+assert('desktop monitor map svg above gradient', desktopLiveConsole.mapSvgZ === '2', desktopLiveConsole.mapSvgZ);
+assert('desktop metric cells', desktopLiveConsole.metricCells >= 4, String(desktopLiveConsole.metricCells));
 
 await desktop.evaluate(() => {
   window.LANCUN_RESCUE?.openDataSourcesModal?.();
@@ -290,6 +361,20 @@ trackPage(mobile);
 await mobile.setViewportSize({ width: 375, height: 812 });
 await mobile.goto(`${BASE}/pages/rescue.html`, { waitUntil: 'domcontentloaded', timeout: 45000 });
 await mobile.waitForTimeout(1500);
+
+const mobileHeroOverlap = await mobile.evaluate(() => {
+  const anchors = document.querySelector('.pollution-hero__anchors');
+  const ribbon = document.querySelector('.pollution-hero__status-ribbon');
+  const anchorsRect = anchors?.getBoundingClientRect();
+  const ribbonRect = ribbon?.getBoundingClientRect();
+  return ribbonRect && anchorsRect ? ribbonRect.top - anchorsRect.bottom : -1;
+});
+assert(
+  'mobile hero anchors clear of ribbon',
+  mobileHeroOverlap >= 4,
+  `${Math.round(mobileHeroOverlap)}px`,
+);
+
 await mobile.locator('.pollution-insight-panel').scrollIntoViewIfNeeded();
 await mobile.waitForTimeout(400);
 
@@ -302,9 +387,12 @@ const mobileMetrics = await mobile.evaluate(() => {
   const stationPanel = document.querySelector('.station-panel');
   const monitorWindow = document.querySelector('.monitor-window');
   const metricsStrip = document.querySelector('.monitor-metrics');
+  const sidebar = document.querySelector('.monitor-sidebar');
   const canvas = document.querySelector('.trend-chart-card__canvas');
-  const ring = document.querySelector('.composition-card .rescue-pie__ring');
+  const ring = document.querySelector('.composition-card .composition-ring');
   const grid = document.querySelector('.insight-panel-grid');
+  const mapRect = document.querySelector('.monitor-map')?.getBoundingClientRect();
+  const sidebarRect = sidebar?.getBoundingClientRect();
   const stationPos = stationPanel ? getComputedStyle(stationPanel).position : '';
   const metricsPos = metricsStrip ? getComputedStyle(metricsStrip).position : '';
   return {
@@ -314,6 +402,7 @@ const mobileMetrics = await mobile.evaluate(() => {
     stationRelative: stationPos === 'relative',
     metricsRelative: metricsPos === 'relative',
     monitorIsGrid: getComputedStyle(monitorWindow).display === 'grid',
+    sidebarBelowMap: sidebarRect && mapRect ? sidebarRect.top >= mapRect.bottom - 2 : false,
     canvasHeight: canvas?.getBoundingClientRect().height ?? 0,
     ringSize: ring?.getBoundingClientRect().width ?? 0,
     gridCols: grid ? getComputedStyle(grid).gridTemplateColumns : '',
@@ -333,7 +422,7 @@ assert(
   mobileMetrics.pressureAfterTitle,
   mobileMetrics.childrenOrder,
 );
-assert('mobile station panel below map', mobileMetrics.stationRelative && mobileMetrics.monitorIsGrid);
+assert('mobile station panel below map', mobileMetrics.stationRelative && mobileMetrics.monitorIsGrid && mobileMetrics.sidebarBelowMap);
 assert('mobile metrics strip below map', mobileMetrics.metricsRelative && mobileMetrics.monitorIsGrid);
 assert(
   'mobile chart canvas height',
