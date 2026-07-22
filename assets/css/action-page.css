@@ -183,6 +183,12 @@ body.action-page .action-panel--light textarea {
   color: var(--ink);
 }
 
+/* Native dropdown lists render on a light OS surface */
+body.action-page select option {
+  color: var(--ink);
+  background-color: #fff;
+}
+
 body.action-page .button-primary:hover,
 body.action-page .button-primary:focus-visible {
   background: linear-gradient(180deg, #72b8ff 0%, #60a5fa 100%);
@@ -380,8 +386,10 @@ body.action-page .button-ghost:focus-visible {
 .daily-action-shell {
   display: grid;
   grid-template-columns: 0.52fr 0.48fr;
+  grid-template-rows: minmax(0, 1fr);
   gap: 16px;
-  padding: 20px 24px;
+  padding: 16px 24px;
+  height: 520px;
   max-height: 520px;
   overflow: hidden;
   border-top: 2px solid rgba(85, 214, 194, 0.55);
@@ -391,11 +399,27 @@ body.action-page .button-ghost:focus-visible {
 .daily-action-shell__form {
   overflow-y: auto;
   min-height: 0;
+  max-height: 100%;
 }
 
 .daily-action-shell__progress {
   overflow-y: auto;
   min-height: 0;
+  max-height: 100%;
+}
+
+.daily-action-shell__form .action-deck-head h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.15rem;
+}
+
+.daily-action-shell__form .action-deck-head p {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.daily-action-shell__form .action-deck-head__mark {
+  height: 2rem;
 }
 
 .daily-action-shell .action-deck-head h2 {
@@ -449,15 +473,37 @@ body.action-page .button-ghost:focus-visible {
   background: linear-gradient(180deg, var(--blue), #2d7fd4);
 }
 
+.daily-action-shell__form .action-deck-head {
+  margin-bottom: 0.25rem;
+}
+
 .daily-checkin-form {
   display: grid;
-  gap: 0.55rem;
+  gap: 0.35rem;
+}
+
+.daily-checkin-form .field {
+  gap: 0.3rem;
 }
 
 .daily-checkin-form .field label {
   color: var(--text-light);
   font-size: 0.8125rem;
   font-weight: 500;
+}
+
+body.action-page .daily-checkin-form input:not([type='file']),
+body.action-page .daily-checkin-form select {
+  min-height: 36px;
+  padding: 0.4rem 0.55rem;
+}
+
+body.action-page .daily-checkin-form textarea {
+  min-height: 2.6rem;
+  max-height: 3.25rem;
+  padding: 0.4rem 0.55rem;
+  line-height: 1.45;
+  resize: none;
 }
 
 .daily-checkin-form input,
@@ -483,7 +529,13 @@ body.action-page .button-ghost:focus-visible {
 
 .daily-checkin-submit {
   width: 100%;
-  min-height: 2.75rem;
+  min-height: 2.5rem;
+}
+
+body.action-page .daily-checkin-submit {
+  min-height: 2rem;
+  padding-block: 0.3rem;
+  font-size: 0.875rem;
 }
 
 .daily-checkin-note {
@@ -2386,7 +2438,7 @@ body.action-page .button-ghost {
 
 .personal-archive-strip {
   width: 100%;
-  padding: clamp(1rem, 2vw, 1.25rem) 0;
+  padding: var(--action-panel-padding);
   background: var(--deep-panel);
   backdrop-filter: blur(12px) saturate(115%);
   -webkit-backdrop-filter: blur(12px) saturate(115%);
@@ -2456,7 +2508,116 @@ body.action-page .button-ghost {
 /* —— 阶段 2：打卡表单与面板 —— */
 .daily-checkin-form__core {
   display: grid;
-  gap: 0.85rem;
+  gap: 0.4rem;
+}
+
+body.action-page .daily-checkin-submit {
+  min-height: 2rem;
+  padding-block: 0.3rem;
+  font-size: 0.875rem;
+}
+
+.checkin-duration-field {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 0.65rem;
+  row-gap: 0.25rem;
+}
+
+.checkin-duration-field__label {
+  display: block;
+  margin-bottom: 0;
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--text-light);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.checkin-duration-rollers {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: nowrap;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.checkin-duration-field .field-error {
+  grid-column: 1 / -1;
+}
+
+.checkin-duration-rollers select {
+  flex: 1 1 4.5rem;
+  min-width: 4.5rem;
+  max-width: 5.5rem;
+  min-height: 36px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(85, 214, 194, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.checkin-duration-rollers select:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 1px rgba(85, 214, 194, 0.35);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.checkin-duration-unit {
+  flex: 0 0 auto;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  min-width: 1.1rem;
+}
+
+.checkin-photo-field .daily-upload-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  min-height: 36px;
+  border-style: dashed;
+  border-color: rgba(85, 214, 194, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.checkin-photo-field .daily-upload-placeholder span {
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.checkin-photo-field .daily-upload-placeholder input[type='file'] {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 11rem;
+  min-height: auto;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-light);
+  font-size: 0.75rem;
+}
+
+.checkin-photo-field .checkin-preview {
+  margin-top: 0.35rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  max-height: 72px;
+}
+
+.checkin-photo-field .checkin-preview img {
+  display: block;
+  width: 100%;
+  max-height: 72px;
+  object-fit: cover;
 }
 
 .daily-checkin-optional {
@@ -2473,19 +2634,25 @@ body.action-page .button-ghost {
 
 .daily-checkin-actions {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.35rem;
 }
 
 .daily-checkin-actions__secondary {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  overflow-x: auto;
 }
 
 .daily-checkin-actions__secondary .button-ghost {
-  min-height: 2.25rem;
-  padding-inline: 0.85rem;
-  font-size: 0.8125rem;
+  min-height: 1.75rem;
+  padding-inline: 0.5rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+body.action-page .daily-checkin-actions__secondary .button-ghost {
+  min-height: 1.75rem;
 }
 
 [data-checkin-toggle-optional][aria-expanded="true"]::after {
@@ -2690,6 +2857,14 @@ body.action-page .daily-streak-hero.action-panel--light {
   z-index: 30;
 }
 
+.action-dialog[open],
+.action-dialog:modal {
+  position: fixed !important;
+  inset: 0 !important;
+  margin: auto;
+  height: fit-content;
+}
+
 .action-dialog::backdrop {
   background: rgba(3, 18, 34, 0.62);
   backdrop-filter: blur(4px);
@@ -2733,8 +2908,9 @@ body.action-page .daily-streak-hero.action-panel--light {
 
 /* —— ParticipationHub 浅色弹窗 —— */
 .action-dialog.action-dialog--hub-light {
-  overflow: visible;
-  max-height: none;
+  max-height: min(90dvh, calc(100dvh - 2rem));
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 1.25rem 1.5rem 1.35rem;
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(14px) saturate(120%);
@@ -2788,15 +2964,15 @@ body.action-page .daily-streak-hero.action-panel--light {
   color: var(--ink);
 }
 
-.action-dialog--hub-light .button-ghost {
-  border-color: rgba(7, 30, 48, 0.18);
-  background: rgba(255, 255, 255, 0.5);
+.action-dialog.action-dialog--hub-light .button-ghost {
+  border-color: rgba(7, 30, 48, 0.28);
+  background: rgba(255, 255, 255, 0.82);
   color: var(--ink);
 }
 
-.action-dialog--hub-light .button-ghost:hover,
-.action-dialog--hub-light .button-ghost:focus-visible {
-  border-color: rgba(7, 30, 48, 0.28);
+.action-dialog.action-dialog--hub-light .button-ghost:hover,
+.action-dialog.action-dialog--hub-light .button-ghost:focus-visible {
+  border-color: rgba(7, 30, 48, 0.38);
   background: rgba(13, 31, 40, 0.06);
   color: var(--ink);
 }
@@ -2866,6 +3042,32 @@ body.action-page .daily-streak-hero.action-panel--light {
 .action-dialog--hub-light .impact-detail-block p,
 .action-dialog--hub-light .impact-detail-detail p {
   color: rgba(8, 35, 61, 0.72);
+}
+
+.action-dialog--hub-light .volunteer-detail-block h3,
+.action-dialog--hub-light .impact-detail-block h3 {
+  color: var(--ink);
+}
+
+.action-dialog--hub-light .volunteer-detail-list,
+.action-dialog--hub-light .volunteer-detail-list li,
+.action-dialog--hub-light .impact-detail-detail,
+.action-dialog--hub-light .impact-detail-detail li {
+  color: rgba(8, 35, 61, 0.72);
+}
+
+.action-dialog--hub-light .volunteer-detail-block--impact p:not(.volunteer-detail-impact-highlight) {
+  color: rgba(8, 35, 61, 0.72);
+}
+
+.action-dialog--hub-light .volunteer-register-form select,
+.action-dialog--hub-light .support-harbor-form select {
+  color: var(--ink);
+}
+
+.action-dialog--hub-light select option {
+  color: var(--ink);
+  background-color: #fff;
 }
 
 .action-dialog--hub-light .volunteer-detail-block--impact {
@@ -2944,8 +3146,6 @@ body.action-page .daily-streak-hero.action-panel--light {
 
   .action-dialog--hub-light .volunteer-detail-layout,
   .action-dialog--hub-light .impact-detail-layout {
-    max-height: none;
-    overflow: visible;
     gap: 0.65rem;
   }
 
@@ -2966,8 +3166,6 @@ body.action-page .daily-streak-hero.action-panel--light {
 
   .action-dialog--hub-light.donation-detail-dialog {
     width: min(92vw, 52rem);
-    max-height: none;
-    overflow: visible;
   }
 
   .action-dialog--hub-light.donation-detail-dialog .donation-detail-layout {
@@ -3468,7 +3666,7 @@ body.action-page .daily-streak-hero.action-panel--light {
   .personal-archive-strip {
     grid-template-columns: 1fr;
     gap: 1.25rem;
-    padding: 1.5rem 0;
+    padding: var(--action-panel-padding);
   }
 
   .archive-strip__entries {
@@ -3647,7 +3845,7 @@ body.action-page .daily-streak-hero.action-panel--light {
   }
 
   .personal-archive-strip {
-    padding: 1.25rem 0;
+    padding: clamp(1.25rem, 4vw, var(--action-panel-padding));
   }
 
   .archive-strip__entries {

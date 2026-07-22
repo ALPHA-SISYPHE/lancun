@@ -178,13 +178,56 @@ const hubReach = await page.evaluate(() => {
 if (hubReach.ok) pass('volunteer board visible within two scrolls');
 else fail('volunteer board visible within two scrolls', hubReach);
 
+await page.evaluate(() => {
+  const hub = document.querySelector('#participation-hub');
+  if (!hub) return;
+  const top = hub.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.2;
+  window.scrollTo({ top: Math.max(0, top), behavior: 'instant' });
+});
+
+await page.locator('[data-volunteer-detail]').first().click();
+await page.waitForSelector('[data-volunteer-detail-dialog][open]');
+const volunteerDetailCentered = await page.evaluate(() => {
+  const dialog = document.querySelector('[data-volunteer-detail-dialog]');
+  if (!dialog?.open) return { ok: false, reason: 'not open' };
+  const rect = dialog.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const centerY = rect.top + rect.height / 2;
+  const tolerance = vh * 0.25;
+  return {
+    ok: rect.top >= 24 && Math.abs(centerY - vh / 2) <= tolerance,
+    top: rect.top,
+    centerY,
+    viewportCenterY: vh / 2,
+    height: rect.height,
+  };
+});
+if (volunteerDetailCentered.ok) pass('volunteer detail dialog viewport centered after scroll');
+else fail('volunteer detail dialog viewport centered after scroll', volunteerDetailCentered);
+await page.locator('[data-volunteer-detail-close]').click();
+await page.waitForFunction(() => !document.querySelector('[data-volunteer-detail-dialog][open]'));
+
 await page.locator('[data-impact-card-volunteer]').click();
 const volunteerImpactDetail = await page.evaluate(() => {
   const dialog = document.querySelector('[data-impact-detail-dialog]');
   const title = document.querySelector('[data-impact-detail-title]')?.textContent?.trim();
+  const rect = dialog?.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const centerY = rect ? rect.top + rect.height / 2 : 0;
+  const tolerance = vh * 0.25;
+  const centered = Boolean(
+    dialog?.open
+    && rect
+    && rect.top >= 24
+    && Math.abs(centerY - vh / 2) <= tolerance,
+  );
   return {
     open: dialog?.open === true,
     title,
+    centered,
+    top: rect?.top,
+    centerY,
+    viewportCenterY: vh / 2,
   };
 });
 if (volunteerImpactDetail.open && volunteerImpactDetail.title) {
@@ -192,6 +235,8 @@ if (volunteerImpactDetail.open && volunteerImpactDetail.title) {
 } else {
   fail('volunteer impact detail dialog opens with title', volunteerImpactDetail);
 }
+if (volunteerImpactDetail.centered) pass('volunteer impact detail dialog viewport centered after scroll');
+else fail('volunteer impact detail dialog viewport centered after scroll', volunteerImpactDetail);
 await page.locator('[data-impact-detail-close]').click();
 await page.waitForFunction(() => !document.querySelector('[data-impact-detail-dialog][open]'));
 

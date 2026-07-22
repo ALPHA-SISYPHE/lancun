@@ -579,7 +579,7 @@ export function migrateLegacyCheckins() { ... }
 
 ### G.4 阶段 2–5 已实现清单
 
-- **阶段 2**：完整打卡表单、7 日条、连续天数、徽章 3/5/7/14/30、证书/历史/徽章 dialog、guest gating
+- **阶段 2**：完整打卡表单（类型 / 记录 / 时分 rollers / 照片；补充记录仅心情；提交后清空；一键清空）、7 日条、连续天数、徽章 3/5/7/14/30、证书/历史/徽章 dialog、guest gating
 - **阶段 3**：30 活动库、3 卡展示、12s 自动换批、详情/报名/成功/记录 dialog、手机邮箱去重
 - **阶段 4**：6 项目 + 左叙事面板、金额 pill、感谢卡、记录 dialog；9 故事单卡轮播
 - **阶段 5**：打卡 dock 暗色玻璃、背景视频 shade 减轻、志愿/捐款模块色差、Footer 压缩、平板 2 列志愿、移动横向 scroll（7 日条/志愿卡）、dialog focus 归还、`prefers-reduced-motion` 补漏

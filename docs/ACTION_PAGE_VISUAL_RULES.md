@@ -215,8 +215,8 @@
 | Section 间距 | 紧凑优先；**不得因新增轮播/详情而加长总页高** |
 | Hero 高度 | 克制（`min-height: clamp(420px, 42vh, 520px)`）；**Hero 主文案不得被 dock 遮挡**；「今日状态」aside 与左侧标题区 **顶部对齐**（`align-items: start`） |
 | ParticipationHub 卡片 | ≥768px：志愿卡 **详情 / 报名**、公益卡 **详情 / 捐助** 单行横排（grid 1:1 等宽）；≤767px 竖排全宽；三卡 **底栏按钮贴底对齐**；标题/摘要 **最多 2 行**（line-clamp）；≥1200px 右侧往期面板与左侧主栏 **等高底边对齐**；卡片按钮用 `aria-label` 保留完整语义 |
-| ParticipationHub 弹窗 | Hub 交互 dialog 统一 `action-dialog--hub-light`：白底半透明面板 + 轻遮罩；表单类弹窗桌面 **紧凑双列、无滚动优先** |
-| 个人行动档案 | 包在 `action-shell` 内与 Hub **同宽**；与上方 Hub 保持 `section-gap` 段间距 |
+| ParticipationHub 弹窗 | Hub 交互 dialog 统一 `action-dialog--hub-light`：白底半透明面板 + 轻遮罩；**必须保持视口垂直居中**（`.action-dialog[open], .action-dialog:modal` → `position: fixed; inset: 0; margin: auto` + `max-height: 90dvh`；滚动后也不得贴顶）；表单类弹窗桌面 **紧凑双列、无滚动优先**（靠内部 grid/line-clamp，禁止 `overflow: visible` / `max-height: none` 取消 dialog 约束）；**浅色弹窗内禁止使用 `--text-muted` / `--text-light` 作正文色**——列表、段落、ghost 按钮、`select option` 一律 `--ink` 或 `rgba(8,35,61,0.72)`；原生 `<select>` 下拉列表按 OS 浅底处理，option 必须深字浅底 |
+| 个人行动档案 | 包在 `action-shell` 内与 Hub **同宽**；与上方 Hub 保持 `section-gap` 段间距；`.personal-archive-strip` 内侧使用 `--action-panel-padding`，内容与深色边框保持留白 |
 | 往期成果侧栏 | **不展示**「一次展示一条 / 8 秒切换」等小字；保留标题与 `01 / 09` 计数 |
 | 主功能面板 | 尽量让用户在较少滚动中完成行动 |
 | 正文 | **15px – 16px**；`line-height: 1.65 – 1.75` |
@@ -321,6 +321,8 @@ flowchart TB
 | 4 | 捐款叙事面板、感谢卡、ImpactStoryCarousel | ✓ |
 | 5 | 个人行动档案 strip + Footer + archiveUI | ✓ |
 | 6 | 滚动压缩、透明 glass、响应式、smoke 扩展 | ✓ |
+
+**DailyActionDock 主表单（现行）：** 行动类型（固定选项，无「自定义行动」）→ 一句话记录 → 时/分双 select（存为分钟）→ 上传行动照片（可选，本地预览）；「补充记录」仅含心情；提交成功后清空表单；提供「一键清空」。
 
 **验收脚本：**
 

@@ -1924,10 +1924,10 @@ function setupAuth() {
       const fields = login.elements;
       const username = fields.username.value.trim();
       const password = fields.password.value;
-      let invalid = false;
+    let invalid = false;
       invalid = setFieldError(fields.username, username ? '' : '请输入用户名。') || invalid;
       invalid = setFieldError(fields.password, !password ? '请输入密码。' : password.length < 6 ? '密码至少需要 6 位。' : '') || invalid;
-      if (invalid) return;
+    if (invalid) return;
 
       const result = authStorage()?.loginUser?.(username, password);
       const status = login.querySelector('[data-login-result]');

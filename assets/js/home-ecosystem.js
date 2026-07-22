@@ -7,7 +7,6 @@
   const hero = document.querySelector('.hero-ocean-intro');
   const globeSection = document.querySelector('[data-ocean-explore]');
   const hint = document.querySelector('[data-globe-scene-hint]');
-  const indexRail = document.querySelector('[data-ocean-index]');
   const sectionIndicator = document.querySelector('[data-home-section-indicator]');
 
   function motionReduced() {
@@ -33,44 +32,6 @@
 
   window.addEventListener('lancun-globe-hint-dismiss', dismissGlobeHint);
   window.addEventListener('lancun-ocean-pin-select', dismissGlobeHint);
-
-  function syncOceanIndex(activeId) {
-    if (!indexRail) return;
-    indexRail.querySelectorAll('[data-ocean-index-item]').forEach((button) => {
-      const selected = button.dataset.oceanIndexItem === activeId;
-      button.classList.toggle('is-active', selected);
-      button.setAttribute('aria-pressed', selected ? 'true' : 'false');
-    });
-  }
-
-  function buildOceanIndex() {
-    if (!indexRail) return;
-    const list = window.OCEAN_HOTSPOTS || [];
-    indexRail.innerHTML = list
-      .map((ocean) => {
-        const num = String((ocean.index ?? 0) + 1).padStart(2, '0');
-        return `<button type="button" class="ocean-index-rail__item" data-ocean-index-item="${ocean.id}" aria-pressed="false">
-          <span class="ocean-index-rail__num">${num}</span>
-          <span class="ocean-index-rail__name">${ocean.name}</span>
-        </button>`;
-      })
-      .join('');
-
-    indexRail.addEventListener('click', (event) => {
-      const button = event.target.closest('[data-ocean-index-item]');
-      if (!button) return;
-      window.dispatchEvent(
-        new CustomEvent('lancun-ocean-index-select', {
-          bubbles: true,
-          detail: { id: button.dataset.oceanIndexItem },
-        }),
-      );
-    });
-  }
-
-  window.addEventListener('lancun-ocean-preview-change', (event) => {
-    syncOceanIndex(event.detail?.id ?? null);
-  });
 
   function initSectionIndicator() {
     if (!sectionIndicator || !hero || !globeSection) return;
@@ -120,6 +81,5 @@
     observer.observe(globeSection);
   }
 
-  buildOceanIndex();
   initSectionIndicator();
 })();

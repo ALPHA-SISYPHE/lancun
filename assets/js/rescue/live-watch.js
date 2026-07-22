@@ -5,7 +5,7 @@
     STATUS_LABELS,
     NOAA_DOCS,
     OPENAQ_DOCS,
-    OPENAQ_PROXY,
+    openaqProxyUrl,
     formatNum,
     lonLatToSvg,
     fetchJson,
@@ -137,6 +137,7 @@
 
     const state = stationState.get(activeLiveId);
     if (!state) {
+      host.className = 'station-panel monitor-station-bar';
       host.innerHTML = `<p class="station-panel__empty">暂无实时数据，展示最近一次观测记录。</p>`;
       host.setAttribute('aria-busy', 'false');
       return;
@@ -280,7 +281,7 @@
   const fetchOpenAqPoint = async (config) => {
     const mock = getMockPoint(config.id);
     try {
-      const url = `${OPENAQ_PROXY}?lat=${config.lat}&lon=${config.lon}`;
+      const url = `${openaqProxyUrl()}?lat=${config.lat}&lon=${config.lon}`;
       const payload = await fetchJson(url);
       if (payload?.value == null || Number.isNaN(Number(payload.value))) throw new Error('OpenAQ empty');
       const value = Number(payload.value);

@@ -1,5 +1,13 @@
-const OCEAN2_CORAL_URL = '/api/ocean/coral';
+const OCEAN2_DEV_API_PORT = 8788;
 const OCEAN2_CORAL_SOURCE = 'https://api.coral.tsr.lol/stations/southeast_florida/current';
+
+const ocean2CoralFetchUrl = () => {
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') {
+    return `http://${host}:${OCEAN2_DEV_API_PORT}/api/ocean/coral`;
+  }
+  return '/api/ocean/coral';
+};
 const OCEAN2_NOAA_BASE = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
 const OCEAN2_STATION = '8518750';
 const OCEAN2_COVER_LABELS = {
@@ -170,7 +178,7 @@ const ocean2ApplyNoaaMock = () => {
 
 const ocean2LoadCoralMetrics = async () => {
   try {
-    const coral = await ocean2Fetch(OCEAN2_CORAL_URL);
+    const coral = await ocean2Fetch(ocean2CoralFetchUrl());
     const current = coral.current || {};
     ocean2SetMetric('sst', { value: ocean2Format(current.sst_max, 2), unit: '°C', state: '实时 · Coral Watch', live: true, note: current.date ? `观测于 ${current.date}` : '珊瑚礁周边的表层热量' });
     ocean2SetMetric('stress', { value: ocean2Format(current.dhw, 2), unit: '°C·周', state: '实时 · Coral Watch', live: true, note: `热应力：${current.stress_level || '待判定'}` });

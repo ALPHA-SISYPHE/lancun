@@ -33,7 +33,7 @@
 | 数据主题 | 计划用途 | 来源 | 状态 |
 |---|---|---|---|
 | 海洋之美或生态基础数据 | 首页核心数据 | 待验证 | 待收集 |
-| 第一节看板 1–3：SST / 热应力 / 白化 | `ocean.html` §3.1 卡 1–3 | Coral Watch `…/stations/southeast_florida/current`（生产经 `/api/ocean/coral` 代理） | 已锁定，见 `OCEAN_PAGE.md` 附录 A.1 |
+| 第一节看板 1–3：SST / 热应力 / 白化 | `ocean.html` §3.1 卡 1–3 | Coral Watch `…/stations/southeast_florida/current`（Vercel 经 `/api/ocean/coral`；本地需 `npm run dev:apis` :8788 + `serve` :8080） | 已锁定，见 `OCEAN_PAGE.md` 附录 A.1 |
 | 第一节看板 4–6：潮位 / 水温 / 风压 | `ocean.html` §3.1 卡 4–6 | NOAA datagetter，站 `8518750` | 已锁定，见 `OCEAN_PAGE.md` 附录 A.1 |
 | 第二节：碳汇 / 热量 / 氧气 / 蓝碳 + CO₂ 趋势 | `ocean.html` §3.2 | IPCC / NOAA / UNEP；折线 NOAA GCB 摘要 | 已锁定，见附录 A.2；数据在 `mock-data.js` |
 | 第三节：五大洋面积 / 深度 / 生态亮点 | `ocean.html` §3.3 每洋小看板 | NOAA / FAO / IUCN / NSIDC 等 | 已锁定，见附录 A.3；数据在 `mock-data.js` |
@@ -374,7 +374,7 @@ v2.3 光池/caustics 已废弃，不再作为装饰规范。
 |---|---|---|---|
 | Protected Planet API v4 | 需要 | **非第一节 MVP** | 后续扩展；非商业用途声明 |
 | NOAA CO-OPS Data API | 通常不需要 | 看板 4–6：潮位、水温、风/气压 | 站 `8518750`；官方文档称支持 CORS |
-| Coral Watch API | 不需要 | 看板 1–3：SST、热应力、白化相关 | 站 `southeast_florida`；浏览器无 CORS，Vercel 经 `/api/ocean/coral` 代理 |
+| Coral Watch API | 不需要 | 看板 1–3：SST、热应力、白化相关 | 站 `southeast_florida`；浏览器无 CORS；Vercel `/api/ocean/coral`；本地 `server/dev-apis.mjs` :8788 |
 
 ## 「海在呼救」数据策略（摘要）
 

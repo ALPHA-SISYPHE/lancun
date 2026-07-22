@@ -16,6 +16,9 @@ const sourceJs = fs.readFileSync(path.join(root, 'assets/js/rescue/source-matrix
 
 const footerBlock = html.match(/<footer[\s\S]*?<\/footer>/)?.[0] || '';
 
+const stationBarRule = css.split('.monitor-station-bar {')[1]?.split('}')[0] ?? '';
+const metricsRule = css.split('.monitor-metrics {')[1]?.split('}')[0] ?? '';
+
 const checks = [
   ['command-deck legacy anchor', html.includes('id="command-deck"')],
   ['hero ribbon hook', html.includes('data-rescue-hero-ribbon')],
@@ -90,12 +93,14 @@ const checks = [
   ['css source image max 320', css.includes('.source-image-stage') && css.includes('max-height: min(320px, 100%)')],
   ['css hero grid rows', css.includes('grid-template-rows: auto auto')],
   ['css console overlay token', css.includes('--console-overlay: rgba(3, 20, 38, 0.72)')],
-  ['css frost station panel', css.includes('.station-panel') && css.includes('rgba(234, 245, 247, 0.64)')],
-  ['css metric strip frost', css.includes('.monitor-sidebar') && css.includes('rgba(234, 245, 247, 0.58)')],
+  ['css frost station panel', css.includes('.monitor-station-bar') && css.includes('var(--light-panel)')],
+  ['css metric strip frost', css.includes('.monitor-metrics') && css.includes('var(--light-panel)')],
+  ['css monitor bars no blur', !stationBarRule.includes('backdrop-filter') && !metricsRule.includes('backdrop-filter')],
   ['css map stage gradient', css.includes('.monitor-map::after') && css.includes('linear-gradient')],
-  ['html monitor sidebar', html.includes('class="monitor-sidebar"') && html.includes('data-rescue-station-detail')],
-  ['css monitor split grid', css.includes('grid-template-columns: minmax(0, 1fr) 280px') && css.includes('.monitor-sidebar')],
-  ['css metrics 2x2 grid', css.includes('.monitor-metrics') && css.includes('repeat(2, 1fr)')],
+  ['html monitor stack bar', html.includes('monitor-station-bar') && html.includes('data-rescue-station-detail')],
+  ['css monitor stack grid', css.includes('grid-template-rows: auto minmax(340px, 1fr) auto')],
+  ['css metrics 4 col', css.includes('.monitor-metrics') && css.includes('repeat(4, 1fr)')],
+  ['js station compact bar', liveWatchJs.includes('station-panel__primary') && liveWatchJs.includes('station-panel__aside')],
   ['css basemap slice', html.includes('preserveAspectRatio="xMidYMid slice"')],
   ['css insight panel grid', css.includes('.pollution-insight-panel .insight-panel-grid') && css.includes('max-height: 320px')],
   ['css tablet insight single col', css.includes('grid-template-columns: 1fr') && css.includes('max-height: 720px')],

@@ -96,7 +96,7 @@
 **Section 1 — HeroOceanIntro**
 
 - 高度：`var(--home-screen)`（JS 同步 `window.innerHeight`，fallback `100svh`；两屏物理高度与可滚视口一致）
-- 中间文案：`.hero-content--framed` 左上/右下 L 形框（2px、`clamp(3.75rem, 10vw, 5.75rem)` 臂长）；标题与描述用 **LXGW WenKai Screen**（jsDelivr CDN，SIL OFL；仅 Hero 展示层例外；全站基准仍为 Inter + Noto Sans SC）
+- 中间文案：`.hero-content--framed` 左上/右下 L 形框（2.5px 实白 `#fff`、`clamp(4.25rem, 11vw, 6.5rem)` 臂长）；标题与描述用 **LXGW WenKai Screen**（jsDelivr CDN，SIL OFL；仅 Hero 展示层例外；全站基准仍为 Inter + Noto Sans SC）
 - 引导：「探索海洋世界 ↓」→ 滚至 `max(section.offsetTop, scrollHeight - clientHeight)` 并 snap；Hero pin/unpin 由 `scrollY` 控制（非 IO）；首页 `scroll-margin-top: 0`
 
 **Section 2 — OceanGlobeExplorer**
@@ -190,6 +190,7 @@ Hero 遮罩参考（精修时优先）：
 | 2 | 第二屏互动地球 | 已有（globe v2） |
 | 3 | 地球自动绕铅垂轴缓慢自转 | 已有 |
 | 4 | 用户可拖动地球旋转（yaw） | 已有 |
+| 4b | hover 地球期间停转；移出后 3 秒恢复自转 | **已完成** |
 | 5 | 五大洋位置有 `+` 号热点 | 已有 |
 | 6 | 热点跟随地球旋转 | 已有 |
 | 7 | 热点在地球背面时隐藏或弱化 | 待办 |
@@ -232,8 +233,8 @@ Hero 遮罩参考（精修时优先）：
 | 阶段 | 范围 | 不做 |
 |------|------|------|
 | **P1 结构 / 视觉节奏** | section 高度、双视频层、Hero 遮罩与字距、42/58 布局、左侧卡片区预留、轻 footer、单一 CTA 完整滚动 | 五大洋点击简介卡 |
-| **P2 地球交互** | 热点背面隐藏、点击高亮、hover 名称统一 | 子页跳转文案 |
-| **P3 简介卡片** | 左侧卡片切换、查看完整档案、深链 `#ocean-{id}` | 气泡 / 大陆架 |
+| **P2 地球交互** | 热点背面隐藏、点击高亮、hover 名称统一、**hover 停转 / 移出 3s 恢复** | 子页跳转文案 |
+| **P3 简介卡片** | 左侧卡片切换、查看完整档案、深链 `#ocean-{id}`、**无 01–05 编号**、**紧凑高度** | 气泡 / 大陆架 / 左下索引轨 |
 | **P4 验收** | 桌面 / 窄屏 / reduced-motion、Playwright 或目视清单 | — |
 
 ---

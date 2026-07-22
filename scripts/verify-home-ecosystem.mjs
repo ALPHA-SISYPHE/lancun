@@ -12,14 +12,21 @@ const css = fs.readFileSync(path.join(root, 'assets/css/home.css'), 'utf8');
 const checks = [
   ['section indicator', () => html.includes('data-home-section-indicator')],
   ['globe hint dismiss hook', () => html.includes('data-globe-scene-hint') && eco.includes('lancun-globe-hint-dismiss')],
-  ['ocean index rail', () => html.includes('data-ocean-index') && eco.includes('ocean-index-rail__item')],
+  ['no ocean index rail', () => !html.includes('data-ocean-index') && !eco.includes('buildOceanIndex')],
+  ['compact preview no numbering', () =>
+    !preview.includes('ocean-preview-card__eyebrow')
+    && !preview.includes('ocean-preview-card__pager')
+    && !preview.includes('lancun-ocean-index-select')],
   ['continue explore links', () => html.includes('home-continue') && html.includes('pages/species.html')],
   ['no home footer', () => !html.includes('home-footer')],
   ['ESC reset overview', () => preview.includes("event.key !== 'Escape'")],
   ['ocean preview API', () => preview.includes('LANCUN_oceanPreview')],
   ['globe grab cursor', () => controls.includes("cursor = 'grab'")],
+  ['globe hover pause resume', () =>
+    controls.includes('HOVER_RESUME_MS = 3000')
+    && controls.includes('pointerenter')
+    && controls.includes('pointerleave')],
   ['rotate to ocean', () => globe.includes('rotateToOcean') && controls.includes('rotateToLng')],
-  ['index select event', () => preview.includes('lancun-ocean-index-select')],
   ['hint updated copy', () => html.includes('拖动地球 · 点击 + 探索五大洋')],
   ['section indicator styles', () => css.includes('.home-section-indicator')],
   ['home body bg override', () => css.includes('body.home-page::before') && css.includes('display: none')],

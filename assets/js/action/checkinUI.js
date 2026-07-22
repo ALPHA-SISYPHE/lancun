@@ -69,15 +69,18 @@
     });
   }
 
-  function toggleCustomActionType(show) {
-    const wrap = $('[data-checkin-custom-type-wrap]');
-    if (wrap) wrap.hidden = !show;
-  }
+  const ACTION_TYPES = [
+    '减少一次性塑料',
+    '自带水杯',
+    '垃圾分类',
+    '低碳出行',
+    '参与净滩',
+    '海洋知识学习',
+    '分享环保内容',
+    '节约用水',
+  ];
 
-  function toggleCustomDuration(show) {
-    const wrap = $('[data-checkin-custom-duration-wrap]');
-    if (wrap) wrap.hidden = !show;
-  }
+  const MINUTE_STEPS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
   function isOptionalExpanded() {
     const panel = $('[data-checkin-optional]');
@@ -100,68 +103,70 @@
 
   function shouldAutoExpandOptional(checkin) {
     if (!checkin) return false;
-    const presets = ['5', '10', '20', '30', '60'];
-    const customDuration = !presets.includes(String(checkin.duration));
-    const nonDefaultMood = checkin.mood && checkin.mood !== '平静';
-    return customDuration || nonDefaultMood || Boolean(checkin.imagePreview);
+    return Boolean(checkin.mood && checkin.mood !== '平静');
+  }
+
+  function snapMinutes(totalMinutes) {
+    const hours = Math.min(8, Math.floor(totalMinutes / 60));
+    let minutes = totalMinutes % 60;
+    if (!MINUTE_STEPS.includes(minutes)) {
+      minutes = MINUTE_STEPS.reduce((best, step) =>
+        Math.abs(step - minutes) < Math.abs(best - minutes) ? step : best,
+      );
+    }
+    if (hours === 8 && minutes > 0) {
+      return { hours: 8, minutes: 0 };
+    }
+    return { hours, minutes };
   }
 
   function readDuration(form) {
-    const preset = form.durationPreset.value;
-    if (preset === 'custom') {
-      return Number(form.durationCustom.value);
-    }
-    return Number(preset);
+    const hours = Number(form.durationHours?.value ?? 0);
+    const minutes = Number(form.durationMinutes?.value ?? 0);
+    return hours * 60 + minutes;
+  }
+
+  function setDurationFields(form, totalMinutes) {
+    const snapped = snapMinutes(Math.max(0, Number(totalMinutes) || 0));
+    if (form.durationHours) form.durationHours.value = String(snapped.hours);
+    if (form.durationMinutes) form.durationMinutes.value = String(snapped.minutes);
+  }
+
+  function setDurationError(form, message) {
+    const hours = form.durationHours;
+    const minutes = form.durationMinutes;
+    const error = document.getElementById('checkin-duration-error');
+    hours?.classList.toggle('is-invalid', Boolean(message));
+    minutes?.classList.toggle('is-invalid', Boolean(message));
+    if (error) error.textContent = message || '';
   }
 
   function fillFormFromCheckin(checkin) {
     const form = $('.daily-checkin-form');
     if (!form || !checkin) return;
 
-    const isCustomType = ![
-      '减少一次性塑料',
-      '自带水杯',
-      '垃圾分类',
-      '低碳出行',
-      '参与净滩',
-      '海洋知识学习',
-      '分享环保内容',
-      '节约用水',
-    ].includes(checkin.actionType);
-
-    if (isCustomType) {
-      form.actionType.value = '自定义行动';
-      form.customActionType.value = checkin.actionType;
-      toggleCustomActionType(true);
-    } else {
+    if (ACTION_TYPES.includes(checkin.actionType)) {
       form.actionType.value = checkin.actionType;
-      toggleCustomActionType(false);
+    } else {
+      form.actionType.value = '减少一次性塑料';
     }
 
     form.description.value = checkin.description || '';
     form.mood.value = checkin.mood || '平静';
-
-    const presets = ['5', '10', '20', '30', '60'];
-    if (presets.includes(String(checkin.duration))) {
-      form.durationPreset.value = String(checkin.duration);
-      toggleCustomDuration(false);
-    } else {
-      form.durationPreset.value = 'custom';
-      form.durationCustom.value = checkin.duration;
-      toggleCustomDuration(true);
-    }
+    setDurationFields(form, checkin.duration ?? 10);
 
     state.pendingImagePreview = checkin.imagePreview || null;
     renderImagePreview();
     if (shouldAutoExpandOptional(checkin)) toggleOptionalSection(true);
+    else toggleOptionalSection(false);
   }
 
   function resetFormForNewDay() {
     const form = $('.daily-checkin-form');
     if (!form) return;
     form.reset();
-    toggleCustomActionType(false);
-    toggleCustomDuration(false);
+    setDurationFields(form, 10);
+    if (form.photo) form.photo.value = '';
     state.pendingImagePreview = null;
     renderImagePreview();
     clearFormErrors(form);
@@ -283,11 +288,19 @@
     if (editBtn) editBtn.hidden = !hasToday || state.editMode;
     if (certBtn) certBtn.hidden = !hasToday;
 
-    if (hasToday && !state.editMode && todayCheckin) {
-      fillFormFromCheckin(todayCheckin);
-      if (form) form.querySelectorAll('input, select, textarea').forEach((el) => {
-        el.disabled = true;
-      });
+    const clearBtn = $('[data-checkin-clear]');
+    if (clearBtn) {
+      clearBtn.hidden = hasToday && !state.editMode;
+      clearBtn.disabled = !loggedIn || (hasToday && !state.editMode);
+    }
+
+    if (hasToday && !state.editMode) {
+      resetFormForNewDay();
+      if (form) {
+        form.querySelectorAll('input, select, textarea').forEach((el) => {
+          el.disabled = true;
+        });
+      }
     } else if (!hasToday && !state.editMode) {
       resetFormForNewDay();
     }
@@ -306,36 +319,17 @@
     clearFormErrors(form);
     let valid = true;
 
-    let actionType = form.actionType.value;
-    if (actionType === '自定义行动') {
-      actionType = form.customActionType.value.trim();
-      if (!actionType) {
-        setFieldError(form.customActionType, '请填写自定义行动名称');
-        valid = false;
-      }
-    }
+    const actionType = form.actionType.value;
 
     if (!form.description.value.trim()) {
       setFieldError(form.description, '请填写一句话行动记录');
       valid = false;
     }
 
-    let duration;
-    if (!isOptionalExpanded() && form.durationPreset.value === 'custom') {
-      duration = 10;
-      form.durationPreset.value = '10';
-      toggleCustomDuration(false);
-    } else {
-      duration = readDuration(form);
-    }
+    const duration = readDuration(form);
     if (!Number.isFinite(duration) || duration < 1) {
-      if (!isOptionalExpanded()) {
-        duration = 10;
-      } else {
-        const target = form.durationPreset.value === 'custom' ? form.durationCustom : form.durationPreset;
-        setFieldError(target, '请选择或填写有效的行动时长');
-        valid = false;
-      }
+      setDurationError(form, '请选择至少 1 分钟的行动时长');
+      valid = false;
     }
 
     return valid ? { actionType, duration } : null;
@@ -390,7 +384,7 @@
       description: form.description.value.trim(),
       duration: validated.duration,
       mood: form.mood.value,
-      imagePreview: state.pendingImagePreview || existing?.imagePreview || undefined,
+      imagePreview: state.pendingImagePreview || undefined,
       createdAt: existing?.createdAt || new Date().toISOString(),
     });
 
@@ -400,6 +394,7 @@
 
     state.editMode = false;
     state.lastCertificate = checkin;
+    resetFormForNewDay();
     renderCheckinPanel();
     openCertificateDialog(checkin);
 
@@ -474,8 +469,8 @@
     list.querySelector('[data-checkin-history-edit]')?.addEventListener('click', () => {
       $('[data-checkin-history-dialog]')?.close();
       state.editMode = true;
+      fillFormFromCheckin(storage().getTodayCheckin(username));
       renderCheckinPanel();
-      toggleOptionalSection(true);
       $('.daily-checkin-form')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
   }
@@ -557,17 +552,22 @@
 
   function bindEvents() {
     const form = $('.daily-checkin-form');
-    form?.actionType?.addEventListener('change', (e) => {
-      toggleCustomActionType(e.target.value === '自定义行动');
-    });
-    form?.durationPreset?.addEventListener('change', (e) => {
-      toggleCustomDuration(e.target.value === 'custom');
-    });
     form?.photo?.addEventListener('change', (e) => {
       handleImageFile(e.target.files?.[0]);
     });
 
     $('[data-checkin-submit]')?.addEventListener('click', handleSubmit);
+    $('[data-checkin-clear]')?.addEventListener('click', () => {
+      if (!isLoggedIn()) return;
+      const todayCheckin = storage().getTodayCheckin(getUsername());
+      if (todayCheckin && !state.editMode) return;
+      resetFormForNewDay();
+      const status = $('[data-checkin-status]');
+      if (status) {
+        status.textContent = '表单已清空。';
+        status.className = 'status-message';
+      }
+    });
     $('[data-checkin-edit]')?.addEventListener('click', () => {
       state.editMode = true;
       const username = getUsername();

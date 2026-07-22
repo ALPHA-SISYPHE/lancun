@@ -75,8 +75,40 @@ await firstDetailBtn.click();
 await page.waitForSelector('[data-volunteer-detail-dialog][open]');
 pass('detail dialog opens');
 
+const detailCentered = await page.evaluate(() => {
+  const dialog = document.querySelector('[data-volunteer-detail-dialog]');
+  const rect = dialog?.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const centerY = rect ? rect.top + rect.height / 2 : 0;
+  const tolerance = vh * 0.25;
+  return {
+    ok: Boolean(dialog?.open && rect && rect.top >= 24 && Math.abs(centerY - vh / 2) <= tolerance),
+    top: rect?.top,
+    centerY,
+    viewportCenterY: vh / 2,
+  };
+});
+if (detailCentered.ok) pass('detail dialog viewport centered');
+else fail('detail dialog viewport centered', detailCentered);
+
 await page.click('[data-volunteer-detail-register]');
 await page.waitForSelector('[data-volunteer-register-dialog][open]');
+
+const registerCentered = await page.evaluate(() => {
+  const dialog = document.querySelector('[data-volunteer-register-dialog]');
+  const rect = dialog?.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const centerY = rect ? rect.top + rect.height / 2 : 0;
+  const tolerance = vh * 0.25;
+  return {
+    ok: Boolean(dialog?.open && rect && rect.top >= 24 && Math.abs(centerY - vh / 2) <= tolerance),
+    top: rect?.top,
+    centerY,
+    viewportCenterY: vh / 2,
+  };
+});
+if (registerCentered.ok) pass('register dialog viewport centered');
+else fail('register dialog viewport centered', registerCentered);
 
 await page.fill('#volunteer-reg-name', 'Smoke Tester');
 await page.fill('#volunteer-reg-phone', '13800138000');

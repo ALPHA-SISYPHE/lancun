@@ -3,7 +3,15 @@ window.LANCUN_RESCUE = window.LANCUN_RESCUE || {};
 const NOAA_BASE = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
 const NOAA_DOCS = 'https://api.tidesandcurrents.noaa.gov/api/prod';
 const OPENAQ_DOCS = 'https://docs.openaq.org/';
-const OPENAQ_PROXY = '/api/rescue/openaq';
+const DEV_API_PORT = 8788;
+
+const openaqProxyUrl = () => {
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') {
+    return `http://${host}:${DEV_API_PORT}/api/rescue/openaq`;
+  }
+  return '/api/rescue/openaq';
+};
 const FETCH_TIMEOUT_MS = 8000;
 
 const LIVE_CONFIG = [
@@ -115,7 +123,7 @@ Object.assign(window.LANCUN_RESCUE, {
   NOAA_BASE,
   NOAA_DOCS,
   OPENAQ_DOCS,
-  OPENAQ_PROXY,
+  openaqProxyUrl,
   FETCH_TIMEOUT_MS,
   LIVE_CONFIG,
   STRIP_METRICS,

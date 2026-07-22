@@ -29,10 +29,6 @@
     return hotspots().find((ocean) => ocean.id === id) ?? null;
   }
 
-  function formatIndex(index) {
-    return String((index ?? 0) + 1).padStart(2, '0');
-  }
-
   function syncMarker(id) {
     getMarkerApi()?.setActive(id ?? null);
   }
@@ -47,9 +43,6 @@
   }
 
   function renderCard(ocean) {
-    const list = hotspots();
-    const idx = formatIndex(ocean.index ?? list.findIndex((item) => item.id === ocean.id));
-    const pager = `${idx} / ${String(list.length).padStart(2, '0')}`;
     const profileHref = `pages/ocean.html#ocean-${ocean.targetTab || ocean.id}`;
 
     return `
@@ -57,7 +50,6 @@
         <button type="button" class="ocean-preview-card__close" data-ocean-preview-close aria-label="返回总览">
           <span aria-hidden="true">×</span>
         </button>
-        <p class="ocean-preview-card__eyebrow">OCEAN ${idx}</p>
         <h3 id="ocean-preview-title-${ocean.id}" class="ocean-preview-card__name">${ocean.name}</h3>
         <p class="ocean-preview-card__english">${ocean.englishName}</p>
         <p class="ocean-preview-card__desc">${ocean.description}</p>
@@ -82,7 +74,6 @@
         <a class="ocean-preview-card__link" href="${profileHref}">查看完整档案 →</a>
         <div class="ocean-preview-card__nav">
           <button type="button" class="ocean-preview-card__nav-btn" data-ocean-preview-prev>上一片海</button>
-          <span class="ocean-preview-card__pager" aria-live="polite">${pager}</span>
           <button type="button" class="ocean-preview-card__nav-btn" data-ocean-preview-next>下一片海</button>
         </div>
       </article>`;
@@ -156,12 +147,6 @@
     const id = event.detail?.ocean?.id;
     if (!id) return;
     showCard(id, { rotateGlobe: false });
-  });
-
-  window.addEventListener('lancun-ocean-index-select', (event) => {
-    const id = event.detail?.id;
-    if (!id) return;
-    showCard(id);
   });
 
   document.addEventListener('keydown', (event) => {

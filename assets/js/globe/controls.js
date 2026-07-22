@@ -2,6 +2,7 @@ import * as THREE from '../vendor/three.module.min.js';
 import { OrbitControls } from '../vendor/OrbitControls.js';
 
 const IDLE_MS = 2000;
+const HOVER_RESUME_MS = 3000;
 const AUTO_SPIN_SPEED = 0.28;
 const YAW_SENS = 0.005;
 const PITCH_SENS = 0.003;
@@ -33,6 +34,7 @@ export function createGlobeControls(camera, canvas, earthGroup, { motionReduced,
   let lastPointerX = 0;
   let lastPointerY = 0;
   let idleTimer = null;
+  let hoverResumeTimer = null;
   let targetYaw = null;
   let hintDispatched = false;
 
@@ -66,6 +68,26 @@ export function createGlobeControls(camera, canvas, earthGroup, { motionReduced,
   const pauseAutoSpin = () => {
     autoSpin = false;
     clearTimeout(idleTimer);
+    clearTimeout(hoverResumeTimer);
+    hoverResumeTimer = null;
+  };
+
+  const scheduleHoverResumeAutoSpin = () => {
+    clearTimeout(hoverResumeTimer);
+    hoverResumeTimer = setTimeout(() => {
+      hoverResumeTimer = null;
+      if (!motionReduced() && !isDragging && targetYaw == null) autoSpin = true;
+    }, HOVER_RESUME_MS);
+  };
+
+  const onPointerEnter = () => {
+    if (isDragging) return;
+    pauseAutoSpin();
+  };
+
+  const onPointerLeave = () => {
+    if (isDragging) return;
+    scheduleHoverResumeAutoSpin();
   };
 
   const applyDragRotation = (dx, dy) => {
@@ -113,6 +135,8 @@ export function createGlobeControls(camera, canvas, earthGroup, { motionReduced,
   canvas.addEventListener('pointermove', onPointerMove);
   canvas.addEventListener('pointerup', onPointerUp);
   canvas.addEventListener('pointercancel', onPointerUp);
+  canvas.addEventListener('pointerenter', onPointerEnter);
+  canvas.addEventListener('pointerleave', onPointerLeave);
 
   controls.addEventListener('start', pauseAutoSpin);
   controls.addEventListener('end', scheduleResumeAutoSpin);
@@ -161,10 +185,13 @@ export function createGlobeControls(camera, canvas, earthGroup, { motionReduced,
 
   const dispose = () => {
     clearTimeout(idleTimer);
+    clearTimeout(hoverResumeTimer);
     canvas.removeEventListener('pointerdown', onPointerDown);
     canvas.removeEventListener('pointermove', onPointerMove);
     canvas.removeEventListener('pointerup', onPointerUp);
     canvas.removeEventListener('pointercancel', onPointerUp);
+    canvas.removeEventListener('pointerenter', onPointerEnter);
+    canvas.removeEventListener('pointerleave', onPointerLeave);
   };
 
   return {

@@ -193,42 +193,49 @@ await desktop.locator('#live-monitoring').scrollIntoViewIfNeeded();
 await desktop.waitForTimeout(300);
 
 const desktopLiveConsole = await desktop.evaluate(() => {
+  const monitorWindow = document.querySelector('.monitor-window');
+  const stationBar = document.querySelector('.monitor-station-bar');
   const map = document.querySelector('.monitor-map');
-  const sidebar = document.querySelector('.monitor-sidebar');
-  const stationPanel = document.querySelector('.station-panel');
   const metricsStrip = document.querySelector('.monitor-metrics');
+  const windowRect = monitorWindow?.getBoundingClientRect();
+  const barRect = stationBar?.getBoundingClientRect();
   const mapRect = map?.getBoundingClientRect();
-  const sidebarRect = sidebar?.getBoundingClientRect();
+  const metricsRect = metricsStrip?.getBoundingClientRect();
   return {
-    stationPos: stationPanel ? getComputedStyle(stationPanel).position : '',
+    stationPos: stationBar ? getComputedStyle(stationBar).position : '',
     metricsPos: metricsStrip ? getComputedStyle(metricsStrip).position : '',
-    monitorCols: getComputedStyle(document.querySelector('.monitor-window')).gridTemplateColumns,
+    monitorRows: getComputedStyle(monitorWindow).gridTemplateRows,
     mapSvgZ: getComputedStyle(document.querySelector('.monitor-map__svg')).zIndex,
-    sidebarWidth: sidebarRect?.width ?? 0,
+    windowWidth: windowRect?.width ?? 0,
     mapWidth: mapRect?.width ?? 0,
+    barAboveMap: barRect && mapRect ? barRect.bottom <= mapRect.top + 2 : false,
+    metricsBelowMap: metricsRect && mapRect ? metricsRect.top >= mapRect.bottom - 2 : false,
     metricCells: document.querySelectorAll('.monitor-metrics__cell').length,
+    metricCols: metricsStrip ? getComputedStyle(metricsStrip).gridTemplateColumns : '',
   };
 });
 
-assert('desktop station panel in rail', desktopLiveConsole.stationPos === 'relative', desktopLiveConsole.stationPos);
-assert('desktop metrics strip in rail', desktopLiveConsole.metricsPos === 'relative', desktopLiveConsole.metricsPos);
+assert('desktop station bar in rail', desktopLiveConsole.stationPos === 'relative', desktopLiveConsole.stationPos);
+assert('desktop metrics strip stacked', desktopLiveConsole.metricsPos === 'relative', desktopLiveConsole.metricsPos);
 assert(
-  'desktop monitor split columns',
-  desktopLiveConsole.monitorCols.includes('280px'),
-  desktopLiveConsole.monitorCols,
+  'desktop monitor stack rows',
+  desktopLiveConsole.monitorRows.split(' ').filter(Boolean).length === 3,
+  desktopLiveConsole.monitorRows,
 );
 assert(
-  'desktop sidebar width',
-  desktopLiveConsole.sidebarWidth >= 270 && desktopLiveConsole.sidebarWidth <= 290,
-  `${Math.round(desktopLiveConsole.sidebarWidth)}px`,
+  'desktop map full width',
+  Math.abs(desktopLiveConsole.mapWidth - desktopLiveConsole.windowWidth) <= 4,
+  `${Math.round(desktopLiveConsole.mapWidth)} vs ${Math.round(desktopLiveConsole.windowWidth)}`,
 );
-assert(
-  'desktop map wider than sidebar',
-  desktopLiveConsole.mapWidth > desktopLiveConsole.sidebarWidth,
-  `${Math.round(desktopLiveConsole.mapWidth)} vs ${Math.round(desktopLiveConsole.sidebarWidth)}`,
-);
+assert('desktop bar above map', desktopLiveConsole.barAboveMap);
+assert('desktop metrics below map', desktopLiveConsole.metricsBelowMap);
 assert('desktop monitor map svg above gradient', desktopLiveConsole.mapSvgZ === '2', desktopLiveConsole.mapSvgZ);
 assert('desktop metric cells', desktopLiveConsole.metricCells >= 4, String(desktopLiveConsole.metricCells));
+assert(
+  'desktop metrics four columns',
+  desktopLiveConsole.metricCols.split(' ').filter(Boolean).length >= 4,
+  desktopLiveConsole.metricCols,
+);
 
 await desktop.evaluate(() => {
   window.LANCUN_RESCUE?.openDataSourcesModal?.();
@@ -384,15 +391,15 @@ const mobileMetrics = await mobile.evaluate(() => {
   const panelIdx = children.findIndex((c) => c.includes('pressure-panel'));
   const leadIdx = children.findIndex((c) => c.includes('copy--lead'));
   const tailIdx = children.findIndex((c) => c.includes('copy--tail'));
-  const stationPanel = document.querySelector('.station-panel');
+  const stationPanel = document.querySelector('.monitor-station-bar');
   const monitorWindow = document.querySelector('.monitor-window');
   const metricsStrip = document.querySelector('.monitor-metrics');
-  const sidebar = document.querySelector('.monitor-sidebar');
   const canvas = document.querySelector('.trend-chart-card__canvas');
   const ring = document.querySelector('.composition-card .composition-ring');
   const grid = document.querySelector('.insight-panel-grid');
   const mapRect = document.querySelector('.monitor-map')?.getBoundingClientRect();
-  const sidebarRect = sidebar?.getBoundingClientRect();
+  const barRect = stationPanel?.getBoundingClientRect();
+  const metricsRect = metricsStrip?.getBoundingClientRect();
   const stationPos = stationPanel ? getComputedStyle(stationPanel).position : '';
   const metricsPos = metricsStrip ? getComputedStyle(metricsStrip).position : '';
   return {
@@ -402,7 +409,8 @@ const mobileMetrics = await mobile.evaluate(() => {
     stationRelative: stationPos === 'relative',
     metricsRelative: metricsPos === 'relative',
     monitorIsGrid: getComputedStyle(monitorWindow).display === 'grid',
-    sidebarBelowMap: sidebarRect && mapRect ? sidebarRect.top >= mapRect.bottom - 2 : false,
+    barAboveMap: barRect && mapRect ? barRect.bottom <= mapRect.top + 2 : false,
+    metricsBelowMap: metricsRect && mapRect ? metricsRect.top >= mapRect.bottom - 2 : false,
     canvasHeight: canvas?.getBoundingClientRect().height ?? 0,
     ringSize: ring?.getBoundingClientRect().width ?? 0,
     gridCols: grid ? getComputedStyle(grid).gridTemplateColumns : '',
@@ -422,8 +430,8 @@ assert(
   mobileMetrics.pressureAfterTitle,
   mobileMetrics.childrenOrder,
 );
-assert('mobile station panel below map', mobileMetrics.stationRelative && mobileMetrics.monitorIsGrid && mobileMetrics.sidebarBelowMap);
-assert('mobile metrics strip below map', mobileMetrics.metricsRelative && mobileMetrics.monitorIsGrid);
+assert('mobile station bar above map', mobileMetrics.stationRelative && mobileMetrics.monitorIsGrid && mobileMetrics.barAboveMap);
+assert('mobile metrics strip below map', mobileMetrics.metricsRelative && mobileMetrics.monitorIsGrid && mobileMetrics.metricsBelowMap);
 assert(
   'mobile chart canvas height',
   mobileMetrics.canvasHeight >= 240 && mobileMetrics.canvasHeight <= 260,

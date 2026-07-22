@@ -77,6 +77,22 @@ await page.locator('[data-donation-support]').first().click();
 await page.waitForSelector('[data-donation-detail-dialog][open]', { timeout: 5000 });
 pass('donation detail dialog opens');
 
+const donationDetailCentered = await page.evaluate(() => {
+  const dialog = document.querySelector('[data-donation-detail-dialog]');
+  const rect = dialog?.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const centerY = rect ? rect.top + rect.height / 2 : 0;
+  const tolerance = vh * 0.25;
+  return {
+    ok: Boolean(dialog?.open && rect && rect.top >= 24 && Math.abs(centerY - vh / 2) <= tolerance),
+    top: rect?.top,
+    centerY,
+    viewportCenterY: vh / 2,
+  };
+});
+if (donationDetailCentered.ok) pass('donation detail dialog viewport centered');
+else fail('donation detail dialog viewport centered', donationDetailCentered);
+
 const raisedBefore = await page.locator('[data-donation-detail-dialog] .support-project-panel__raised-head span').first().textContent();
 await page.click('[data-donation-amount="30"]');
 await page.fill('#donate-name', 'Smoke Donor');
