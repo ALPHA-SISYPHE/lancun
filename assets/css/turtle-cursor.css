@@ -22,12 +22,25 @@ html.turtle-cursor-active * {
   z-index: 100000;
   width: var(--turtle-cursor-size, 2.25rem);
   height: var(--turtle-cursor-size, 2.25rem);
+  margin: 0;
   margin-left: calc(var(--turtle-cursor-size, 2.25rem) * -0.38);
   margin-top: calc(var(--turtle-cursor-size, 2.25rem) * -0.38);
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: visible;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.18s ease;
   will-change: transform;
+}
+
+#lancun-turtle-cursor:popover-open {
+  position: fixed;
+  inset: auto;
+  border: none;
+  padding: 0;
+  background: transparent;
 }
 
 #lancun-turtle-cursor.is-visible {

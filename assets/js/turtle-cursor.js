@@ -175,6 +175,10 @@
     return 'swim';
   }
 
+  function supportsPopover() {
+    return typeof HTMLElement.prototype.showPopover === 'function';
+  }
+
   function initTurtleCursor() {
     if (!canUseTurtleCursor()) return;
 
@@ -184,11 +188,48 @@
     const root = document.createElement('div');
     root.id = 'lancun-turtle-cursor';
     root.setAttribute('aria-hidden', 'true');
+    if (supportsPopover()) {
+      root.setAttribute('popover', 'manual');
+    }
     root.dataset.cursorState = 'swim';
     root.dataset.cursorIdle = 'false';
     root.dataset.cursorMoving = 'false';
     root.innerHTML = getTurtleMarkup();
     document.body.appendChild(root);
+
+    const canLift = supportsPopover();
+
+    const liftCursorToTop = () => {
+      if (!canLift) return;
+      try {
+        if (root.matches(':popover-open')) {
+          root.hidePopover();
+        }
+        root.showPopover();
+      } catch {
+        /* popover lift best-effort */
+      }
+    };
+
+    const shouldLiftForOverlay = () => {
+      if (document.querySelector('dialog[open]')) return true;
+      if (document.querySelector('.species-drawer.is-open')) return true;
+      if (document.querySelector('.auth-modal-overlay:not([hidden])')) return true;
+      return false;
+    };
+
+    const onDialogToggle = (event) => {
+      if (!(event.target instanceof HTMLDialogElement)) return;
+      if (event.newState === 'open') {
+        liftCursorToTop();
+      }
+    };
+
+    const overlayObserver = new MutationObserver(() => {
+      if (shouldLiftForOverlay()) {
+        liftCursorToTop();
+      }
+    });
 
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
@@ -281,6 +322,15 @@
 
     const teardown = () => {
       window.cancelAnimationFrame(rafId);
+      document.removeEventListener('toggle', onDialogToggle, true);
+      overlayObserver.disconnect();
+      if (canLift && root.matches(':popover-open')) {
+        try {
+          root.hidePopover();
+        } catch {
+          /* ignore */
+        }
+      }
       document.documentElement.classList.remove('turtle-cursor-active');
       root.remove();
       window.removeEventListener('mousemove', onMove);
@@ -308,10 +358,17 @@
     window.addEventListener('mouseup', onUp);
     document.documentElement.addEventListener('mouseleave', onLeave);
     document.documentElement.addEventListener('mouseenter', onEnter);
+    document.addEventListener('toggle', onDialogToggle, true);
+    overlayObserver.observe(document.body, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'hidden', 'open'],
+    });
     motionQuery.addEventListener('change', onMotionChange);
     pointerQuery.addEventListener('change', onPointerChange);
 
     root.style.transform = `translate3d(${posX}px, ${posY}px, 0)`;
+    liftCursorToTop();
     rafId = window.requestAnimationFrame(tick);
   }
 

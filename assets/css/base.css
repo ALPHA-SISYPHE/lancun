@@ -99,7 +99,7 @@ body::before {
   background: radial-gradient(ellipse 120% 80% at 50% 0%, transparent 0%, rgba(15, 23, 42, 0.35) 100%);
 }
 
-body > *:not(.skip-link):not(.site-header):not(.page-bg-video):not(.species-drawer):not(.species-drawer-backdrop):not(.archive-toast) { position: relative; z-index: 1; }
+body > *:not(.skip-link):not(.site-header):not(.page-bg-video):not(.species-drawer):not(.species-drawer-backdrop):not(.archive-toast):not(#lancun-turtle-cursor) { position: relative; z-index: 1; }
 
 .page-bg-video {
   position: fixed;
