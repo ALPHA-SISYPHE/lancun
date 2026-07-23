@@ -147,11 +147,10 @@ window.OceanAuthStorage = (function oceanAuthStorage() {
     const existing = users[index];
     const updated = {
       ...existing,
-      displayName: String(next?.displayName ?? existing.displayName).trim().slice(0, 24) || existing.displayName,
       rolePreference: String(next?.rolePreference ?? existing.rolePreference).trim() || existing.rolePreference,
       email: String(next?.email ?? existing.email ?? '').trim().slice(0, 120),
       avatarText: String(next?.avatarText ?? existing.avatarText ?? '').trim().slice(0, 1)
-        || String(next?.displayName ?? existing.displayName ?? '澜').trim().slice(0, 1),
+        || String(existing.username ?? '澜').trim().slice(0, 1),
     };
     users[index] = updated;
     saveUsers(users);
@@ -175,9 +174,7 @@ window.OceanAuthStorage = (function oceanAuthStorage() {
   function registerUser(payload) {
     const username = String(payload?.username || '').trim();
     const password = String(payload?.password || '');
-    const displayName = String(payload?.displayName || '').trim();
     const rolePreference = String(payload?.rolePreference || '公益守护者').trim();
-    const email = String(payload?.email || '').trim();
 
     if (!username) {
       return { ok: false, error: '请输入用户名。', field: 'username' };
@@ -191,19 +188,16 @@ window.OceanAuthStorage = (function oceanAuthStorage() {
     if (password.length < 6) {
       return { ok: false, error: '密码至少需要 6 位。', field: 'password' };
     }
-    if (!displayName) {
-      return { ok: false, error: '请填写显示昵称。', field: 'displayName' };
-    }
 
     const user = {
       id: generateUserId(),
       username,
       password,
-      displayName,
+      displayName: username,
       rolePreference,
-      email,
+      email: '',
       avatarType: 'initial',
-      avatarText: displayName.slice(0, 1),
+      avatarText: username.slice(0, 1),
       createdAt: new Date().toISOString(),
       stats: defaultStats(),
     };

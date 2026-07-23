@@ -167,18 +167,13 @@ window.buildUserMenuHtml = (profileHref) => {
         </section>
 
         <section class="auth-modal__panel" data-auth-panel="register" hidden>
-          <ol class="auth-register__progress" aria-label="注册步骤">
-            <li class="is-active" data-register-progress="1"><span>基础账户</span></li>
-            <li data-register-progress="2"><span>守护者资料</span></li>
-            <li data-register-progress="3"><span>完成确认</span></li>
-          </ol>
-          <form class="auth-modal__form" novalidate data-register-form>
-            <div class="auth-register__step" data-register-step="1">
-              <div class="field">
-                <label for="menu-register-username">用户名</label>
-                <input id="menu-register-username" name="username" autocomplete="username" required minlength="2" maxlength="16" />
-                <p class="field-error" id="menu-register-username-error" aria-live="polite"></p>
-              </div>
+          <form class="auth-modal__form auth-register__form" novalidate data-register-form>
+            <div class="field">
+              <label for="menu-register-username">用户名</label>
+              <input id="menu-register-username" name="username" autocomplete="username" required minlength="2" maxlength="16" />
+              <p class="field-error" id="menu-register-username-error" aria-live="polite"></p>
+            </div>
+            <div class="auth-register__row">
               <div class="field">
                 <label for="menu-register-password">密码</label>
                 <input id="menu-register-password" name="password" type="password" autocomplete="new-password" required minlength="6" />
@@ -189,47 +184,17 @@ window.buildUserMenuHtml = (profileHref) => {
                 <input id="menu-register-confirm-password" name="confirmPassword" type="password" autocomplete="new-password" required minlength="6" />
                 <p class="field-error" id="menu-register-confirm-password-error" aria-live="polite"></p>
               </div>
-              <button class="auth-modal__btn auth-modal__btn--primary" type="button" data-register-next>下一步</button>
             </div>
-
-            <div class="auth-register__step" data-register-step="2" hidden>
-              <div class="field">
-                <label for="menu-register-display-name">显示昵称</label>
-                <input id="menu-register-display-name" name="displayName" required maxlength="16" />
-                <p class="field-error" id="menu-register-display-name-error" aria-live="polite"></p>
-              </div>
-              <div class="field">
-                <label for="menu-register-role">身份偏好</label>
-                <select id="menu-register-role" name="role">
-                  <option>公益守护者</option>
-                  <option>学生志愿者</option>
-                  <option>海洋观察者</option>
-                  <option>科普传播者</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="menu-register-email">邮箱（可选）</label>
-                <input id="menu-register-email" name="email" type="email" autocomplete="email" />
-                <p class="field-error" id="menu-register-email-error" aria-live="polite"></p>
-              </div>
-              <div class="auth-modal__step-actions">
-                <button class="auth-modal__btn auth-modal__btn--ghost" type="button" data-register-back>上一步</button>
-                <button class="auth-modal__btn auth-modal__btn--primary" type="button" data-register-next>下一步</button>
-              </div>
+            <div class="field">
+              <label for="menu-register-role">身份偏好</label>
+              <select id="menu-register-role" name="role">
+                <option value="公益守护者">公益守护者</option>
+                <option value="学生观察员">学生观察员</option>
+                <option value="海洋志愿者">海洋志愿者</option>
+                <option value="数据记录者">数据记录者</option>
+              </select>
             </div>
-
-            <div class="auth-register__step" data-register-step="3" hidden>
-              <dl class="auth-register__summary" data-register-summary>
-                <div><dt>用户名</dt><dd data-summary-username>—</dd></div>
-                <div><dt>显示昵称</dt><dd data-summary-display-name>—</dd></div>
-                <div><dt>身份偏好</dt><dd data-summary-role>—</dd></div>
-              </dl>
-              <p class="auth-register__benefits-note">创建账户后，你将可以保存环保打卡、解锁荣誉证书、管理志愿报名与公益支持记录，并关联个人档案。</p>
-              <div class="auth-modal__step-actions">
-                <button class="auth-modal__btn auth-modal__btn--ghost" type="button" data-register-back>上一步</button>
-                <button class="auth-modal__btn auth-modal__btn--primary" type="submit">创建守护者账户</button>
-              </div>
-            </div>
+            <button class="auth-modal__btn auth-modal__btn--primary" type="submit">创建守护者账户</button>
             <p class="auth-modal__status" data-register-result aria-live="polite"></p>
           </form>
         </section>

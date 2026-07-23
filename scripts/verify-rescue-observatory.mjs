@@ -25,7 +25,7 @@ trackPage(desktop);
 await desktop.setViewportSize({ width: 1440, height: 900 });
 await desktop.goto(`${BASE}/pages/rescue.html`, { waitUntil: 'domcontentloaded', timeout: 45000 });
 await desktop.waitForFunction(
-  () => (document.querySelector('[data-rescue-hero-ribbon]')?.children.length ?? 0) >= 5,
+  () => (document.querySelector('[data-rescue-hero-ribbon]')?.children.length ?? 0) === 4,
   { timeout: 10000 },
 );
 await desktop.waitForTimeout(500);
@@ -75,7 +75,7 @@ assert(
   desktopMetrics.commandTop <= desktopMetrics.viewportHeight * 1.2,
   `top ${Math.round(desktopMetrics.commandTop)}px`,
 );
-assert('hero ribbon cells', desktopMetrics.heroRibbon >= 5, String(desktopMetrics.heroRibbon));
+assert('hero ribbon cells', desktopMetrics.heroRibbon === 4, String(desktopMetrics.heroRibbon));
 assert(
   'hero anchors clear of ribbon',
   desktopMetrics.heroAnchorGap >= 8,
@@ -181,7 +181,29 @@ assert(
 assert('data insights sources summary', chartInsights.sourcesSummary.startsWith('数据参考'), chartInsights.sourcesSummary.slice(0, 48));
 
 await desktop.locator('.pollution-insight-panel').scrollIntoViewIfNeeded();
-await desktop.waitForTimeout(300);
+await desktop.waitForTimeout(2100);
+const insightReveal = await desktop.evaluate(() => {
+  const panel = document.querySelector('.pollution-insight-panel');
+  const path = panel?.querySelector('.rescue-trend__line--draw');
+  const bars = [...panel?.querySelectorAll('.chart-fill--draw') ?? []];
+  return {
+    revealed: panel?.classList.contains('is-insight-revealed') ?? false,
+    dashOffset: path ? parseFloat(path.style.strokeDashoffset || getComputedStyle(path).strokeDashoffset) : -1,
+    barWidths: bars.map((el) => el.getBoundingClientRect().width),
+  };
+});
+assert('insight panel reveal class', insightReveal.revealed);
+assert(
+  'insight trend line drawn',
+  insightReveal.dashOffset === 0 || Number.isNaN(insightReveal.dashOffset),
+  String(insightReveal.dashOffset),
+);
+assert(
+  'insight source bars expanded',
+  insightReveal.barWidths.length >= 3 && insightReveal.barWidths.every((w) => w > 0),
+  insightReveal.barWidths.map((w) => Math.round(w)).join(', '),
+);
+
 await desktop.locator('.composition-card .rescue-pie__legend li[data-segment="plastic"]').hover();
 await desktop.waitForTimeout(220);
 const ringHoverActive = await desktop.evaluate(
@@ -292,7 +314,7 @@ if (await pin.count()) {
 
 await desktop.goto(`${BASE}/pages/rescue.html`, { waitUntil: 'domcontentloaded' });
 await desktop.waitForFunction(
-  () => (document.querySelector('[data-rescue-hero-ribbon]')?.children.length ?? 0) >= 5,
+  () => (document.querySelector('[data-rescue-hero-ribbon]')?.children.length ?? 0) === 4,
   { timeout: 10000 },
 );
 await desktop.locator('.pollution-hero__anchors a[href="#action-brief"]').click({ force: true });

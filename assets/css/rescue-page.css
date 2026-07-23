@@ -328,7 +328,7 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0;
   background: var(--deep-soft);
   border: 1px solid var(--line-light);
@@ -1260,6 +1260,66 @@
   fill: rgba(242, 248, 250, 0.42);
   font-size: 10px;
   letter-spacing: 0.06em;
+}
+
+.pollution-insight-panel .rescue-trend__line--draw {
+  transition: stroke-dashoffset 1.83s ease;
+}
+
+.pollution-insight-panel .rescue-trend__dot--draw {
+  opacity: 0;
+}
+
+.pollution-insight-panel .rescue-trend__area--draw {
+  opacity: 0;
+}
+
+.pollution-insight-panel.is-insight-revealed .rescue-trend__line--draw {
+  stroke-dashoffset: 0;
+}
+
+.pollution-insight-panel.is-insight-revealed .rescue-trend__dot--draw {
+  opacity: 1;
+  transition: opacity 0.33s ease var(--dot-delay, 0s);
+}
+
+.pollution-insight-panel.is-insight-revealed .rescue-trend__area--draw {
+  opacity: 1;
+  transition: opacity 0.58s ease 1.58s;
+}
+
+.pollution-insight-panel:not(.is-insight-revealed) .chart-fill--draw {
+  width: 0;
+}
+
+.pollution-insight-panel.is-insight-revealed .chart-fill--draw {
+  width: var(--bar-target);
+  transition: width 1.08s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pollution-insight-panel.is-insight-revealed .insight-source-bars .chart-row:nth-child(1) .chart-fill--draw {
+  transition-delay: 0.13s;
+}
+
+.pollution-insight-panel.is-insight-revealed .insight-source-bars .chart-row:nth-child(2) .chart-fill--draw {
+  transition-delay: 0.3s;
+}
+
+.pollution-insight-panel.is-insight-revealed .insight-source-bars .chart-row:nth-child(3) .chart-fill--draw {
+  transition-delay: 0.47s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pollution-insight-panel .rescue-trend__line--draw,
+  .pollution-insight-panel .chart-fill--draw,
+  .pollution-insight-panel .rescue-trend__dot--draw,
+  .pollution-insight-panel .rescue-trend__area--draw {
+    transition: none !important;
+  }
+
+  .pollution-insight-panel.is-insight-revealed .chart-fill--draw {
+    width: var(--bar-target);
+  }
 }
 
 .pollution-insight-panel .chart-tooltip {

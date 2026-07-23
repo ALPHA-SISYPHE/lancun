@@ -63,8 +63,9 @@
 | 五大洋区块图片 | 海洋页 §3.3 五大洋左侧视觉 | Pexels（见下表） | 使用中 |
 | 海洋生物图片 | 档案页物种卡片与详情弹窗 | Pexels（见下表） | 使用中 |
 | 保护行动封面 | 行动页志愿项目与往期成果卡片 | Pexels（见下表） | 使用中 |
+| 小海龟自定义光标 SVG | 全站桌面端 DOM 跟随光标（6 正式页） | **项目原创 v3.1**；俯视海绿 2D 卡通；无五官；固定左上 45°；2.25rem；`assets/media/cursor/turtle.svg` + `turtle-cursor.js` | 使用中 |
 | 图标 | 导航与功能 | 待选择 | 待收集 |
-| 环境音/海洋视频 | 首页氛围或科普 | 待选择 | 待收集 |
+| 环境音/海洋视频 | 全站背景海浪循环音 | Mixkit（见下表） | 已收集 |
 
 ## 临时 Hero 素材（可替换）
 
@@ -87,6 +88,18 @@
 | 原始文件 | `references/video/workspace/15558437_3840_2160_30fps.mp4` |
 | 运行文件 | `assets/media/hero.mp4` |
 | 来源 | 用户提供，2026-07-17 |
+
+## 全站背景海浪音（当前使用）
+
+| 字段 | 内容 |
+|---|---|
+| 用途 | 全站循环背景环境音；个人中心「显示与播放 → 背景海浪音」可关闭 |
+| 原始素材 | Mixkit — Sea waves loop（SFX #1196） |
+| 页面链接 | https://mixkit.co/free-sound-effects/sea/ |
+| 运行文件 | `assets/media/ocean-ambient.mp3`（约 1.5 MB，48 s 循环） |
+| 授权 | Mixkit License（免费用于视频/音频项目） |
+| 实现 | `assets/js/ambient-audio.js`；偏好字段 `backgroundAudio`（`lancun.prefs` / `ocean-user-preferences`） |
+| 获取日期 | 2026-07-23 |
 
 ## 澜存导航海豚标志
 
@@ -179,10 +192,12 @@
 
 | 本地文件 | 用途 | 来源 | 使用位置 |
 |---|---|---|---|
-| `assets/media/ocean/pacific.jpg` | 守护者账户弹窗左侧背景 | 五大洋摄影集（站内已有） | `assets/css/base.css` `.auth-modal__brand` |
+| `assets/media/account/auth-brand-ocean.jpg` | 守护者账户弹窗左侧背景 | Unsplash — Shifaaz sulaiman, [aerial ocean](https://unsplash.com/photos/aerial-photography-of-body-of-water-1505142468610) | `assets/css/base.css` `.auth-modal__brand` |
 
+- 授权：Unsplash License — 免费使用，需保留摄影师与 Unsplash 出处。
 - 实现：深色渐变遮罩 + `background-size: cover`，保证文案可读。
-- 获取日期：2026-07-22
+- 获取日期：2026-07-23
+- 备注：替换原 `ocean/pacific.jpg` 引用，选用更明亮蓝色俯拍海洋摄影。
 
 ## 呼救页污染源侧栏图（Pexels）
 

@@ -49,10 +49,10 @@ const checks = [
   ['data-sources-modal script', html.includes('data-sources-modal.js')],
   ['css command-layout 360', css.includes('grid-template-columns: 360px minmax(0, 1fr)')],
   ['css action-brief', css.includes('.action-brief')],
-  ['css status ribbon 5 col', css.includes('repeat(5, 1fr)')],
+  ['css status ribbon 4 col', css.includes('repeat(4, 1fr)')],
   ['css scroll-padding', css.includes('scroll-padding-top')],
   ['css panel 0.58', css.includes('rgba(234, 245, 247, 0.58)')],
-  ['js ribbon data mode', overviewJs.includes("'Data Mode'")],
+  ['js ribbon four cells', overviewJs.includes("'Last Update'") && !overviewJs.includes("'Data Mode'")],
   ['js hero anchor scroll', dashboardJs.includes('initHeroAnchors')],
   ['js init page state', dashboardJs.includes('initPageState')],
   ['js init data sources modal', dashboardJs.includes('initDataSourcesModal')],
@@ -118,6 +118,12 @@ const checks = [
   ['js chart tooltip', overviewJs.includes('chart-tooltip') && overviewJs.includes('r="4"')],
   ['css chart cyan token', css.includes('--chart-cyan') && css.includes('--chart-axis')],
   ['css monitor map svg z2', css.includes('.monitor-map__svg') && css.includes('z-index: 2')],
+  ['js insight reveal bind', overviewJs.includes('bindInsightPanelReveal') && overviewJs.includes('prepareInsightTrendDraw')],
+  ['js trend line draw path', overviewJs.includes('rescue-trend__line--draw') && overviewJs.includes('linePath')],
+  ['js bar draw target', overviewJs.includes('chart-fill--draw') && overviewJs.includes('--bar-target')],
+  ['css insight line reveal', css.includes('.pollution-insight-panel.is-insight-revealed .rescue-trend__line--draw')],
+  ['css insight bar reveal', css.includes('.pollution-insight-panel.is-insight-revealed .chart-fill--draw')],
+  ['css insight reveal reduced motion', css.includes('prefers-reduced-motion: reduce') && css.includes('.rescue-trend__line--draw')],
 ];
 
 let failed = 0;

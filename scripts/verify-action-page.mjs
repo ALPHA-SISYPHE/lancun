@@ -204,6 +204,24 @@ const volunteerDetailCentered = await page.evaluate(() => {
 });
 if (volunteerDetailCentered.ok) pass('volunteer detail dialog viewport centered after scroll');
 else fail('volunteer detail dialog viewport centered after scroll', volunteerDetailCentered);
+
+const volunteerDetailHeroClear = await page.evaluate(() => {
+  const cover = document.querySelector('[data-volunteer-detail-cover]');
+  const meta = document.querySelector('.volunteer-detail-meta');
+  if (!cover || !meta) return { ok: false, reason: 'missing nodes' };
+  const a = cover.getBoundingClientRect();
+  const b = meta.getBoundingClientRect();
+  const overlaps = !(
+    a.right <= b.left ||
+    a.left >= b.right ||
+    a.bottom <= b.top ||
+    a.top >= b.bottom
+  );
+  return { ok: !overlaps };
+});
+if (volunteerDetailHeroClear.ok) pass('volunteer detail cover does not overlap meta');
+else fail('volunteer detail cover does not overlap meta', volunteerDetailHeroClear);
+
 await page.locator('[data-volunteer-detail-close]').click();
 await page.waitForFunction(() => !document.querySelector('[data-volunteer-detail-dialog][open]'));
 
@@ -237,6 +255,24 @@ if (volunteerImpactDetail.open && volunteerImpactDetail.title) {
 }
 if (volunteerImpactDetail.centered) pass('volunteer impact detail dialog viewport centered after scroll');
 else fail('volunteer impact detail dialog viewport centered after scroll', volunteerImpactDetail);
+
+const impactHeroClear = await page.evaluate(() => {
+  const cover = document.querySelector('[data-impact-detail-cover]');
+  const metric = document.querySelector('[data-impact-detail-metric]');
+  if (!cover || !metric) return { ok: false, reason: 'missing nodes' };
+  const a = cover.getBoundingClientRect();
+  const b = metric.getBoundingClientRect();
+  const overlaps = !(
+    a.right <= b.left ||
+    a.left >= b.right ||
+    a.bottom <= b.top ||
+    a.top >= b.bottom
+  );
+  return { ok: !overlaps, metricText: metric.textContent?.trim() };
+});
+if (impactHeroClear.ok) pass('impact detail cover does not overlap metric');
+else fail('impact detail cover does not overlap metric', impactHeroClear);
+
 await page.locator('[data-impact-detail-close]').click();
 await page.waitForFunction(() => !document.querySelector('[data-impact-detail-dialog][open]'));
 

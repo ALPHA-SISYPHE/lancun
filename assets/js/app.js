@@ -27,7 +27,6 @@ const getActions = () => getStored(storageKeys.actions, []);
 const getPoints = () => getStored(storageKeys.points, 0);
 
 let accountMenuOpen = false;
-let registerStep = 1;
 let accountMenuToastTimer = null;
 
 const AUTH_SUCCESS_CLOSE_MS = 1200;
@@ -67,37 +66,26 @@ function clearAuthForms() {
   clearAuthStatus();
 }
 
-function getRegisterStep() {
-  return registerStep;
+function getAccountAvatarText(user) {
+  if (!user) return '澜';
+  if (user.avatarType === 'wave') return '~';
+  return user.avatarText || user.username?.slice(0, 1) || '澜';
 }
 
-function setRegisterStep(step) {
-  registerStep = step;
-  document.querySelectorAll('[data-register-step]').forEach((panel) => {
-    panel.hidden = Number(panel.dataset.registerStep) !== step;
-  });
-  document.querySelectorAll('[data-register-progress]').forEach((item) => {
-    item.classList.toggle('is-active', Number(item.dataset.registerProgress) === step);
-    item.classList.toggle('is-done', Number(item.dataset.registerProgress) < step);
-  });
-}
-
-function resetRegisterStep(step = 1) {
-  setRegisterStep(step);
-}
-
-function fillRegisterSummary() {
-  const form = document.querySelector('[data-register-form]');
-  if (!form) return;
+function validateRegisterAll(form) {
   const fields = form.elements;
-  const summary = document.querySelector('[data-register-summary]');
-  if (!summary) return;
-  const username = summary.querySelector('[data-summary-username]');
-  const displayName = summary.querySelector('[data-summary-display-name]');
-  const role = summary.querySelector('[data-summary-role]');
-  if (username) username.textContent = fields.username.value.trim() || '—';
-  if (displayName) displayName.textContent = fields.displayName.value.trim() || '—';
-  if (role) role.textContent = fields.role.value || '—';
+  clearFormErrors(form);
+  let invalid = false;
+  const username = fields.username.value.trim();
+  const password = fields.password.value;
+  const confirmation = fields.confirmPassword.value;
+  invalid = setFieldError(fields.username, username.length < 2 || username.length > 16 ? '用户名应为 2–16 个字符。' : '') || invalid;
+  if (!invalid && authStorage()?.isUsernameTaken?.(username)) {
+    invalid = setFieldError(fields.username, '该用户名已被使用。') || invalid;
+  }
+  invalid = setFieldError(fields.password, !password ? '请输入密码。' : password.length < 6 ? '密码至少需要 6 位。' : '') || invalid;
+  invalid = setFieldError(fields.confirmPassword, password !== confirmation ? '两次输入的密码不一致。' : '') || invalid;
+  return !invalid;
 }
 
 function focusAuthFirstInput() {
@@ -131,66 +119,12 @@ function showAccountMenuToast(message) {
   }, 3000);
 }
 
-function getAccountAvatarText(user) {
-  if (!user) return '澜';
-  if (user.avatarType === 'wave') return '~';
-  return user.avatarText || user.displayName?.slice(0, 1) || '澜';
-}
-
-function validateRegisterStep(step, form) {
-  const fields = form.elements;
-  clearFormErrors(form);
-  let invalid = false;
-
-  if (step === 1) {
-    const username = fields.username.value.trim();
-    const password = fields.password.value;
-    const confirmation = fields.confirmPassword.value;
-    invalid = setFieldError(fields.username, username.length < 2 || username.length > 16 ? '用户名应为 2–16 个字符。' : '') || invalid;
-    if (!invalid && authStorage()?.isUsernameTaken?.(username)) {
-      invalid = setFieldError(fields.username, '该用户名已被使用。') || invalid;
-    }
-    invalid = setFieldError(fields.password, !password ? '请输入密码。' : password.length < 6 ? '密码至少需要 6 位。' : '') || invalid;
-    invalid = setFieldError(fields.confirmPassword, password !== confirmation ? '两次输入的密码不一致。' : '') || invalid;
-  }
-
-  if (step === 2) {
-    const displayName = fields.displayName.value.trim();
-    const email = fields.email.value.trim();
-    invalid = setFieldError(fields.displayName, displayName.length < 1 ? '请填写显示昵称。' : '') || invalid;
-    invalid = setFieldError(fields.email, email && !fields.email.validity.valid ? '请输入有效的邮箱地址。' : '') || invalid;
-  }
-
-  return !invalid;
-}
-
-function validateRegisterAll(form) {
-  const fields = form.elements;
-  clearFormErrors(form);
-  let invalid = false;
-  const username = fields.username.value.trim();
-  const password = fields.password.value;
-  const confirmation = fields.confirmPassword.value;
-  const displayName = fields.displayName.value.trim();
-  const email = fields.email.value.trim();
-  invalid = setFieldError(fields.username, username.length < 2 || username.length > 16 ? '用户名应为 2–16 个字符。' : '') || invalid;
-  if (!invalid && authStorage()?.isUsernameTaken?.(username)) {
-    invalid = setFieldError(fields.username, '该用户名已被使用。') || invalid;
-  }
-  invalid = setFieldError(fields.password, !password ? '请输入密码。' : password.length < 6 ? '密码至少需要 6 位。' : '') || invalid;
-  invalid = setFieldError(fields.confirmPassword, password !== confirmation ? '两次输入的密码不一致。' : '') || invalid;
-  invalid = setFieldError(fields.displayName, displayName.length < 1 ? '请填写显示昵称。' : '') || invalid;
-  invalid = setFieldError(fields.email, email && !fields.email.validity.valid ? '请输入有效的邮箱地址。' : '') || invalid;
-  return !invalid;
-}
-
 function openAuthModal(view = 'login') {
   const overlay = document.querySelector('[data-auth-modal]');
   const panel = getAuthModalRoot();
   if (!overlay || !panel) return;
   closeAccountMenu();
   clearAuthForms();
-  resetRegisterStep(1);
   showAuthView(view, panel);
   overlay.hidden = false;
   overlay.setAttribute('aria-hidden', 'false');
@@ -204,7 +138,6 @@ function forceCloseAuthModal() {
   overlay.hidden = true;
   overlay.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('auth-modal-open');
-  resetRegisterStep(1);
   clearAuthForms();
 }
 
@@ -338,7 +271,7 @@ function renderAccountMenu() {
 
   if (loggedIn && currentUser) {
     document.querySelectorAll('[data-menu-profile-name]').forEach((node) => {
-      node.textContent = currentUser.displayName;
+      node.textContent = currentUser.username;
     });
     document.querySelectorAll('[data-menu-profile-username]').forEach((node) => {
       node.textContent = currentUser.username;
@@ -486,6 +419,7 @@ function setupDisplayPrefs() {
   form.addEventListener('change', () => {
     const next = {
       videoBackground: Boolean(form.elements.videoBackground?.checked),
+      backgroundAudio: Boolean(form.elements.backgroundAudio?.checked),
       reduceMotion: Boolean(form.elements.reduceMotion?.checked),
       theme: form.elements.theme?.value || 'deep',
       fontSize: form.elements.fontSize?.value || 'standard',
@@ -493,6 +427,7 @@ function setupDisplayPrefs() {
     };
     saveProfileUserPreferences(getAccount(), next);
     applyProfilePreferences(next);
+    window.LANCUN_applyAmbientAudio?.();
     const status = form.querySelector('[data-display-prefs-status]');
     if (status) {
       status.textContent = '显示偏好已保存到当前浏览器。';
@@ -504,7 +439,7 @@ function setupDisplayPrefs() {
 function renderProfile() {
   const account = getAccount(); const loggedIn = isLoggedIn(); const actions = getActions(); const points = getPoints();
   const profile = loggedIn ? getProfileUserProfile(account) : null;
-  const name = loggedIn ? profile.displayName : '未登录守护者';
+  const name = loggedIn ? account.username : '未登录守护者';
   const avatar = loggedIn ? profile.avatarText : '澜';
   const username = loggedIn ? account.username : null;
   let monthCheckins = 0;
@@ -562,7 +497,6 @@ function showAuthView(view, root = document) {
   root.querySelectorAll('[data-auth-panel]').forEach((panel) => {
     panel.hidden = panel.dataset.authPanel !== view;
   });
-  if (view === 'login') resetRegisterStep(1);
   clearAuthStatus();
 }
 
@@ -713,11 +647,9 @@ function getProfileStorageMap(key) {
 function getProfileUserProfile(account) {
   const username = String(account?.username || '').trim();
   const stored = username ? getProfileStorageMap(PROFILE_DATA_KEYS.profile)[username] : null;
-  const fallbackName = account?.displayName || account?.username || '守护者';
   const allowedRoles = ['公益守护者', '学生观察员', '海洋志愿者', '数据记录者'];
-  const candidateRole = String(stored?.role || account?.role || '');
+  const candidateRole = String(stored?.role || account?.rolePreference || account?.role || '');
   return {
-    displayName: String(stored?.displayName || fallbackName).slice(0, 24),
     role: allowedRoles.includes(candidateRole) ? candidateRole : '公益守护者',
     motto: String(stored?.motto || ''),
     avatarText: String(stored?.avatarText || getAccountAvatarText(account || {})).slice(0, 1) || '澜',
@@ -730,17 +662,15 @@ function saveProfileUserProfile(account, next) {
   if (!username) return null;
   const profiles = getProfileStorageMap(PROFILE_DATA_KEYS.profile);
   const payload = {
-    displayName: String(next?.displayName || '').trim().slice(0, 24),
     role: String(next?.role || '公益守护者'),
     motto: String(next?.motto || '').trim().slice(0, 120),
-    avatarText: String(next?.avatarText || '').trim().slice(0, 1),
+    avatarText: String(next?.avatarText || '').trim().slice(0, 1) || username.slice(0, 1),
     email: String(next?.email || '').trim().slice(0, 120),
     updatedAt: new Date().toISOString(),
   };
   profiles[username] = payload;
   localStorage.setItem(PROFILE_DATA_KEYS.profile, JSON.stringify(profiles));
   authStorage()?.updateCurrentUserProfile?.({
-    displayName: payload.displayName,
     rolePreference: payload.role,
     email: payload.email,
     avatarText: payload.avatarText,
@@ -754,6 +684,7 @@ function getProfileUserPreferences(account) {
   const legacy = typeof window.LANCUN_getPrefs === 'function' ? window.LANCUN_getPrefs() : {};
   return {
     videoBackground: stored?.videoBackground ?? legacy.videoBackground ?? true,
+    backgroundAudio: stored?.backgroundAudio ?? legacy.backgroundAudio ?? true,
     reduceMotion: stored?.reduceMotion ?? legacy.reduceMotion ?? false,
     theme: stored?.theme === 'frost' ? 'frost' : 'deep',
     fontSize: stored?.fontSize === 'large' ? 'large' : 'standard',
@@ -767,6 +698,7 @@ function saveProfileUserPreferences(account, next) {
   const preferences = getProfileStorageMap(PROFILE_DATA_KEYS.preferences);
   const payload = {
     videoBackground: next?.videoBackground !== false,
+    backgroundAudio: next?.backgroundAudio !== false,
     reduceMotion: Boolean(next?.reduceMotion),
     theme: next?.theme === 'frost' ? 'frost' : 'deep',
     fontSize: next?.fontSize === 'large' ? 'large' : 'standard',
@@ -778,6 +710,7 @@ function saveProfileUserPreferences(account, next) {
   if (typeof window.LANCUN_setPrefs === 'function') {
     window.LANCUN_setPrefs({
       videoBackground: payload.videoBackground,
+      backgroundAudio: payload.backgroundAudio,
       reduceMotion: payload.reduceMotion,
     });
   }
@@ -787,6 +720,7 @@ function saveProfileUserPreferences(account, next) {
 function syncDisplayPreferenceForm(form, preferences) {
   if (!form) return;
   if (form.elements.videoBackground) form.elements.videoBackground.checked = preferences.videoBackground;
+  if (form.elements.backgroundAudio) form.elements.backgroundAudio.checked = preferences.backgroundAudio;
   if (form.elements.reduceMotion) form.elements.reduceMotion.checked = preferences.reduceMotion;
   if (form.elements.theme) form.elements.theme.value = preferences.theme;
   if (form.elements.fontSize) form.elements.fontSize.value = preferences.fontSize;
@@ -812,14 +746,13 @@ function renderProfileSettings(account) {
   const preferences = getProfileUserPreferences(account);
   const form = document.querySelector('[data-profile-settings-form]');
   if (form) {
-    form.elements.displayName.value = profile.displayName;
     form.elements.role.value = profile.role;
     form.elements.motto.value = profile.motto;
     form.elements.avatarText.value = profile.avatarText;
     form.elements.email.value = profile.email;
   }
   document.querySelectorAll('[data-profile-preview-avatar]').forEach((node) => { node.textContent = profile.avatarText; });
-  document.querySelectorAll('[data-profile-preview-name]').forEach((node) => { node.textContent = profile.displayName; });
+  document.querySelectorAll('[data-profile-preview-name]').forEach((node) => { node.textContent = account.username; });
   document.querySelectorAll('[data-profile-preview-role]').forEach((node) => { node.textContent = profile.role; });
   document.querySelectorAll('[data-profile-preview-motto]').forEach((node) => {
     node.textContent = profile.motto ? `“${profile.motto}”` : '“守护海洋，从每一次微小行动开始。”';
@@ -875,7 +808,7 @@ function renderProfileSecurity(account) {
   if (!container) return;
   const profile = getProfileUserProfile(account);
   container.replaceChildren(
-    createProfileSecurityInfo('当前身份', profile.displayName, profile.role, 'identity'),
+    createProfileSecurityInfo('当前身份', account.username, profile.role, 'identity'),
     createProfileSecurityInfo('本地登录状态', '已在当前浏览器启用本地身份', '只用于本项目的页面展示与交互模拟。', 'active'),
     createProfileSecurityInfo('数据保存位置', 'localStorage', '数据不会上传到服务器，也不会跨浏览器同步。'),
     createProfileSecurityInfo('隐私说明', '不上传服务器', '不产生真实报名、支付或公益交易。'),
@@ -1005,20 +938,12 @@ function setupProfileSettings() {
   if (!form) return;
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const displayName = String(form.elements.displayName?.value || '').trim();
-    if (!displayName) {
-      const status = form.querySelector('[data-profile-settings-status]');
-      if (status) {
-        status.textContent = '请填写显示昵称。';
-        status.className = 'status-message is-warning';
-      }
-      return;
-    }
-    saveProfileUserProfile(getAccount(), {
-      displayName,
+    const account = getAccount();
+    const username = String(account?.username || '').trim();
+    saveProfileUserProfile(account, {
       role: form.elements.role?.value,
       motto: form.elements.motto?.value,
-      avatarText: form.elements.avatarText?.value || displayName.slice(0, 1),
+      avatarText: form.elements.avatarText?.value || username.slice(0, 1),
       email: form.elements.email?.value,
     });
     renderProfile();
@@ -1403,7 +1328,6 @@ function renderProfileCheckinRecords(container, data) {
     meta.className = 'profile-record-card__meta';
     meta.append(
       createProfileRecordMeta('行动时长', `${Number(record.duration) || 0} 分钟`),
-      createProfileRecordMeta('记录心情', record.mood || '未记录'),
       createProfileRecordMeta('证书状态', isProfileCertificateRecord(record) ? '已保存' : '可前往行动中心查看'),
     );
     const actions = document.createElement('div');
@@ -1854,64 +1778,31 @@ function setupAuth() {
     node.addEventListener('click', () => forceCloseAuthModal());
   });
 
-  document.querySelectorAll('[data-register-next]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const form = button.closest('[data-register-form]');
-      if (!form) return;
-      const step = getRegisterStep();
-      if (!validateRegisterStep(step, form)) return;
-      if (step === 2) fillRegisterSummary();
-      if (step < 3) setRegisterStep(step + 1);
-      focusAuthFirstInput();
-    });
-  });
-
-  document.querySelectorAll('[data-register-back]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const step = getRegisterStep();
-      if (step > 1) setRegisterStep(step - 1);
-      focusAuthFirstInput();
-    });
-  });
-
   document.querySelectorAll('[data-register-form]').forEach((register) => {
     register.addEventListener('submit', (event) => {
       event.preventDefault();
-      if (getRegisterStep() !== 3) return;
       clearFormErrors(register);
-      if (!validateRegisterAll(register)) {
-        if (!validateRegisterStep(1, register)) setRegisterStep(1);
-        else if (!validateRegisterStep(2, register)) setRegisterStep(2);
-        return;
-      }
-      fillRegisterSummary();
+      if (!validateRegisterAll(register)) return;
       const fields = register.elements;
       const result = authStorage()?.registerUser?.({
         username: fields.username.value.trim(),
         password: fields.password.value,
-        displayName: fields.displayName.value.trim(),
         rolePreference: fields.role.value,
-        email: fields.email.value.trim(),
       });
       const status = register.querySelector('[data-register-result]');
       if (!result?.ok) {
         if (result?.field && fields[result.field]) {
           setFieldError(fields[result.field], result.error || '注册失败，请检查表单。');
-          if (result.field === 'username' || result.field === 'password' || result.field === 'confirmPassword') {
-            setRegisterStep(1);
-          } else if (result.field === 'displayName' || result.field === 'email') {
-            setRegisterStep(2);
-          }
         } else if (status) {
           status.textContent = result?.error || '注册失败，请稍后再试。';
           status.className = 'auth-modal__status';
         }
         return;
       }
-      const displayName = result.user?.displayName || fields.displayName.value.trim();
+      const username = result.user?.username || fields.username.value.trim();
       showAuthSuccess(
         status,
-        `欢迎加入，${displayName}\n你的守护者账户已经创建。`,
+        `欢迎加入，${username}\n你的守护者账户已经创建。`,
         () => renderProfile(),
       );
     });
@@ -2029,8 +1920,24 @@ function setupPageBgVideo() {
   if (playPromise?.catch) playPromise.catch(() => { /* autoplay blocked: muted loop usually ok */ });
 }
 
+function bootstrapTurtleCursor() {
+  if (typeof window.initTurtleCursor === 'function') {
+    window.initTurtleCursor();
+    return;
+  }
+  const appScript = document.querySelector('script[src*="app.js"]');
+  if (!appScript?.src) return;
+  const turtleSrc = appScript.src.replace(/app\.js(\?.*)?$/, 'turtle-cursor.js');
+  const script = document.createElement('script');
+  script.src = turtleSrc;
+  script.defer = true;
+  script.onload = () => window.initTurtleCursor?.();
+  document.head.appendChild(script);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   mountUserMenu();
+  bootstrapTurtleCursor();
   setupNavigation();
   setupHomeHeader();
   setupDisplayPrefs();

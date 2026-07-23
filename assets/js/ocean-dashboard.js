@@ -265,6 +265,92 @@ const ocean2RenderReportKpis = () => {
   host.innerHTML = kpis.map((kpi) => `<div class="ocean2-stat-block"><span>${kpi.label}</span><strong>${kpi.value}${kpi.unit ? `<small> ${kpi.unit}</small>` : ''}</strong><small>${kpi.note}</small></div>`).join('');
 };
 
+const ocean2Co2YTicks = (dataMin, dataMax, count = 4) => {
+  const lo = Math.floor(dataMin * 2) / 2;
+  const hi = Math.ceil(dataMax * 2) / 2;
+  const step = count > 1 ? (hi - lo) / (count - 1) : 0;
+  return Array.from({ length: count }, (_, i) => Number((lo + step * i).toFixed(1)));
+};
+
+const ocean2RenderCo2TrendChart = (trend) => {
+  const host = document.querySelector('[data-trend-chart]');
+  if (!host) return;
+
+  const CO2_POINT_STAGGER_MS = 200;
+  const CO2_SEG_OFFSET_MS = 100;
+
+  const points = trend.points;
+  const width = 650;
+  const height = 110;
+  const pad = { left: 48, right: 12, top: 10, bottom: 24 };
+  const values = points.map((point) => point.value);
+  const tickValues = ocean2Co2YTicks(Math.min(...values), Math.max(...values));
+  const yMin = tickValues[0];
+  const yMax = tickValues[tickValues.length - 1];
+  const plotBottom = height - pad.bottom;
+
+  const x = (index) => pad.left + ((width - pad.left - pad.right) / (points.length - 1)) * index;
+  const y = (value) => pad.top + (plotBottom - pad.top) - ((value - yMin) / (yMax - yMin || 1)) * (plotBottom - pad.top);
+
+  const yAxis = `
+    <line class="ocean2-axis ocean2-axis-y" x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${plotBottom}" />
+    ${tickValues.map((tick) => {
+      const yPos = y(tick);
+      return `<line class="ocean2-axis-tick" x1="${pad.left - 4}" y1="${yPos}" x2="${pad.left}" y2="${yPos}" />
+        <text class="ocean2-y-label" x="${pad.left - 6}" y="${yPos}" dy="0.35em" text-anchor="end">${tick.toFixed(1)}</text>`;
+    }).join('')}`;
+
+  const segments = points.slice(0, -1).map((point, index) => {
+    const x1 = x(index);
+    const y1 = y(point.value);
+    const x2 = x(index + 1);
+    const y2 = y(points[index + 1].value);
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    const delay = index * CO2_POINT_STAGGER_MS + CO2_SEG_OFFSET_MS;
+    return `<line class="ocean2-line-seg" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" data-seg="${index}" style="--seg-len:${len.toFixed(2)};--seg-delay:${delay}ms" />`;
+  }).join('');
+
+  const dots = points.map((point, index) =>
+    `<circle class="ocean2-dot" cx="${x(index)}" cy="${y(point.value)}" r="3.5" tabindex="0" data-point="${index}" style="--point-delay:${index * CO2_POINT_STAGGER_MS}ms"><title>${point.year}：${point.value} ${trend.unit}</title></circle>
+    <text class="ocean2-label" x="${x(index)}" y="${height - 6}" text-anchor="middle" style="--point-delay:${index * CO2_POINT_STAGGER_MS}ms">${point.year}</text>`
+  ).join('');
+
+  host.innerHTML = `<div class="ocean2-chart">
+    <h3 id="trend-title">${trend.label}</h3>
+    <p>单位：${trend.unit} · ${trend.source}</p>
+    <svg data-co2-chart viewBox="0 0 ${width} ${height}" role="img" aria-label="${trend.label}">
+      <line class="ocean2-axis" x1="${pad.left}" y1="${plotBottom}" x2="${width - pad.right}" y2="${plotBottom}" />
+      ${yAxis}
+      ${segments}
+      ${dots}
+    </svg>
+    <a href="${trend.sourceHref}" target="_blank" rel="noopener noreferrer">查看 ${trend.source} ↗</a>
+  </div>`;
+};
+
+let ocean2Co2ChartRevealBound = false;
+
+const ocean2InitCo2TrendChartReveal = () => {
+  const chart = document.querySelector('[data-trend-chart] .ocean2-chart');
+  if (!chart || ocean2Co2ChartRevealBound) return;
+  ocean2Co2ChartRevealBound = true;
+
+  if (ocean2PrefersReducedMotion()) {
+    chart.classList.add('is-chart-live');
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-chart-live');
+      observer.disconnect();
+    });
+  }, { threshold: 0.35 });
+
+  observer.observe(chart);
+};
+
 const ocean2RenderRole = () => {
   const data = window.LANCUN_DATA?.oceanRoleMetrics;
   if (!data) return;
@@ -281,18 +367,8 @@ const ocean2RenderRole = () => {
   }
 
   const trend = data.co2Trend;
-  const points = trend.points;
-  const width = 650;
-  const height = 110;
-  const pad = { left: 38, right: 12, top: 10, bottom: 24 };
-  const values = points.map((point) => point.value);
-  const min = Math.min(...values) * .96;
-  const max = Math.max(...values) * 1.04;
-  const x = (index) => pad.left + ((width - pad.left - pad.right) / (points.length - 1)) * index;
-  const y = (value) => pad.top + (height - pad.top - pad.bottom) - ((value - min) / (max - min)) * (height - pad.top - pad.bottom);
-  const pointsText = points.map((point, index) => `${x(index)},${y(point.value)}`).join(' ');
-  document.querySelector('[data-trend-chart]').innerHTML = `<div class="ocean2-chart"><h3 id="trend-title">${trend.label}</h3><p>单位：${trend.unit} · ${trend.source}</p><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${trend.label}"><line class="ocean2-axis" x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}" /><polyline class="ocean2-line" points="${pointsText}" />${points.map((point, index) => `<circle class="ocean2-dot" cx="${x(index)}" cy="${y(point.value)}" r="3.5" tabindex="0"><title>${point.year}：${point.value} ${trend.unit}</title></circle><text class="ocean2-label" x="${x(index)}" y="${height - 6}" text-anchor="middle">${point.year}</text>`).join('')}</svg><a href="${trend.sourceHref}" target="_blank" rel="noopener noreferrer">查看 ${trend.source} ↗</a></div>`;
-  document.querySelector('[data-trend-table]').innerHTML = `<table class="ocean2-table"><thead><tr><th>年份</th><th>吸收量（${trend.unit}）</th></tr></thead><tbody>${points.map((point) => `<tr><td>${point.year}</td><td>${point.value}</td></tr>`).join('')}</tbody></table>`;
+  ocean2RenderCo2TrendChart(trend);
+  document.querySelector('[data-trend-table]').innerHTML = `<table class="ocean2-table"><thead><tr><th>年份</th><th>吸收量（${trend.unit}）</th></tr></thead><tbody>${trend.points.map((point) => `<tr><td>${point.year}</td><td>${point.value}</td></tr>`).join('')}</tbody></table>`;
 };
 
 const ocean2PanelHtml = (ocean, index) => {
@@ -532,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   ocean2RenderMetricSkeleton();
   ocean2RenderRole();
+  ocean2InitCo2TrendChartReveal();
   ocean2RenderOceans();
   ocean2Refresh();
   ocean2SetDock();

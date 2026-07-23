@@ -3,7 +3,7 @@ const LANCUN_HERO_POSTER_REMOTE = 'https://images.pexels.com/photos/1001682/pexe
 const LANCUN_HERO_POSTER_LOCAL = 'assets/media/hero-poster.jpg';
 const LANCUN_HERO_VIDEO_LOCAL = 'assets/media/hero.mp4';
 
-const defaultPrefs = () => ({ videoBackground: true, reduceMotion: false });
+const defaultPrefs = () => ({ videoBackground: true, reduceMotion: false, backgroundAudio: true });
 
 function getLancunPrefs() {
   try {

@@ -1,5 +1,7 @@
 # Office / OS junk
 ~$*.pptx
+~$*.doc
+debug.log
 .DS_Store
 Thumbs.db
 desktop.ini

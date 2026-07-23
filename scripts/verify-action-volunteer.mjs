@@ -91,6 +91,23 @@ const detailCentered = await page.evaluate(() => {
 if (detailCentered.ok) pass('detail dialog viewport centered');
 else fail('detail dialog viewport centered', detailCentered);
 
+const detailHeroClear = await page.evaluate(() => {
+  const cover = document.querySelector('[data-volunteer-detail-cover]');
+  const meta = document.querySelector('.volunteer-detail-meta');
+  if (!cover || !meta) return { ok: false, reason: 'missing nodes' };
+  const a = cover.getBoundingClientRect();
+  const b = meta.getBoundingClientRect();
+  const overlaps = !(
+    a.right <= b.left ||
+    a.left >= b.right ||
+    a.bottom <= b.top ||
+    a.top >= b.bottom
+  );
+  return { ok: !overlaps, cover: { w: a.width, h: a.height }, meta: { w: b.width, h: b.height } };
+});
+if (detailHeroClear.ok) pass('detail cover does not overlap meta');
+else fail('detail cover does not overlap meta', detailHeroClear);
+
 await page.click('[data-volunteer-detail-register]');
 await page.waitForSelector('[data-volunteer-register-dialog][open]');
 

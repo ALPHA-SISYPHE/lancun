@@ -58,7 +58,7 @@
 
 ### 3.0 Compact Hero（Phase 2 观察入口）
 - 视频透出；右半透明 Pressure Panel（`rgba(234,245,247,0.58)` + blur）；四行状态行
-- 底部 **status ribbon** 5 项：Pressure / Active Stations / Critical Sources / Last Update / Data Mode；深半透明、`margin-top: -36px` 桥接 Command Deck
+- 底部 **status ribbon** 4 项：Pressure / Active Stations / Critical Sources / Last Update；深半透明、`margin-top: -36px` 桥接 Command Deck
 - Hero 锚点（平滑滚动）：`#pollution-command` / `#live-monitoring` / `#source-solution` / `#action-brief`
 - 兼容锚点：`#action-cta`（Footer 内隐藏）、`#pressure-overview` / `#live-monitor`
 

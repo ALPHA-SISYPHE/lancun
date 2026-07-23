@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../assets/css/base.css?v=77" />
+    <link rel="stylesheet" href="../assets/css/base.css?v=81" />
     <link rel="stylesheet" href="../assets/css/modules.css" />
     <link rel="stylesheet" href="../assets/css/profile-dashboard.css?v=87" />
     <script src="../assets/js/hero.js" defer></script>
@@ -15,6 +15,7 @@
     <script src="../assets/js/utils/authStorage.js" defer></script>
     <script src="../assets/js/utils/accountMenuStats.js" defer></script>
     <script src="../assets/js/user-menu-html.js" defer></script>
+    <script src="../assets/js/ambient-audio.js" defer></script>
     <script src="../assets/js/app.js" defer></script>
     <script src="../assets/js/action-page.js" defer></script>
   </head>
@@ -216,7 +217,6 @@
             <div class="profile-settings-split">
               <form class="profile-card profile-settings-form" data-profile-settings-form>
                 <div class="profile-settings-form__heading"><h3>编辑守护档案</h3><p>带 <span aria-hidden="true">*</span> 的内容将用于本页身份展示。</p></div>
-                <label class="profile-field"><span>显示昵称 *</span><input name="displayName" type="text" maxlength="24" required autocomplete="nickname" /></label>
                 <label class="profile-field"><span>身份偏好 *</span><select name="role" required><option value="公益守护者">公益守护者</option><option value="学生观察员">学生观察员</option><option value="海洋志愿者">海洋志愿者</option><option value="数据记录者">数据记录者</option></select></label>
                 <label class="profile-field"><span>个人宣言</span><textarea name="motto" rows="3" maxlength="120" placeholder="写下一句与你和海洋有关的话。"></textarea></label>
                 <div class="profile-settings-form__short-fields">
@@ -241,6 +241,7 @@
             <div class="profile-view-heading"><p class="eyebrow">Viewing Preference</p><h2>显示与播放</h2><p class="lead">选择更适合你的浏览方式；设置保存在本机，并在当前页面即时反映。</p></div>
             <form class="profile-card display-prefs-form" data-display-prefs-form>
               <div class="preference-row"><div><h3>背景视频播放</h3><p>关闭后，当前档案页停止播放背景视频。</p></div><label class="pref-switch"><input type="checkbox" name="videoBackground" /><span>开启</span></label></div>
+              <div class="preference-row"><div><h3>背景海浪音</h3><p>关闭后，全站停止播放海浪环境音。</p></div><label class="pref-switch"><input type="checkbox" name="backgroundAudio" /><span>开启</span></label></div>
               <div class="preference-row"><div><h3>减少动态效果</h3><p>降低视觉过渡；系统“减少动态”仍会优先。</p></div><label class="pref-switch"><input type="checkbox" name="reduceMotion" /><span>开启</span></label></div>
               <fieldset class="preference-fieldset"><legend>页面主题</legend><div class="preference-options"><label><input type="radio" name="theme" value="deep" checked /><span>深海模式</span></label><label><input type="radio" name="theme" value="frost" /><span>霜白模式</span></label></div></fieldset>
               <fieldset class="preference-fieldset"><legend>字体大小</legend><div class="preference-options"><label><input type="radio" name="fontSize" value="standard" checked /><span>标准</span></label><label><input type="radio" name="fontSize" value="large" /><span>稍大</span></label></div></fieldset>

@@ -11,13 +11,14 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../assets/css/base.css?v=77" />
+    <link rel="stylesheet" href="../assets/css/base.css?v=81" />
     <link rel="stylesheet" href="../assets/css/modules.css" />
     <link rel="stylesheet" href="../assets/css/action-page.css" />
     <script src="../assets/js/mock-data.js" defer></script>
     <script src="../assets/js/utils/authStorage.js" defer></script>
     <script src="../assets/js/utils/accountMenuStats.js" defer></script>
     <script src="../assets/js/user-menu-html.js" defer></script>
+    <script src="../assets/js/ambient-audio.js" defer></script>
     <script src="../assets/js/app.js" defer></script>
     <script src="../assets/js/action/checkinStorage.js" defer></script>
     <script src="../assets/js/action/checkinBadges.js" defer></script>
@@ -118,59 +119,48 @@
                     <textarea id="checkin-action-desc" name="description" rows="2" placeholder="今天为海洋做了什么？" required></textarea>
                     <p class="field-error" id="checkin-action-desc-error"></p>
                   </div>
-                  <div class="field checkin-duration-field">
-                    <span class="checkin-duration-field__label" id="checkin-duration-label">行动时长</span>
-                    <div class="checkin-duration-rollers" role="group" aria-labelledby="checkin-duration-label">
-                      <select id="checkin-duration-hours" name="durationHours" aria-label="小时">
-                        <option value="0" selected>0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                      </select>
-                      <span class="checkin-duration-unit">时</span>
-                      <select id="checkin-duration-minutes" name="durationMinutes" aria-label="分钟">
-                        <option value="0">00</option>
-                        <option value="5">05</option>
-                        <option value="10" selected>10</option>
-                        <option value="15">15</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
-                        <option value="30">30</option>
-                        <option value="35">35</option>
-                        <option value="40">40</option>
-                        <option value="45">45</option>
-                        <option value="50">50</option>
-                        <option value="55">55</option>
-                      </select>
-                      <span class="checkin-duration-unit">分</span>
+                  <div class="daily-checkin-form__row daily-checkin-form__row--split">
+                    <div class="field checkin-duration-field">
+                      <span class="checkin-duration-field__label" id="checkin-duration-label">行动时长</span>
+                      <div class="checkin-duration-rollers" role="group" aria-labelledby="checkin-duration-label">
+                        <select id="checkin-duration-hours" name="durationHours" aria-label="小时">
+                          <option value="0" selected>0</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                        </select>
+                        <span class="checkin-duration-unit">时</span>
+                        <select id="checkin-duration-minutes" name="durationMinutes" aria-label="分钟">
+                          <option value="0">00</option>
+                          <option value="5">05</option>
+                          <option value="10" selected>10</option>
+                          <option value="15">15</option>
+                          <option value="20">20</option>
+                          <option value="25">25</option>
+                          <option value="30">30</option>
+                          <option value="35">35</option>
+                          <option value="40">40</option>
+                          <option value="45">45</option>
+                          <option value="50">50</option>
+                          <option value="55">55</option>
+                        </select>
+                        <span class="checkin-duration-unit">分</span>
+                      </div>
+                      <p class="field-error" id="checkin-duration-error"></p>
                     </div>
-                    <p class="field-error" id="checkin-duration-error"></p>
-                  </div>
-                  <div class="field checkin-photo-field">
-                    <label for="checkin-photo">上传行动照片（可选）</label>
-                    <div class="daily-upload-placeholder">
-                      <input id="checkin-photo" name="photo" type="file" accept="image/*" />
-                      <span>本地预览，不上传服务器</span>
+                    <div class="field checkin-photo-field">
+                      <label for="checkin-photo">上传行动照片（可选）</label>
+                      <div class="daily-upload-placeholder">
+                        <input id="checkin-photo" name="photo" type="file" accept="image/*" />
+                        <span>本地预览，不上传服务器</span>
+                      </div>
+                      <div class="checkin-preview" data-checkin-preview hidden></div>
                     </div>
-                    <div class="checkin-preview" data-checkin-preview hidden></div>
-                  </div>
-                </div>
-
-                <div class="daily-checkin-optional" id="checkin-optional-panel" data-checkin-optional hidden>
-                  <div class="field">
-                    <label for="checkin-mood">行动心情</label>
-                    <select id="checkin-mood" name="mood">
-                      <option value="平静">平静</option>
-                      <option value="有成就感">有成就感</option>
-                      <option value="被鼓舞">被鼓舞</option>
-                      <option value="想坚持">想坚持</option>
-                      <option value="其他">其他</option>
-                    </select>
                   </div>
                 </div>
 
@@ -178,7 +168,6 @@
                   <button class="button button-primary daily-checkin-submit" type="button" data-checkin-submit disabled>完成今日打卡</button>
                   <button class="button" type="button" data-checkin-done hidden disabled>今日已打卡</button>
                   <div class="daily-checkin-actions__secondary">
-                    <button class="button button-ghost" type="button" data-checkin-toggle-optional aria-expanded="false" aria-controls="checkin-optional-panel">补充记录</button>
                     <button class="button button-ghost" type="button" data-checkin-clear>一键清空</button>
                     <button class="button button-ghost" type="button" data-checkin-history-open>查看历史</button>
                     <button class="button button-ghost" type="button" data-checkin-view-cert hidden>查看证书</button>

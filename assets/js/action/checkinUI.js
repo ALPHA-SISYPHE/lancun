@@ -7,7 +7,6 @@
 
   const state = {
     editMode: false,
-    optionalExpanded: false,
     pendingImagePreview: null,
     lastCertificate: null,
     historyCalYear: new Date().getFullYear(),
@@ -82,30 +81,6 @@
 
   const MINUTE_STEPS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
-  function isOptionalExpanded() {
-    const panel = $('[data-checkin-optional]');
-    return panel ? !panel.hidden : false;
-  }
-
-  function toggleOptionalSection(force) {
-    const panel = $('[data-checkin-optional]');
-    const toggle = $('[data-checkin-toggle-optional]');
-    if (!panel) return;
-
-    const next = typeof force === 'boolean' ? force : !isOptionalExpanded();
-    state.optionalExpanded = next;
-    panel.hidden = !next;
-    if (toggle) {
-      toggle.setAttribute('aria-expanded', String(next));
-      toggle.textContent = next ? '收起补充' : '补充记录';
-    }
-  }
-
-  function shouldAutoExpandOptional(checkin) {
-    if (!checkin) return false;
-    return Boolean(checkin.mood && checkin.mood !== '平静');
-  }
-
   function snapMinutes(totalMinutes) {
     const hours = Math.min(8, Math.floor(totalMinutes / 60));
     let minutes = totalMinutes % 60;
@@ -152,13 +127,10 @@
     }
 
     form.description.value = checkin.description || '';
-    form.mood.value = checkin.mood || '平静';
     setDurationFields(form, checkin.duration ?? 10);
 
     state.pendingImagePreview = checkin.imagePreview || null;
     renderImagePreview();
-    if (shouldAutoExpandOptional(checkin)) toggleOptionalSection(true);
-    else toggleOptionalSection(false);
   }
 
   function resetFormForNewDay() {
@@ -170,7 +142,6 @@
     state.pendingImagePreview = null;
     renderImagePreview();
     clearFormErrors(form);
-    toggleOptionalSection(false);
   }
 
   function renderImagePreview() {
@@ -261,18 +232,12 @@
     const editBtn = $('[data-checkin-edit]');
     const certBtn = $('[data-checkin-view-cert]');
     const status = $('[data-checkin-status]');
-    const optionalToggle = $('[data-checkin-toggle-optional]');
-
-    if (optionalToggle && !state.optionalExpanded) {
-      optionalToggle.setAttribute('aria-expanded', 'false');
-      optionalToggle.textContent = '补充记录';
-    }
 
     if (form) {
       const fields = form.querySelectorAll('input, select, textarea, button[type="button"]');
       fields.forEach((field) => {
         if (field.matches(
-          '[data-checkin-edit], [data-checkin-view-cert], [data-checkin-history-open], [data-checkin-toggle-optional]',
+          '[data-checkin-edit], [data-checkin-view-cert], [data-checkin-history-open]',
         )) return;
         field.disabled = !loggedIn || (hasToday && !state.editMode);
       });
@@ -383,7 +348,6 @@
       actionType: validated.actionType,
       description: form.description.value.trim(),
       duration: validated.duration,
-      mood: form.mood.value,
       imagePreview: state.pendingImagePreview || undefined,
       createdAt: existing?.createdAt || new Date().toISOString(),
     });
@@ -443,7 +407,7 @@
         <article class="checkin-history-item">
           <div>
             <h4>${item.actionType}</h4>
-            <p class="checkin-history-item__meta">${item.date} · ${item.duration} 分钟 · ${item.mood}</p>
+            <p class="checkin-history-item__meta">${item.date} · ${item.duration} 分钟</p>
             <p class="checkin-history-item__desc">${item.description}</p>
           </div>
           <div class="checkin-history-item__actions">
@@ -579,7 +543,6 @@
       openCertificateDialog(checkin);
     });
     $('[data-checkin-history-open]')?.addEventListener('click', openHistoryDialog);
-    $('[data-checkin-toggle-optional]')?.addEventListener('click', () => toggleOptionalSection());
     $('[data-archive-history]')?.addEventListener('click', openHistoryDialog);
     $('[data-archive-badges]')?.addEventListener('click', openBadgesDialog);
 
@@ -633,7 +596,7 @@
     let dialogOpener = null;
     document.addEventListener('click', (event) => {
       const trigger = event.target.closest(
-        '[data-checkin-history-open], [data-archive-history], [data-archive-badges], [data-checkin-view-cert], [data-checkin-toggle-optional]',
+        '[data-checkin-history-open], [data-archive-history], [data-archive-badges], [data-checkin-view-cert]',
       );
       if (trigger) dialogOpener = trigger;
     }, true);

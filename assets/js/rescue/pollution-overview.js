@@ -117,6 +117,7 @@ const buildLineChartSvg = (trend, compact = false) => {
   const toY = (v) => pad.top + innerH - ((v - minV) / (maxV - minV)) * innerH;
   const baseY = pad.top + innerH;
   const polyline = points.map((p, i) => `${toX(i)},${toY(p.value)}`).join(' ');
+  const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${toX(i)} ${toY(p.value)}`).join(' ');
   const gridLines = Array.from({ length: 4 }, (_, i) => {
     const y = pad.top + (innerH / 3) * i;
     return `<line class="rescue-trend__grid" x1="${pad.left}" y1="${y}" x2="${width - pad.right}" y2="${y}" />`;
@@ -132,13 +133,15 @@ const buildLineChartSvg = (trend, compact = false) => {
     .join('');
   const areaFill =
     compact && points.length > 1
-      ? `<polygon class="rescue-trend__area" points="${points.map((p, i) => `${toX(i)},${toY(p.value)}`).join(' ')} ${toX(points.length - 1)},${baseY} ${toX(0)},${baseY}" />`
+      ? `<polygon class="rescue-trend__area rescue-trend__area--draw" points="${points.map((p, i) => `${toX(i)},${toY(p.value)}`).join(' ')} ${toX(points.length - 1)},${baseY} ${toX(0)},${baseY}" />`
       : '';
+  const dotClass = compact ? 'rescue-trend__dot rescue-trend__dot--draw' : 'rescue-trend__dot';
+  const dotDelaySpan = Math.max(points.length - 1, 1);
   const dots = points
-    .map(
-      (p, i) =>
-        `<circle class="rescue-trend__dot" cx="${toX(i)}" cy="${toY(p.value)}" r="4" tabindex="0" data-year="${p.year}" data-value="${p.value}" aria-label="${p.year}: ${p.value}${trend.unit}"></circle>`
-    )
+    .map((p, i) => {
+      const delay = compact ? ` style="--dot-delay: ${((i / dotDelaySpan) * 1.47).toFixed(2)}s"` : '';
+      return `<circle class="${dotClass}" cx="${toX(i)}" cy="${toY(p.value)}" r="4" tabindex="0" data-year="${p.year}" data-value="${p.value}" aria-label="${p.year}: ${p.value}${trend.unit}"${delay}></circle>`;
+    })
     .join('');
   const labels = points
     .map((p, i) => `<text class="rescue-trend__label" x="${toX(i)}" y="${height - 10}" text-anchor="middle">${p.year}</text>`)
@@ -149,6 +152,9 @@ const buildLineChartSvg = (trend, compact = false) => {
   const yUnitLabel = unit
     ? `<text class="rescue-trend__unit" x="${unitX}" y="${unitY}" text-anchor="middle" transform="rotate(-90, ${unitX}, ${unitY})">${unit}</text>`
     : '';
+  const lineMarkup = compact
+    ? `<path class="rescue-trend__line rescue-trend__line--draw" d="${linePath}" fill="none" />`
+    : `<polyline class="rescue-trend__line" points="${polyline}" />`;
 
   return `
     <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${trend.label}">
@@ -156,7 +162,7 @@ const buildLineChartSvg = (trend, compact = false) => {
       ${yAxisLine}
       ${xAxisLine}
       ${areaFill}
-      <polyline class="rescue-trend__line" points="${polyline}" />
+      ${lineMarkup}
       ${dots}
       ${labels}
       ${yTicks}
@@ -427,7 +433,6 @@ const renderHeroRibbon = (pressure) => {
     { label: 'Active Stations', value: String(pressure.activeStations ?? '—') },
     { label: 'Critical Sources', value: String(pressure.criticalSources ?? '—') },
     { label: 'Last Update', value: pressure.updatedTime || pressure.updatedAt || '—' },
-    { label: 'Data Mode', value: pressure.dataMode || 'Mock / Local' },
   ];
 
   host.innerHTML = cells
@@ -463,6 +468,67 @@ const renderSourcesSummary = (host, sources) => {
     .join(sep);
 
   host.innerHTML = `${label}${links}${sep}${docLink}`;
+};
+
+const prepareInsightTrendDraw = (svg) => {
+  if (!svg) return;
+  const path = svg.querySelector('.rescue-trend__line--draw');
+  if (!path) return;
+  const len = path.getTotalLength();
+  path.style.strokeDasharray = `${len}`;
+  path.style.strokeDashoffset = `${len}`;
+};
+
+const revealInsightPanel = (panel) => {
+  if (!panel || panel.dataset.insightRevealed === '1') return;
+  panel.dataset.insightRevealed = '1';
+  panel.classList.add('is-insight-revealed');
+  const path = panel.querySelector('.rescue-trend__line--draw');
+  if (!path) return;
+  if (window.LANCUN_RESCUE.prefersReducedMotion?.()) {
+    path.style.strokeDashoffset = '0';
+    return;
+  }
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      path.style.strokeDashoffset = '0';
+    });
+  });
+};
+
+const bindInsightPanelReveal = (panel) => {
+  if (!panel) return;
+  panel._insightRevealObserver?.disconnect();
+  panel._insightRevealObserver = null;
+
+  const svg = panel.querySelector('.trend-chart-card__canvas svg');
+  prepareInsightTrendDraw(svg);
+
+  if (panel.dataset.insightRevealed === '1') {
+    panel.classList.add('is-insight-revealed');
+    const path = panel.querySelector('.rescue-trend__line--draw');
+    if (path) path.style.strokeDashoffset = '0';
+    return;
+  }
+
+  if (window.LANCUN_RESCUE.prefersReducedMotion?.() || typeof IntersectionObserver === 'undefined') {
+    revealInsightPanel(panel);
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        revealInsightPanel(panel);
+        observer.unobserve(panel);
+        panel._insightRevealObserver = null;
+      });
+    },
+    { threshold: 0.2, rootMargin: '0px 0px -5% 0px' }
+  );
+  panel._insightRevealObserver = observer;
+  observer.observe(panel);
 };
 
 const renderDataInsightsPanel = () => {
@@ -511,7 +577,7 @@ const renderDataInsightsPanel = () => {
           (row) => `
         <div class="chart-row">
           <span class="chart-row__label">${row.label}</span>
-          <div class="chart-track"><div class="chart-fill" style="width:${row.value}%"></div></div>
+          <div class="chart-track"><div class="chart-fill chart-fill--draw" style="--bar-target: ${row.value}%"></div></div>
           <span class="chart-row__value">${row.value}%</span>
         </div>`
         )
@@ -521,6 +587,7 @@ const renderDataInsightsPanel = () => {
   bindTrendChartInteractions(trendCard.querySelector('.trend-chart-card__canvas'), trend);
   bindCompositionRingInteractions(compositionCard.querySelector('.composition-ring'), pie);
   renderSourcesSummary(document.querySelector('[data-rescue-sources-summary]'), data.rescueDeckSources);
+  bindInsightPanelReveal(document.querySelector('.pollution-insight-panel'));
 };
 
 const renderCommandDeckCharts = () => {
@@ -549,4 +616,5 @@ Object.assign(window.LANCUN_RESCUE, {
   renderSourcesSummary,
   renderSourcesDialog,
   renderCommandDeckCharts,
+  bindInsightPanelReveal,
 });
